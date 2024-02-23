@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cqagjvvpxijsc"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_47evx"]
+
+[node name="Entity" type="CharacterBody2D"]
+collision_mask = 17
+script = ExtResource("1_47evx")

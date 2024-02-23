@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dggxylgh664hx"]
+
+[ext_resource type="Script" path="res://Components/Modules/speedy.gd" id="1_4w2hr"]
+
+[node name="Speedy" type="Node"]
+script = ExtResource("1_4w2hr")

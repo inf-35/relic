@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://cea85678pyflt"]
+
+[ext_resource type="Script" path="res://Components/credit.gd" id="1_vm427"]
+[ext_resource type="Texture2D" uid="uid://ojhqm06mn8xd" path="res://player (2).png" id="2_4403q"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_eysp5"]
+radius = 2.0
+
+[node name="Credit" type="Area2D"]
+process_mode = 3
+z_index = 1
+z_as_relative = false
+y_sort_enabled = true
+collision_layer = 0
+script = ExtResource("1_vm427")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 0, 1)
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("2_4403q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_eysp5")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

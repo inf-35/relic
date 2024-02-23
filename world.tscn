@@ -1,0 +1,129 @@
+[gd_scene load_steps=11 format=3 uid="uid://b64j3iwyywwrw"]
+
+[ext_resource type="Script" path="res://Components/Controllers/player.gd" id="2_qvbn3"]
+[ext_resource type="Texture2D" uid="uid://q66r2p2a17tj" path="res://tilemap.png" id="3_2tuho"]
+[ext_resource type="Script" path="res://Components/camera.gd" id="3_wnons"]
+[ext_resource type="Script" path="res://Components/interactive_tilemap.gd" id="4_dxgbv"]
+[ext_resource type="Texture2D" uid="uid://c4nt7vm1gxdj4" path="res://rock (2).png" id="4_m23hf"]
+[ext_resource type="Texture2D" uid="uid://b6vdcm8cm426c" path="res://rect14284.png" id="6_fxgxh"]
+[ext_resource type="PackedScene" uid="uid://drk4fgegngman" path="res://Interfaces/main_gui.tscn" id="7_pbcva"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p86ur"]
+texture = ExtResource("3_2tuho")
+texture_region_size = Vector2i(200, 200)
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+2:0/0 = 0
+2:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:0/0/physics_layer_0/angular_velocity = 0.0
+0:1/0 = 0
+0:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:1/0/physics_layer_0/angular_velocity = 0.0
+0:2/0 = 0
+0:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:2/0/physics_layer_0/angular_velocity = 0.0
+0:3/0 = 0
+0:3/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:3/0/physics_layer_0/angular_velocity = 0.0
+3:0/0 = 0
+3:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+3:0/0/physics_layer_0/angular_velocity = 0.0
+2:1/0 = 0
+2:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:1/0/physics_layer_0/angular_velocity = 0.0
+1:0/size_in_atlas = Vector2i(1, 2)
+1:0/0 = 0
+1:0/0/texture_origin = Vector2i(0, -100)
+1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_0/angular_velocity = 0.0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-100, -100, 100, -100, 100, 100, -100, 100)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jn3re"]
+texture = ExtResource("4_m23hf")
+texture_region_size = Vector2i(100, 100)
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+
+[sub_resource type="TileSet" id="TileSet_xxhqg"]
+tile_size = Vector2i(200, 200)
+physics_layer_0/collision_layer = 16
+physics_layer_0/collision_mask = 31
+sources/1 = SubResource("TileSetAtlasSource_p86ur")
+sources/2 = SubResource("TileSetAtlasSource_jn3re")
+
+[node name="World" type="Node2D"]
+process_mode = 1
+z_as_relative = false
+y_sort_enabled = true
+texture_filter = 2
+metadata/_edit_vertical_guides_ = [-4713.0]
+
+[node name="Controllers" type="Node2D" parent="."]
+z_as_relative = false
+y_sort_enabled = true
+
+[node name="Player" type="Node2D" parent="Controllers"]
+z_as_relative = false
+y_sort_enabled = true
+script = ExtResource("2_qvbn3")
+stasis_exception = true
+
+[node name="Projectiles" type="Node2D" parent="."]
+z_as_relative = false
+y_sort_enabled = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+process_mode = 3
+zoom = Vector2(7, 7)
+script = ExtResource("3_wnons")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+z_as_relative = false
+y_sort_enabled = true
+
+[node name="TileMap" type="TileMap" parent="NavigationRegion2D"]
+z_as_relative = false
+y_sort_enabled = true
+scale = Vector2(0.1, 0.1)
+tile_set = SubResource("TileSet_xxhqg")
+format = 2
+layer_0/name = "Base"
+layer_0/y_sort_enabled = true
+layer_0/z_index = -2
+layer_0/tile_data = PackedInt32Array(-1, 65537, 0, -65536, 65537, 0)
+layer_1/name = "Decor 1"
+layer_1/y_sort_enabled = true
+layer_1/z_index = -2
+layer_1/tile_data = PackedInt32Array()
+layer_2/name = "Decor 2"
+layer_2/y_sort_enabled = true
+layer_2/z_index = -1
+layer_2/tile_data = PackedInt32Array()
+script = ExtResource("4_dxgbv")
+
+[node name="CeilingMap" type="TileMap" parent="NavigationRegion2D"]
+z_as_relative = false
+y_sort_enabled = true
+position = Vector2(0, -10)
+scale = Vector2(0.1, 0.1)
+tile_set = SubResource("TileSet_xxhqg")
+format = 2
+layer_0/y_sort_enabled = true
+layer_0/y_sort_origin = 201
+layer_0/z_index = 1
+
+[node name="Background" type="Sprite2D" parent="NavigationRegion2D"]
+z_index = -3
+z_as_relative = false
+texture_repeat = 2
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("6_fxgxh")
+region_enabled = true
+region_rect = Rect2(0, 0, 100000, 100000)
+
+[node name="UI" type="CanvasLayer" parent="."]
+process_mode = 3
+
+[node name="MainGui" parent="UI" instance=ExtResource("7_pbcva")]

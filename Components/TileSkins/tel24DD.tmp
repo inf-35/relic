@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://dsb17a85hchbx"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_6755x"]
+[ext_resource type="Texture2D" uid="uid://q66r2p2a17tj" path="res://tilemap.png" id="2_ov85t"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oph60"]
+size = Vector2(100, 100)
+
+[node name="Teleporter" type="StaticBody2D"]
+z_index = -1
+z_as_relative = false
+y_sort_enabled = true
+scale = Vector2(0.2, 0.2)
+collision_layer = 16
+collision_mask = 16
+script = ExtResource("1_6755x")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(50, 50)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ov85t")
+region_enabled = true
+region_rect = Rect2(0, 600, 200, 200)
+
+[node name="LevelCollision" type="CollisionShape2D" parent="."]
+position = Vector2(50, 50)
+shape = SubResource("RectangleShape2D_oph60")

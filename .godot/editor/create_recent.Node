@@ -1,0 +1,15 @@
+WeaponCustomisation
+Control
+MarginContainer
+VBoxContainer
+PanelContainer
+Panel
+HBoxContainer
+LabelAutosized
+Label
+Container
+WeaponDisplay
+TextureRect
+AspectRatioFixed
+Indicator
+AspectRatioContainer

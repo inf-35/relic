@@ -1,0 +1,84 @@
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1708677227
+entitysheet.png::CompressedTexture2D::2952733320308758738::1706368894::1706368903::1::::<><>::
+JetBrainsMono-VariableFont_wght.ttf::FontFile::2468233330264704692::1707349694::1707349694::1::::<><>::
+player (2).png::CompressedTexture2D::1001677472696231133::1704669507::1704715111::1::::<><>::
+rect14284.png::CompressedTexture2D::4605813173240295860::1706783959::1706783959::1::::<><>::
+rock (2).png::CompressedTexture2D::6836366634677690675::1705215776::1705215776::1::::<><>::
+tilemap.png::CompressedTexture2D::1188931236386850943::1706111121::1706074242::1::::<><>::
+world.tscn::PackedScene::4622738701799984992::1708667923::0::1::::<><>::res://Components/Controllers/player.gd<>uid://q66r2p2a17tj::::res://tilemap.png<>res://Components/camera.gd<>res://Components/interactive_tilemap.gd<>uid://c4nt7vm1gxdj4::::res://rock (2).png<>uid://b6vdcm8cm426c::::res://rect14284.png<>uid://drk4fgegngman::::res://Interfaces/main_gui.tscn
+::res://Components/::1708668776
+camera.gd::GDScript::-1::1707644705::0::1::::<>Camera2D<>::
+controller.gd::GDScript::-1::1708093423::0::1::::Controller<>Node2D<>::
+controller.tscn::PackedScene::7293042554457464312::1706494727::0::1::::<><>::res://Components/controller.gd
+credit.gd::GDScript::-1::1707734485::0::1::::Credit<>Area2D<>::
+credit.tscn::PackedScene::5055655655694731117::1708492677::0::1::::<><>::res://Components/credit.gd<>uid://ojhqm06mn8xd::::res://player (2).png
+entity.gd::GDScript::-1::1708494015::0::1::::Entity<>PhysicsBody2D<>::
+entity.tscn::PackedScene::5896244375840301402::1706494727::0::1::::<><>::res://Components/entity.gd
+hitbox.gd::GDScript::-1::1707971121::0::1::::Hitbox<>Area2D<>::
+hitbox.tscn::PackedScene::4240930792835526068::1708667924::0::1::::<><>::res://Components/hitbox.gd
+interactive_tilemap.gd::GDScript::-1::1706192442::0::1::::InteractiveTileMap<>TileMap<>::
+module.gd::GDScript::-1::1708668776::0::1::::Module<>Node<>::
+movement_component.gd::GDScript::-1::1708431873::0::1::::MovementComponent<>Node<>::
+projectile.gd::GDScript::-1::1707929058::0::1::::Projectile<>Area2D<>::
+projectile.tscn::PackedScene::1805720880457656358::1708667923::0::1::::<><>::uid://ojhqm06mn8xd::::res://player (2).png<>res://Components/projectile.gd
+prompt.gd::GDScript::-1::1708386813::0::1::::Prompt<>Area2D<>::
+weapon.gd::GDScript::-1::1708496242::0::1::::Weapon<>Node<>::
+weapon.tscn::PackedScene::1796989387767262825::1705557135::0::1::::<><>::res://Components/weapon.gd
+::res://Components/Controllers/::1708576201
+beetle.gd::GDScript::-1::1708494649::0::1::::Beetle<>Controller<>::
+dropped_weapon.gd::GDScript::-1::1706578311::0::1::::DroppedWeapon<>Controller<>::
+dropped_weapon_prompt.gd::GDScript::-1::1708006512::0::1::::DroppedWeaponPrompt<>Prompt<>::
+grunt.gd::GDScript::-1::1708494554::0::1::::Grunt<>Controller<>::
+player.gd::GDScript::-1::1708576201::0::1::::Player<>Controller<>::
+player.tscn::PackedScene::2000009755131793832::1707230143::0::1::::<><>::res://Components/Controllers/player.gd
+rock.gd::GDScript::-1::1707970753::0::1::::Rock<>Controller<>::
+teleporter.gd::GDScript::-1::1706572766::0::1::::Teleporter<>Controller<>::
+teleporter_prompt.gd::GDScript::-1::1708386813::0::1::::TeleporterPrompt<>Prompt<>::
+::res://Components/EntitySkins/::1708667924
+beetle.tscn::PackedScene::7128268002431219503::1708667924::0::1::::<><>::res://Components/entity.gd<>uid://ojhqm06mn8xd::::res://player (2).png<>res://Components/hitbox.gd<>res://Components/movement_component.gd
+grunt.tscn::PackedScene::6003941646047289857::1708667924::0::1::::<><>::res://Components/entity.gd<>uid://biclc64kndju5::::res://entitysheet.png<>res://Components/hitbox.gd<>res://Components/movement_component.gd
+player.tscn::PackedScene::6583887475967831991::1708667923::0::1::::<><>::res://Components/entity.gd<>uid://biclc64kndju5::::res://entitysheet.png<>res://Components/hitbox.gd<>res://Components/movement_component.gd
+::res://Components/InteractableSkins/::1708667924
+dropped_weapon.tscn::PackedScene::6944269655955712965::1708667924::0::1::::<><>::res://Components/entity.gd<>res://Components/Controllers/dropped_weapon_prompt.gd<>uid://c4nt7vm1gxdj4::::res://rock (2).png
+teleporter.tscn::PackedScene::8596969532610406457::1708667923::0::1::::<><>::res://Components/entity.gd<>res://Components/Controllers/teleporter_prompt.gd<>uid://c4nt7vm1gxdj4::::res://rock (2).png
+::res://Components/Modules/::1708667924
+speedy.gd::GDScript::-1::1708487849::0::1::::Speedy<>Module<>::
+speedy.tscn::PackedScene::7594221316705606977::1708667924::0::1::::<><>::res://Components/Modules/speedy.gd
+::res://Components/TileSkins/::1708667924
+rock.tscn::PackedScene::230205636842555137::1708667924::0::1::::<><>::res://Components/entity.gd<>uid://q66r2p2a17tj::::res://tilemap.png<>res://Components/hitbox.gd
+::res://Components/Weapons/::1708496264
+basic_weapon.gd::GDScript::-1::1708496242::0::1::::BasicWeapon<>Weapon<>::
+round_weapon.gd::GDScript::-1::1707142552::0::1::::RoundWeapon<>Weapon<>::
+ultra_weapon.gd::GDScript::-1::1708496264::0::1::::UltraWeapon<>Weapon<>::
+::res://Interface Assets/::1708246752
+basic-logo.png::CompressedTexture2D::1649038716277162309::1707643438::1707643453::1::::<><>::
+basic.png::CompressedTexture2D::1426078142812956930::1707990070::1708089631::1::::<><>::
+filled-revolver.png::CompressedTexture2D::2698965205311639116::1707137763::1707137748::1::::<><>::
+healthbar-filled.png::CompressedTexture2D::9077607674017799973::1708246730::1708246752::1::::<><>::
+healthbar-overlay.png::CompressedTexture2D::8071232078178511398::1707745772::1707745772::1::::<><>::
+healthbar-unfilled.png::CompressedTexture2D::5634371671202356820::1707737081::1707737092::1::::<><>::
+null.png::CompressedTexture2D::2359326420657904004::1708090959::1708090964::1::::<><>::
+ultra.png::CompressedTexture2D::6241806761504172524::1707990118::1708089638::1::::<><>::
+unfilled-revolver.png::CompressedTexture2D::644157926395387631::1707135971::1707135980::1::::<><>::
+::res://Interfaces/::1708668776
+aspectratio_bodge.gd::GDScript::-1::1708253697::0::1::::AspectRatioFixed<>AspectRatioContainer<>::
+bonds_label.gd::GDScript::-1::1708322294::0::1::::<>LabelAutosized<>::
+healthbar.gd::GDScript::-1::1708442751::0::1::::<>TextureProgressBar<>::
+health_label.gd::GDScript::-1::1708442776::0::1::::<>LabelAutosized<>::
+indicator.gd::GDScript::-1::1708226939::0::1::::Indicator<>PanelContainer<>::
+label_autosized.gd::GDScript::-1::1708309749::0::1::::LabelAutosized<>Label<>::
+main_gui.tscn::PackedScene::8374886213835756541::1708668776::0::1::::<><>::uid://bbfvpbltukkcy::::res://JetBrainsMono-VariableFont_wght.ttf<>uid://xq2orkgamo4t::::res://Interface Assets/basic-logo.png<>res://Interfaces/healthbar.gd<>res://Interfaces/aspectratio_bodge.gd<>uid://cmjljpvwmwyhw::::res://Interface Assets/healthbar-unfilled.png<>uid://dm81apfd2gsvu::::res://Interface Assets/healthbar-overlay.png<>res://Interfaces/label_autosized.gd<>res://Interfaces/bonds_label.gd<>uid://d2li4wgoywy7v::::res://Interface Assets/healthbar-filled.png<>res://Interfaces/health_label.gd<>res://Interfaces/indicator.gd<>res://Interfaces/weapon_name_label.gd<>res://Interfaces/weapon_display.gd<>uid://uk2kfirpirsk::::res://Interface Assets/basic.png<>res://Interfaces/weapon_customisation.gd<>res://Interfaces/visibility_manager.gd<>uid://8u405h5e6yoq::::res://Interface Assets/null.png<>res://Interfaces/speed_label.gd<>res://Interfaces/upgrades_tab.gd
+module_customisation.gd::GDScript::-1::1708668776::0::1::::ModuleCustomisation<>PanelContainer<>::
+speed_label.gd::GDScript::-1::1708442751::0::1::::<>LabelAutosized<>::
+upgrades_tab.gd::GDScript::-1::1708610628::0::1::::<>MarginContainer<>::
+visibility_manager.gd::GDScript::-1::1708610667::0::1::::<>Control<>::
+weapon_customisation.gd::GDScript::-1::1708667566::0::1::::WeaponCustomisation<>PanelContainer<>::
+weapon_display.gd::GDScript::-1::1708093680::0::1::::WeaponDisplay<>TextureRect<>::
+weapon_name_label.gd::GDScript::-1::1708228236::0::1::::<>LabelAutosized<>::
+::res://Singletons/::1708610628
+entity_skins.gd::GDScript::-1::1707720453::0::1::::<>Node<>::
+game_director.gd::GDScript::-1::1708093424::0::1::::<>Node<>::
+gui_director.gd::GDScript::-1::1708610628::0::1::::<>Node<>::
+input_director.gd::GDScript::-1::1708578457::0::1::::<>Node<>::
+::res://Sprites/::1705940721

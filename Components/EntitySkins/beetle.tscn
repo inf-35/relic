@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=3 uid="uid://c8s8sdvh2ftsh"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_piyto"]
+[ext_resource type="Texture2D" uid="uid://ojhqm06mn8xd" path="res://player (2).png" id="2_nxtc4"]
+[ext_resource type="Script" path="res://Components/hitbox.gd" id="3_wacnv"]
+[ext_resource type="Script" path="res://Components/movement_component.gd" id="4_pudai"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_k8ph6"]
+radius = 4.12311
+
+[sub_resource type="Animation" id="Animation_btdb6"]
+resource_name = "jump"
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": ["bounce"],
+"method": &"animation_callback_func"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_netw8"]
+_data = {
+"jump": SubResource("Animation_btdb6")
+}
+
+[node name="Beetle" type="CharacterBody2D" node_paths=PackedStringArray("movement_component", "animation_player", "main_hitbox")]
+z_as_relative = false
+position = Vector2(0, 5)
+collision_layer = 2
+collision_mask = 16
+script = ExtResource("1_piyto")
+base_max_hp = 100.0
+base_movement_speed = 3.0
+movement_component = NodePath("MovementComponent")
+animation_player = NodePath("AnimationPlayer")
+main_hitbox = NodePath("Hitbox")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.380392, 1, 1, 1)
+texture_filter = 1
+position = Vector2(0, -4)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_nxtc4")
+
+[node name="LevelCollision" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_k8ph6")
+
+[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
+collision_layer = 2
+collision_mask = 13
+script = ExtResource("3_wacnv")
+entity = NodePath("..")
+
+[node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -4)
+shape = SubResource("CircleShape2D_k8ph6")
+
+[node name="MovementComponent" type="Node" parent="."]
+script = ExtResource("4_pudai")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_netw8")
+}

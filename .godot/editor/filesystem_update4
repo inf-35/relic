@@ -1,0 +1,11 @@
+res://world.tscn
+res://Components/EntitySkins/player.tscn
+res://Components/projectile.tscn
+res://Components/InteractableSkins/teleporter.tscn
+res://Components/EntitySkins/grunt.tscn
+res://Components/EntitySkins/beetle.tscn
+res://Components/hitbox.tscn
+res://Components/Modules/speedy.tscn
+res://Components/TileSkins/rock.tscn
+res://Components/InteractableSkins/dropped_weapon.tscn
+res://Interfaces/main_gui.tscn

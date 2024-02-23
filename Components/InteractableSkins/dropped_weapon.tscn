@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://c564dvkj0arcn"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_bsfrj"]
+[ext_resource type="Script" path="res://Components/Controllers/dropped_weapon_prompt.gd" id="2_jjh5q"]
+[ext_resource type="Texture2D" uid="uid://c4nt7vm1gxdj4" path="res://rock (2).png" id="3_kxh3o"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yagey"]
+size = Vector2(12, 12)
+
+[node name="DroppedWeapon" type="CharacterBody2D"]
+script = ExtResource("1_bsfrj")
+
+[node name="DroppedWeaponPrompt" type="Area2D" parent="."]
+script = ExtResource("2_jjh5q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DroppedWeaponPrompt"]
+shape = SubResource("RectangleShape2D_yagey")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.11, 0.11)
+texture = ExtResource("3_kxh3o")

@@ -1,0 +1,11 @@
+extends Module
+
+class_name Speedy
+
+# Called when the node enters the scene tree for the first time.
+func activate():
+	player.entity.modifiers.multiplicative_speed_boost = 1
+
+func deactivate():
+	player.entity.modifiers.multiplicative_speed_boost = 1
+ 

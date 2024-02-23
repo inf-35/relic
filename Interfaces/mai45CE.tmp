@@ -1,0 +1,89 @@
+[gd_scene load_steps=5 format=3 uid="uid://drk4fgegngman"]
+
+[ext_resource type="Script" path="res://Interfaces/Health.gd" id="1_xk4ni"]
+[ext_resource type="Script" path="res://Interfaces/Bonds.gd" id="2_6pu4e"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ja3b"]
+bg_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ps0q7"]
+bg_color = Color(0, 1, 0, 1)
+
+[node name="MainGui" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Left" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Left"]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="HBoxContainer/Left/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_8ja3b")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ps0q7")
+value = 20.0
+show_percentage = false
+script = ExtResource("1_xk4ni")
+
+[node name="Label" type="Label" parent="HBoxContainer/Left/VBoxContainer/ProgressBar"]
+texture_filter = 1
+clip_contents = true
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -11.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 25
+text = "41 / 100"
+horizontal_alignment = 1
+
+[node name="Statuses" type="HBoxContainer" parent="HBoxContainer/Left/VBoxContainer"]
+layout_mode = 2
+
+[node name="Bonds" type="Label" parent="HBoxContainer/Left/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "20000"
+text_overrun_behavior = 3
+script = ExtResource("2_6pu4e")
+
+[node name="Middle" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Right" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8

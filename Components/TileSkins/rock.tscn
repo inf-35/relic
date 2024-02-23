@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://djrpn51uo4xp"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_k6vqa"]
+[ext_resource type="Texture2D" uid="uid://q66r2p2a17tj" path="res://tilemap.png" id="2_gqskr"]
+[ext_resource type="Script" path="res://Components/hitbox.gd" id="3_x4nt5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oph60"]
+size = Vector2(100, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gu6j3"]
+size = Vector2(100, 100)
+
+[node name="Rock" type="StaticBody2D"]
+z_index = -1
+z_as_relative = false
+y_sort_enabled = true
+scale = Vector2(0.2, 0.2)
+collision_layer = 16
+collision_mask = 16
+script = ExtResource("1_k6vqa")
+base_max_hp = 40.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(50, 50)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_gqskr")
+region_enabled = true
+region_rect = Rect2(0, 600, 200, 200)
+
+[node name="LevelCollision" type="CollisionShape2D" parent="."]
+position = Vector2(50, 50)
+shape = SubResource("RectangleShape2D_oph60")
+
+[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
+collision_layer = 16
+collision_mask = 15
+script = ExtResource("3_x4nt5")
+entity = NodePath("..")
+
+[node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(50, 50)
+shape = SubResource("RectangleShape2D_gu6j3")

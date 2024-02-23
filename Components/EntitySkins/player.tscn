@@ -1,0 +1,77 @@
+[gd_scene load_steps=9 format=3 uid="uid://c02jwur0emrhf"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_wkrhe"]
+[ext_resource type="Texture2D" uid="uid://biclc64kndju5" path="res://entitysheet.png" id="2_k88m0"]
+[ext_resource type="Script" path="res://Components/hitbox.gd" id="3_bnxut"]
+[ext_resource type="Script" path="res://Components/movement_component.gd" id="4_e4758"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w3kc6"]
+size = Vector2(4, 5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nciuc"]
+size = Vector2(5, 13)
+
+[sub_resource type="Animation" id="Animation_iahkp"]
+resource_name = "dash"
+length = 0.1
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": ["dash"],
+"method": &"animation_callback_func"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vqw2h"]
+_data = {
+"dash": SubResource("Animation_iahkp")
+}
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("movement_component", "animation_player", "main_hitbox")]
+z_index = 1
+z_as_relative = false
+y_sort_enabled = true
+collision_mask = 16
+script = ExtResource("1_wkrhe")
+base_max_hp = 10000.0
+base_movement_speed = 13.0
+movement_component = NodePath("MovementComponent")
+animation_player = NodePath("AnimationPlayer")
+main_hitbox = NodePath("Hitbox")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+y_sort_enabled = true
+position = Vector2(1.19209e-07, 10)
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("2_k88m0")
+region_enabled = true
+region_rect = Rect2(400, 0, 400, 800)
+
+[node name="LevelCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0, 10.5)
+shape = SubResource("RectangleShape2D_w3kc6")
+
+[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
+position = Vector2(0, 10)
+collision_mask = 14
+script = ExtResource("3_bnxut")
+entity = NodePath("..")
+
+[node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(-0.5, -5.5)
+shape = SubResource("RectangleShape2D_nciuc")
+
+[node name="MovementComponent" type="Node" parent="."]
+script = ExtResource("4_e4758")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_vqw2h")
+}
