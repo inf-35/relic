@@ -18,6 +18,9 @@ func _ready():
 		if GameDirector.player.cur_weapon_index == weapon:
 			self_modulate = Color(1,1,1,1)
 			modulate = Color(1,1,1,1)
+			
+			if get_node_or_null("UiShake"):
+				get_node("UiShake").start_shake()
 		else:
 			self_modulate = Color(1,1,1,0)
 			modulate = Color(1,1,1,0.5)

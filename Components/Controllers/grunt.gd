@@ -24,19 +24,20 @@ var state : String = "loiter":
 func _ready():
 	generate_weapons()
 	
+	var basic_weapon : BasicWeapon = preload("res://Components/Weapons/basic_weapon.tscn").instantiate()
+	basic_weapon.controller = self
+	weapons.add_child(basic_weapon)
+	weapon_dict[0] = basic_weapon
+	
 	skin = "grunt"
 	
 	entity.animation_callback.connect(func(identifier : String):
 		if not is_instance_valid(GameDirector.player):
 			return
 		if identifier == "shoot":
-			weapons_list[0].fire((GameDirector.player.entity.position + GameDirector.player.entity.main_hitbox.position - entity.position).normalized())
+			weapon_dict[0].fire((GameDirector.player.entity.position + GameDirector.player.entity.main_hitbox.position - entity.position).normalized())
 	)
-	
-	
-	var weapon = BasicWeapon.new(self)
-	
-	nav_agent.debug_enabled = true
+
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.avoidance_enabled = true
 	nav_agent.radius = 5

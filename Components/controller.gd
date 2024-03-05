@@ -13,19 +13,23 @@ var skin : String = "": #determines texture, anims, collision boxes
 
 var entity_type : String = "" #determines a unique entity type
 
-var weapons_list : Array = []
-		
+var weapon_dict : Dictionary = {
+	0 : null, #null keys are for the player
+	1 : null,
+	2 : null,
+	1000 : null #key 1000 is for player weapon selection in GUI	
+}
 var actions_list : Array = []
 
 @export var stasis_exception : bool = false #whether this controller is immune to stasis
 
-signal weapons_update
+signal weapon_update
 
 func generate_skin(generating_skin):
 	y_sort_enabled = true
 	z_as_relative = false
 	if EntityDirector.entity_skin_scenes.has(generating_skin):
-		var skin_entity = EntityDirector.entity_skin_scenes[generating_skin].instantiate()
+		var skin_entity = load(EntityDirector.entity_skin_scenes[generating_skin]).instantiate()
 		add_child.call_deferred(skin_entity)
 		entity = skin_entity
 		entity.name = "Entity: " + generating_skin
@@ -66,8 +70,21 @@ func generate_skin(generating_skin):
 	)
 
 func generate_weapons():
+	var old_weapon_hash : int = weapon_dict.hash()
+	
 	weapons = Node.new()
 	weapons.name = "Weapons"
-	add_child(weapons)	
+	add_child(weapons)
+	
+	weapons.child_exiting_tree.connect(func(weapon):
+		if weapon_dict.find_key(weapon):
+			weapon_dict[weapon_dict.find_key(weapon)] = null
+	)
+	
+	while is_instance_valid(weapons): #detects differences in weapon update
+		await get_tree().create_timer(0.1).timeout
+		if old_weapon_hash != weapon_dict.hash():
+			weapon_update.emit()
+		old_weapon_hash = weapon_dict.hash()
 	
 

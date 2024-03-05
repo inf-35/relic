@@ -2,7 +2,7 @@ extends Weapon
 
 class_name RoundWeapon
 
-func _ready():
+func setup_stats():
 	cooldown_time = 1
 	projectile_types = {
 		"basic" : {

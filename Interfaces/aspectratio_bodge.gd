@@ -35,3 +35,7 @@ func _on_child_exiting_tree(leaving_child : Node):
 		child = null
 		set_custom_minimum_size(Vector2(0,0))
 	
+
+
+func _on_weapon_item_rect_changed():
+	pass # Replace with function body.

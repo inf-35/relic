@@ -2,8 +2,9 @@ extends Weapon
 
 class_name BasicWeapon
 
-func _ready():
+func setup_stats():
 	item_texture = preload("res://Interface Assets/basic.png")
+	data_name = "basic_weapon"
 	proper_name = "Pistol"
 	description = "A basic pistol."
 	

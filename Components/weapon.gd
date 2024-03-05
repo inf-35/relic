@@ -4,8 +4,7 @@ class_name Weapon
 
 signal shot
 
-var controller 
-
+var controller
 var cooldown_timer = Timer.new()
 var cooldown_time : float = 0.5
 
@@ -19,23 +18,17 @@ var projectile_types : Dictionary = {
 
 var item_texture : Texture  #texture used for ui icon
 var proper_name : String = "undefined" #TODO : implement localisation
+var data_name : String = "undefined"
 var description : String = "undefined"
 
-func _init(cont):
-	controller = cont
-	controller.weapons.add_child(self)
-	if "cur_weapon_index" in controller: #if controller is player
-		if len(controller.weapons_list) > controller.cur_weapon_index:
-			controller.weapons_list[controller.cur_weapon_index] = self
-	else:
-		controller.weapons_list.append(self)
-	
-	controller.weapons_update.emit()
-	
+func setup_stats():
+	pass 
+
+func _init():
+	setup_stats()
 	add_child(cooldown_timer)
 	cooldown_timer.one_shot = true
-	cooldown_timer.autostart = false
-
+	
 func fire(target : Vector2): #overriden by child class function if defined correctly
 	push_warning("Fire function not defined for weapon ", self)
 	

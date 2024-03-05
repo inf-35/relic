@@ -13,8 +13,15 @@ var activated : bool = false:
 		activated = new_activation
 		
 var item_texture : Texture  #texture used for ui icon
+var data_name : String = "undefined"
 var proper_name : String = "undefined" #TODO : implement localisation
 var description : String = "undefined"
+	
+func setup_stats():
+	pass 
+	
+func _init():
+	setup_stats()
 	
 func activate():
 	push_error(str(self), " module behaviour undefined.")

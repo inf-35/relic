@@ -1,3 +1,4 @@
+res://Interfaces/main_gui.tscn
 res://world.tscn
 res://Components/EntitySkins/player.tscn
 res://Components/projectile.tscn
@@ -8,4 +9,9 @@ res://Components/hitbox.tscn
 res://Components/Modules/speedy.tscn
 res://Components/TileSkins/rock.tscn
 res://Components/InteractableSkins/dropped_weapon.tscn
-res://Interfaces/main_gui.tscn
+res://Components/Weapons/basic_weapon.tscn
+res://Components/Weapons/ultra_weapon.tscn
+res://Components/Weapons/round_weapon.tscn
+res://Components/weapon.tscn
+res://Interfaces/category_weapons.gd
+res://Interfaces/category_modules.gd

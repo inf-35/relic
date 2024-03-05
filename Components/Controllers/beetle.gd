@@ -24,19 +24,22 @@ var state : String = "loiter":
 func _ready():
 	generate_weapons()
 	
+	var basic_weapon : UltraWeapon = preload("res://Components/Weapons/ultra_weapon.tscn").instantiate()
+	basic_weapon.controller = self
+	weapons.add_child(basic_weapon)
+	weapon_dict[0] = basic_weapon
+	
 	skin = "beetle"
 	
 	entity.animation_callback.connect(func(identifier : String):
 		if not is_instance_valid(GameDirector.player):
 			return
 		if identifier == "bounce":
-			weapons_list[0].fire((GameDirector.player.entity.position + GameDirector.player.entity.main_hitbox.position - entity.position).normalized())
+			weapon_dict[0].fire((GameDirector.player.entity.position + GameDirector.player.entity.main_hitbox.position - entity.position).normalized())
 			entity.velocity = entity.to_local(nav_agent.get_next_path_position()).normalized() * -100
 			var tween = get_tree().create_tween()
 			tween.tween_property(entity,"velocity",entity.to_local(nav_agent.get_next_path_position()).normalized() * 200,0.3).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
 	)
-	
-	var weapon = RoundWeapon.new(self)
 	
 	nav_agent.path_desired_distance = 0.5
 	nav_agent.avoidance_enabled = true
@@ -77,6 +80,7 @@ func _ready():
 	
 	entity.died.connect(func():
 		var dropped_weapon : DroppedWeapon = DroppedWeapon.new()
+		dropped_weapon.weapon_name = "ultra_weapon"
 		dropped_weapon.property_cache.position = entity.position
 		GameDirector.projectiles.add_child.call_deferred(dropped_weapon)
 		queue_free.call_deferred()

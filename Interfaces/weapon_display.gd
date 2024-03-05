@@ -7,14 +7,14 @@ class_name WeaponDisplay
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if GameDirector.player.weapons_list[weapon] is Weapon:
-		texture = GameDirector.player.weapons_list[weapon].item_texture
+	if GameDirector.player.weapon_dict[weapon] is Weapon:
+		texture = GameDirector.player.weapon_dict[weapon].item_texture
 	else:
 		texture = preload("res://Interface Assets/null.png")
 		
-	GameDirector.player.weapons_update.connect(func():
-		if GameDirector.player.weapons_list[weapon] is Weapon:
-			texture = GameDirector.player.weapons_list[weapon].item_texture
+	GameDirector.player.weapon_update.connect(func():
+		if GameDirector.player.weapon_dict[weapon] is Weapon:
+			texture = GameDirector.player.weapon_dict[weapon].item_texture
 		else:
 			texture = preload("res://Interface Assets/null.png")
 	)

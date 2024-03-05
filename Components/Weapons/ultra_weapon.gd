@@ -2,9 +2,10 @@ extends Weapon
 
 class_name UltraWeapon
 
-func _ready():
+func setup_stats():
 	item_texture = preload("res://Interface Assets/ultra.png")
 	proper_name = "Ultra"
+	data_name = "basic_weapon"
 	description = "A less basic pistol."
 	
 	cooldown_time = 0.01

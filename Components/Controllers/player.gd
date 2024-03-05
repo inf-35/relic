@@ -4,6 +4,7 @@ class_name Player #controller for the player entity
 
 signal bonds_changed
 signal weapon_swapped
+signal module_update
 
 var raycast : RayCast2D = RayCast2D.new()
 var i_timer : Timer = Timer.new()
@@ -21,21 +22,32 @@ var bonds : int = 0:
 		bonds_changed.emit()
 		
 var modules : Node = Node.new()
+
+var module_dict : Dictionary = {
+	1 : null,
+	2 : null,
+	3 : null,
+	1000 : null #reserved for gui 
+}
 		
 func _ready():
 	bonds = 2000
 	
-	weapons_list = [null,null,null]
 	generate_weapons()
+	
+	var basic_weapon : BasicWeapon = preload("res://Components/Weapons/basic_weapon.tscn").instantiate()
+	basic_weapon.controller = self
+	weapons.add_child(basic_weapon)
+	weapon_dict[0] = basic_weapon
+	
 	skin = "circle"
 	
 	add_child(modules)
 	var speedy : Speedy = preload("res://Components/Modules/speedy.tscn").instantiate()
 	speedy.player = self
 	modules.add_child.call_deferred(speedy)
+	module_dict[0] = speedy
 	speedy.activate()
-	
-	BasicWeapon.new(self)
 	
 	entity.animation_callback.connect(func(identifier : String):
 		if not is_instance_valid(GameDirector.player):
@@ -74,3 +86,13 @@ func _ready():
 		entity.status_effects.iframe = true
 		i_timer.start(0.3)
 	)
+	
+	var old_module_hash : int
+	
+	while is_instance_valid(modules): #detects differences in weapon update
+		await get_tree().create_timer(0.1).timeout
+		if old_module_hash != module_dict.hash():
+			module_update.emit()
+			old_module_hash = module_dict.hash()
+	
+
