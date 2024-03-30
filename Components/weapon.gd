@@ -32,13 +32,14 @@ func _init():
 func fire(target : Vector2): #overriden by child class function if defined correctly
 	push_warning("Fire function not defined for weapon ", self)
 	
-func single_fire(projectile_type : String, target : Vector2) -> void:
+func single_fire(projectile_type : String, target : Vector2, status_effects : Dictionary = {}) -> void:
 	var projectile : Projectile = create_projectile(projectile_type)
 	projectile.velocity = projectile.initial_speed * target.normalized()
 	projectile.position = controller.entity.position
-	get_tree().get_root().add_child.call_deferred(projectile)
+	projectile.status_effects = status_effects
+	GameDirector.projectiles.add_child.call_deferred(projectile)
 	
-func arc_fire(projectile_type : String, projectiles : int, angle : float = 360, target : Vector2 = Vector2.ONE) -> void:
+func arc_fire(projectile_type : String, projectiles : int, angle : float = 360, target : Vector2 = Vector2.ONE, status_effects : Dictionary = {}) -> void:
 #function for firing multiple projectiles in an arc ; angle is the total angle of the arc
 	for i in projectiles:
 		var projectile : Projectile = create_projectile(projectile_type)
@@ -47,6 +48,7 @@ func arc_fire(projectile_type : String, projectiles : int, angle : float = 360, 
 			projectile.velocity = target.normalized().rotated(deg_to_rad(-angle * 0.5 + i * angle/(projectiles))) * projectile.initial_speed
 		else:
 			projectile.velocity = target.normalized().rotated(deg_to_rad(-angle * 0.5 + i * angle/(projectiles-1))) * projectile.initial_speed
+		projectile.status_effects = status_effects
 		GameDirector.projectiles.add_child.call_deferred(projectile)	
 			
 func create_projectile(projectile_type : String) -> Projectile:

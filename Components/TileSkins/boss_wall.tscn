@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3 uid="uid://dt7706q0i85y8"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_d6vdp"]
+[ext_resource type="Texture2D" uid="uid://q66r2p2a17tj" path="res://tilemap.png" id="2_4dpny"]
+[ext_resource type="Script" path="res://Components/hitbox.gd" id="3_ko8td"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oph60"]
+size = Vector2(100, 95)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gu6j3"]
+size = Vector2(100, 95)
+
+[node name="Wall" type="StaticBody2D"]
+modulate = Color(1, 0.211765, 0.211765, 1)
+z_index = -1
+z_as_relative = false
+y_sort_enabled = true
+scale = Vector2(0.2, 0.2)
+collision_layer = 16
+collision_mask = 16
+script = ExtResource("1_d6vdp")
+base_max_hp = 100000.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(50, 50)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_4dpny")
+hframes = 20
+vframes = 20
+frame = 80
+region_rect = Rect2(0, 600, 200, 200)
+
+[node name="LevelCollision" type="CollisionShape2D" parent="."]
+position = Vector2(50, 47.5)
+shape = SubResource("RectangleShape2D_oph60")
+
+[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
+collision_layer = 16
+collision_mask = 15
+script = ExtResource("3_ko8td")
+entity = NodePath("..")
+
+[node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(50, 47.5)
+shape = SubResource("RectangleShape2D_gu6j3")

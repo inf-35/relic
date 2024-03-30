@@ -16,11 +16,11 @@ class_name UiShake
 		if looping:
 			looping_tween = create_tween()
 			
-			if looping_twist != 0 : looping_tween.tween_property(parent,"rotation",deg_to_rad(looping_twist),looping_time*0.25).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-			if looping_stretch != 1 : looping_tween.parallel().tween_property(parent,"scale",Vector2(looping_stretch,looping_stretch),looping_time*0.25).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-			if looping_twist != 0 : looping_tween.tween_property(parent,"rotation",deg_to_rad(-looping_twist),looping_time*0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-			if looping_stretch != 1 : looping_tween.parallel().tween_property(parent,"scale",Vector2.ONE,looping_time*0.75).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-			if looping_twist != 0 : looping_tween.tween_property(parent,"rotation",0,looping_time*0.25).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+			looping_tween.tween_property(parent,"rotation",deg_to_rad(looping_twist),looping_time*0.25).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			looping_tween.parallel().tween_property(parent,"scale",Vector2(looping_stretch,looping_stretch),looping_time*0.25).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			looping_tween.tween_property(parent,"rotation",deg_to_rad(-looping_twist),looping_time*0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			looping_tween.parallel().tween_property(parent,"scale",Vector2.ONE,looping_time*0.75).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			looping_tween.tween_property(parent,"rotation",0,looping_time*0.25).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 			looping_tween.set_loops()
 			looping_tween.play()
 			

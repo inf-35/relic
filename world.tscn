@@ -1,17 +1,33 @@
-[gd_scene load_steps=11 format=3 uid="uid://b64j3iwyywwrw"]
+[gd_scene load_steps=17 format=3 uid="uid://b64j3iwyywwrw"]
 
 [ext_resource type="Script" path="res://Components/Controllers/player.gd" id="2_qvbn3"]
 [ext_resource type="Texture2D" uid="uid://q66r2p2a17tj" path="res://tilemap.png" id="3_2tuho"]
 [ext_resource type="Script" path="res://Components/camera.gd" id="3_wnons"]
+[ext_resource type="Texture2D" uid="uid://du14rgnxbsq0o" path="res://room_guide.png" id="3_ym4rg"]
 [ext_resource type="Script" path="res://Components/interactive_tilemap.gd" id="4_dxgbv"]
-[ext_resource type="Texture2D" uid="uid://c4nt7vm1gxdj4" path="res://rock (2).png" id="4_m23hf"]
 [ext_resource type="Texture2D" uid="uid://b6vdcm8cm426c" path="res://rect14284.png" id="6_fxgxh"]
 [ext_resource type="PackedScene" uid="uid://drk4fgegngman" path="res://Interfaces/main_gui.tscn" id="7_pbcva"]
+[ext_resource type="Shader" path="res://Shaders/test.gdshader" id="8_hc8cb"]
+[ext_resource type="Texture2D" uid="uid://biclc64kndju5" path="res://entitysheet.png" id="9_wuitk"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_l2qjg"]
+source_geometry_group_name = &"navigation_polygon_source_group"
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_g27om"]
+texture = ExtResource("3_ym4rg")
+texture_region_size = Vector2i(200, 200)
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:1/0 = 0
+0:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:1/0/physics_layer_0/angular_velocity = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p86ur"]
 texture = ExtResource("3_2tuho")
 texture_region_size = Vector2i(200, 200)
 0:0/0 = 0
+0:0/0/terrain_set = 0
 0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 0:0/0/physics_layer_0/angular_velocity = 0.0
 2:0/0 = 0
@@ -38,20 +54,172 @@ texture_region_size = Vector2i(200, 200)
 1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 1:0/0/physics_layer_0/angular_velocity = 0.0
 1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-100, -100, 100, -100, 100, 100, -100, 100)
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jn3re"]
-texture = ExtResource("4_m23hf")
-texture_region_size = Vector2i(100, 100)
-0:0/0 = 0
-0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
-0:0/0/physics_layer_0/angular_velocity = 0.0
+1:2/0 = 0
+1:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:2/0/physics_layer_0/angular_velocity = 0.0
+0:4/0 = 0
+0:4/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:4/0/physics_layer_0/angular_velocity = 0.0
+1:4/0 = 0
+1:4/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:4/0/physics_layer_0/angular_velocity = 0.0
+1:5/0 = 0
+1:5/0/terrain_set = 0
+1:5/0/terrain = 0
+1:5/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:5/0/physics_layer_0/angular_velocity = 0.0
+1:5/0/terrains_peering_bit/bottom_side = 0
+2:6/0 = 0
+2:6/0/terrain_set = 0
+2:6/0/terrain = 0
+2:6/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:6/0/physics_layer_0/angular_velocity = 0.0
+2:6/0/terrains_peering_bit/right_side = 0
+2:6/0/terrains_peering_bit/bottom_side = 0
+2:6/0/terrains_peering_bit/top_side = 0
+3:6/0 = 0
+3:6/0/terrain_set = 0
+3:6/0/terrain = 0
+3:6/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+3:6/0/physics_layer_0/angular_velocity = 0.0
+3:6/0/terrains_peering_bit/right_side = 0
+3:6/0/terrains_peering_bit/bottom_side = 0
+3:6/0/terrains_peering_bit/left_side = 0
+3:6/0/terrains_peering_bit/top_side = 0
+3:7/0 = 0
+3:7/0/terrain_set = 0
+3:7/0/terrain = 0
+3:7/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+3:7/0/physics_layer_0/angular_velocity = 0.0
+3:7/0/terrains_peering_bit/right_side = 0
+3:7/0/terrains_peering_bit/left_side = 0
+3:7/0/terrains_peering_bit/top_side = 0
+3:8/0 = 0
+3:8/0/terrain_set = 0
+3:8/0/terrain = 0
+3:8/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+3:8/0/physics_layer_0/angular_velocity = 0.0
+3:8/0/terrains_peering_bit/right_side = 0
+3:8/0/terrains_peering_bit/left_side = 0
+4:8/0 = 0
+4:8/0/terrain_set = 0
+4:8/0/terrain = 0
+4:8/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+4:8/0/physics_layer_0/angular_velocity = 0.0
+4:8/0/terrains_peering_bit/left_side = 0
+4:7/0 = 0
+4:7/0/terrain_set = 0
+4:7/0/terrain = 0
+4:7/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+4:7/0/physics_layer_0/angular_velocity = 0.0
+4:7/0/terrains_peering_bit/left_side = 0
+4:7/0/terrains_peering_bit/top_side = 0
+4:6/0 = 0
+4:6/0/terrain_set = 0
+4:6/0/terrain = 0
+4:6/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+4:6/0/physics_layer_0/angular_velocity = 0.0
+4:6/0/terrains_peering_bit/bottom_side = 0
+4:6/0/terrains_peering_bit/left_side = 0
+4:6/0/terrains_peering_bit/top_side = 0
+4:5/0 = 0
+4:5/0/terrain_set = 0
+4:5/0/terrain = 0
+4:5/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+4:5/0/physics_layer_0/angular_velocity = 0.0
+4:5/0/terrains_peering_bit/bottom_side = 0
+4:5/0/terrains_peering_bit/left_side = 0
+3:5/0 = 0
+3:5/0/terrain_set = 0
+3:5/0/terrain = 0
+3:5/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+3:5/0/physics_layer_0/angular_velocity = 0.0
+3:5/0/terrains_peering_bit/right_side = 0
+3:5/0/terrains_peering_bit/bottom_side = 0
+3:5/0/terrains_peering_bit/left_side = 0
+2:5/0 = 0
+2:5/0/terrain_set = 0
+2:5/0/terrain = 0
+2:5/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:5/0/physics_layer_0/angular_velocity = 0.0
+2:5/0/terrains_peering_bit/right_side = 0
+2:5/0/terrains_peering_bit/bottom_side = 0
+1:6/0 = 0
+1:6/0/terrain_set = 0
+1:6/0/terrain = 0
+1:6/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:6/0/physics_layer_0/angular_velocity = 0.0
+1:6/0/terrains_peering_bit/bottom_side = 0
+1:6/0/terrains_peering_bit/top_side = 0
+0:6/0 = 0
+0:6/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:6/0/physics_layer_0/angular_velocity = 0.0
+0:7/0 = 0
+0:7/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:7/0/physics_layer_0/angular_velocity = 0.0
+1:7/0 = 0
+1:7/0/terrain_set = 0
+1:7/0/terrain = 0
+1:7/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:7/0/physics_layer_0/angular_velocity = 0.0
+1:7/0/terrains_peering_bit/top_side = 0
+1:8/0 = 0
+1:8/0/terrain_set = 0
+1:8/0/terrain = 0
+1:8/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:8/0/physics_layer_0/angular_velocity = 0.0
+2:7/0 = 0
+2:7/0/terrain_set = 0
+2:7/0/terrain = 0
+2:7/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:7/0/physics_layer_0/angular_velocity = 0.0
+2:7/0/terrains_peering_bit/right_side = 0
+2:7/0/terrains_peering_bit/top_side = 0
+2:8/0 = 0
+2:8/0/terrain_set = 0
+2:8/0/terrain = 0
+2:8/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:8/0/physics_layer_0/angular_velocity = 0.0
+2:8/0/terrains_peering_bit/right_side = 0
+2:2/0 = 0
+2:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:2/0/physics_layer_0/angular_velocity = 0.0
+3:1/size_in_atlas = Vector2i(1, 2)
+3:1/0 = 0
+3:1/0/texture_origin = Vector2i(0, 100)
+3:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+3:1/0/physics_layer_0/angular_velocity = 0.0
 
 [sub_resource type="TileSet" id="TileSet_xxhqg"]
 tile_size = Vector2i(200, 200)
 physics_layer_0/collision_layer = 16
 physics_layer_0/collision_mask = 31
+terrain_set_0/mode = 2
+terrain_set_0/terrain_0/name = "Terrain 0"
+terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
+custom_data_layer_0/name = "arg1"
+custom_data_layer_0/type = 0
+custom_data_layer_1/name = "arg2"
+custom_data_layer_1/type = 0
 sources/1 = SubResource("TileSetAtlasSource_p86ur")
-sources/2 = SubResource("TileSetAtlasSource_jn3re")
+sources/0 = SubResource("TileSetAtlasSource_g27om")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6ptl8"]
+shader = ExtResource("8_hc8cb")
+shader_parameter/r_displacement = Vector2(2, 0)
+shader_parameter/g_displacement = Vector2(0, 0)
+shader_parameter/b_displacement = Vector2(-2, 0)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7dvse"]
+noise_type = 0
+frequency = 0.05
+fractal_octaves = 1
+fractal_lacunarity = 0.0
+fractal_gain = 0.2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6kyer"]
+invert = true
+noise = SubResource("FastNoiseLite_7dvse")
 
 [node name="World" type="Node2D"]
 process_mode = 1
@@ -74,7 +242,7 @@ stasis_exception = true
 z_as_relative = false
 y_sort_enabled = true
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera" type="Camera2D" parent="."]
 process_mode = 3
 zoom = Vector2(7, 7)
 script = ExtResource("3_wnons")
@@ -82,6 +250,7 @@ script = ExtResource("3_wnons")
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 z_as_relative = false
 y_sort_enabled = true
+navigation_polygon = SubResource("NavigationPolygon_l2qjg")
 
 [node name="TileMap" type="TileMap" parent="NavigationRegion2D"]
 z_as_relative = false
@@ -89,18 +258,25 @@ y_sort_enabled = true
 scale = Vector2(0.1, 0.1)
 tile_set = SubResource("TileSet_xxhqg")
 format = 2
-layer_0/name = "Base"
+layer_0/name = "Walls"
 layer_0/y_sort_enabled = true
-layer_0/z_index = -2
-layer_0/tile_data = PackedInt32Array(-1, 65537, 0, -65536, 65537, 0)
-layer_1/name = "Decor 1"
+layer_0/z_index = -100
+layer_1/name = "Base"
 layer_1/y_sort_enabled = true
-layer_1/z_index = -2
-layer_1/tile_data = PackedInt32Array()
-layer_2/name = "Decor 2"
+layer_1/z_index = -200
+layer_1/tile_data = PackedInt32Array(131082, 65537, 0, 131083, 65537, 0, 131084, 65537, 0, 131085, 65537, 0)
+layer_2/name = "Decor Base"
 layer_2/y_sort_enabled = true
-layer_2/z_index = -1
+layer_2/z_index = -199
 layer_2/tile_data = PackedInt32Array()
+layer_3/name = "Decor"
+layer_3/y_sort_enabled = true
+layer_3/z_index = -100
+layer_3/tile_data = PackedInt32Array()
+layer_4/name = "Decor 2"
+layer_4/y_sort_enabled = true
+layer_4/z_index = -200
+layer_4/tile_data = PackedInt32Array()
 script = ExtResource("4_dxgbv")
 
 [node name="CeilingMap" type="TileMap" parent="NavigationRegion2D"]
@@ -112,12 +288,13 @@ tile_set = SubResource("TileSet_xxhqg")
 format = 2
 layer_0/y_sort_enabled = true
 layer_0/y_sort_origin = 201
-layer_0/z_index = 1
+layer_0/z_index = 100
 
 [node name="Background" type="Sprite2D" parent="NavigationRegion2D"]
-z_index = -3
+z_index = -300
 z_as_relative = false
 texture_repeat = 2
+position = Vector2(-116, -23)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("6_fxgxh")
 region_enabled = true
@@ -127,3 +304,31 @@ region_rect = Rect2(0, 0, 100000, 100000)
 process_mode = 3
 
 [node name="MainGui" parent="UI" instance=ExtResource("7_pbcva")]
+
+[node name="Chromatic" type="CanvasLayer" parent="."]
+
+[node name="chromatic aberration" type="TextureRect" parent="Chromatic"]
+z_index = 1000
+z_as_relative = false
+material = SubResource("ShaderMaterial_6ptl8")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -4962.0
+offset_top = -3632.0
+offset_right = 1118.0
+offset_bottom = 3288.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("9_wuitk")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-581, -41.5)
+scale = Vector2(0.15, 0.15875)
+texture = SubResource("NoiseTexture2D_6kyer")
+hframes = 20
+vframes = 20
+frame = 80
+region_rect = Rect2(0, 2000, 400, 400)

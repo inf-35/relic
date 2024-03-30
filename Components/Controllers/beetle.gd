@@ -22,9 +22,11 @@ var state : String = "loiter":
 		
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if not GameDirector.run_active: await GameDirector.run_start
+	
 	generate_weapons()
 	
-	var basic_weapon : UltraWeapon = preload("res://Components/Weapons/ultra_weapon.tscn").instantiate()
+	var basic_weapon : RoundWeapon = preload("res://Components/Weapons/round_weapon.tscn").instantiate()
 	basic_weapon.controller = self
 	weapons.add_child(basic_weapon)
 	weapon_dict[0] = basic_weapon
@@ -34,11 +36,10 @@ func _ready():
 	entity.animation_callback.connect(func(identifier : String):
 		if not is_instance_valid(GameDirector.player):
 			return
-		if identifier == "bounce":
+		if identifier == "fire":
 			weapon_dict[0].fire((GameDirector.player.entity.position + GameDirector.player.entity.main_hitbox.position - entity.position).normalized())
-			entity.velocity = entity.to_local(nav_agent.get_next_path_position()).normalized() * -100
-			var tween = get_tree().create_tween()
-			tween.tween_property(entity,"velocity",entity.to_local(nav_agent.get_next_path_position()).normalized() * 200,0.3).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
+			entity.velocity = (nav_agent.get_next_path_position() - entity.position).normalized() * entity.stats.movement_speed.final * 100
+			
 	)
 	
 	nav_agent.path_desired_distance = 0.5
@@ -124,10 +125,20 @@ func _process(delta):
 						nav_agent.target_position = entity.position
 						break
 				timer.start(2)
-		"chase": #120+ (margin : 10)
+				
+		"chase": 
 			if bounce_timer.time_left == 0:
+				bounce_timer.start(2)
+				var indicator : AttackIndicator = AttackIndicator.new()
+				indicator.shape = "arc"
+				indicator.arc_angle = 360
+				indicator.radius = 20
+				indicator.position = entity.position
+				add_child(indicator)
+				
+				await get_tree().create_timer(0.5).timeout
+				indicator.close()
 				entity.animation_player.play("jump")
-				bounce_timer.start(3)
 				
 			if timer.time_left == 0:
 				nav_agent.target_position = GameDirector.player.entity.position

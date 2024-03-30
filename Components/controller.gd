@@ -24,6 +24,7 @@ var actions_list : Array = []
 @export var stasis_exception : bool = false #whether this controller is immune to stasis
 
 signal weapon_update
+signal action_signal
 
 func generate_skin(generating_skin):
 	y_sort_enabled = true
@@ -42,7 +43,7 @@ func generate_skin(generating_skin):
 		push_error(generating_skin, " skin does not exist!")
 	
 	GameDirector.stasis_set.connect(func(new_stasis):
-		if stasis_exception:
+		if stasis_exception or not is_instance_valid(entity):
 			return
 			
 		if new_stasis:

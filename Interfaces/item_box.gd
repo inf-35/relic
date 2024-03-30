@@ -2,25 +2,39 @@ extends PanelContainer
 
 class_name ItemBox
 
-@export var weapon_slot : int = 9999
-@export var module_slot : int = 9999
-@export var weapon : Weapon
-@export var module : Module
+@export var weapon_slot : int = 9999:
+	set(new_slot):
+		weapon_slot = new_slot
+		update()
+@export var module_slot : int = 9999:
+	set(new_slot):
+		module_slot = new_slot
+		update()
+@export var weapon : Weapon:
+	set(new_weapon):
+		weapon = new_weapon
+		update()
+@export var module : Module:
+	set(new_module):
+		module = new_module
+		update()
 
 @export var shake : bool
 @export var shake_on_hover : bool
 @export var emphasis_on_hover : bool = true
 
-@onready var icon : TextureRect = get_node("HBoxContainer").get_node("IconMargin").get_node("AspectRatioFixed").get_node("Panel").get_node("MarginContainer").get_node("TextureRect")
-@onready var stripe : Panel = get_node("HBoxContainer").get_node("Stripe")
-@onready var info_margin : MarginContainer = get_node("HBoxContainer").get_node("InfoMargin")
-@onready var title : Label = info_margin.get_node("VBoxContainer").get_node("Title")
-@onready var info : Label = info_margin.get_node("VBoxContainer").get_node("Info")
+@onready var icon : TextureRect = get_node("IconMargin/HBoxContainer/AspectRatioFixed/Panel/MarginContainer/TextureRect")
+@onready var stripe : Panel = get_node("IconMargin/HBoxContainer/Stripe")
+@onready var info_container : VBoxContainer = get_node("IconMargin/HBoxContainer/VBoxContainer")
+@onready var title : RichTextLabel = info_container.get_node("Title")
+@onready var info : RichTextLabel = info_container.get_node("Info")
 
 var occupied : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if not GameDirector.run_active: await GameDirector.run_start
+	
 	if get_node_or_null("UiShake") and shake:
 		get_node("UiShake").looping = true
 	elif get_node_or_null("UiShake"):
@@ -46,7 +60,7 @@ func _ready():
 				if tween2 and tween2.is_running() : tween2.pause()
 				if tween1 : tween1.kill()
 				tween1 = create_tween()
-				tween1.tween_property(self,"scale",Vector2(1.05,1.05),0.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+				tween1.tween_property(self,"scale",Vector2(1.05,1.05),0.2).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 				tween1.play()
 			if shake_on_hover:
 				get_node("UiShake").looping = true
@@ -57,7 +71,7 @@ func _ready():
 				if tween1 and tween1.is_running() : tween1.pause()
 				if tween2 : tween2.kill()
 				tween2 = create_tween()
-				tween2.tween_property(self,"scale",Vector2.ONE,0.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+				tween2.tween_property(self,"scale",Vector2.ONE,0.2).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 				tween2.play()
 			if shake_on_hover:
 				get_node("UiShake").looping = false
@@ -79,6 +93,8 @@ func update():
 		icon.texture = module.item_texture
 		title.text = module.proper_name
 		info.text = module.description
+	elif not GameDirector.player:
+		return
 	elif GameDirector.player.weapon_dict.has(weapon_slot) and GameDirector.player.weapon_dict[weapon_slot] is Weapon:
 		icon.texture = GameDirector.player.weapon_dict[weapon_slot].item_texture
 		title.text = GameDirector.player.weapon_dict[weapon_slot].proper_name

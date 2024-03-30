@@ -1,37 +1,73 @@
-[gd_scene load_steps=8 format=3 uid="uid://c8s8sdvh2ftsh"]
+[gd_scene load_steps=11 format=3 uid="uid://c8s8sdvh2ftsh"]
 
 [ext_resource type="Script" path="res://Components/entity.gd" id="1_piyto"]
-[ext_resource type="Texture2D" uid="uid://ojhqm06mn8xd" path="res://player (2).png" id="2_nxtc4"]
+[ext_resource type="Texture2D" uid="uid://biclc64kndju5" path="res://entitysheet.png" id="2_8hr3l"]
+[ext_resource type="Material" uid="uid://bsumtkshgfsf2" path="res://Shaders/shadow_shader.tres" id="2_bvnyk"]
 [ext_resource type="Script" path="res://Components/hitbox.gd" id="3_wacnv"]
 [ext_resource type="Script" path="res://Components/movement_component.gd" id="4_pudai"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_k8ph6"]
-radius = 4.12311
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j2joq"]
+size = Vector2(5, 4)
 
-[sub_resource type="Animation" id="Animation_btdb6"]
-resource_name = "jump"
-tracks/0/type = "method"
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p7de2"]
+size = Vector2(7, 20)
+
+[sub_resource type="Animation" id="Animation_6h1a0"]
+length = 0.001
+tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".")
+tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [40]
+}
+
+[sub_resource type="Animation" id="Animation_btdb6"]
+resource_name = "jump"
+length = 0.833342
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0833333, 0.166667, 0.25, 0.333333, 0.416667, 0.5, 0.583333, 0.666667, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [80, 81, 82, 83, 84, 85, 86, 87, 88, 89]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "values": [{
-"args": ["bounce"],
+"args": ["fire"],
 "method": &"animation_callback_func"
 }]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_netw8"]
 _data = {
+"RESET": SubResource("Animation_6h1a0"),
 "jump": SubResource("Animation_btdb6")
 }
 
 [node name="Beetle" type="CharacterBody2D" node_paths=PackedStringArray("movement_component", "animation_player", "main_hitbox")]
+z_index = 100
 z_as_relative = false
+y_sort_enabled = true
 position = Vector2(0, 5)
 collision_layer = 2
 collision_mask = 16
@@ -43,14 +79,19 @@ animation_player = NodePath("AnimationPlayer")
 main_hitbox = NodePath("Hitbox")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.380392, 1, 1, 1)
 texture_filter = 1
-position = Vector2(0, -4)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("2_nxtc4")
+material = ExtResource("2_bvnyk")
+position = Vector2(-1, -13)
+scale = Vector2(0.08, 0.08)
+texture = ExtResource("2_8hr3l")
+hframes = 20
+vframes = 20
+frame = 40
+region_rect = Rect2(0, 2000, 400, 400)
 
 [node name="LevelCollision" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_k8ph6")
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_j2joq")
 
 [node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
 collision_layer = 2
@@ -59,8 +100,8 @@ script = ExtResource("3_wacnv")
 entity = NodePath("..")
 
 [node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(0, -4)
-shape = SubResource("CircleShape2D_k8ph6")
+position = Vector2(0, -15)
+shape = SubResource("RectangleShape2D_p7de2")
 
 [node name="MovementComponent" type="Node" parent="."]
 script = ExtResource("4_pudai")

@@ -7,6 +7,8 @@ class_name Indicator
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if not GameDirector.run_active: await GameDirector.run_start
+	
 	if GameDirector.player.cur_weapon_index == weapon:
 		self_modulate = Color(1,1,1,1)
 		modulate = Color(1,1,1,1)

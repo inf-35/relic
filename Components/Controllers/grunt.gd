@@ -22,6 +22,8 @@ var state : String = "loiter":
 		
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if not GameDirector.run_active: await GameDirector.run_start
+		
 	generate_weapons()
 	
 	var basic_weapon : BasicWeapon = preload("res://Components/Weapons/basic_weapon.tscn").instantiate()
@@ -104,7 +106,6 @@ func _process(delta):
 		
 	match state:
 		"loiter":
-			entity.get_node("Sprite2D").modulate = Color(1,1,1,0.5)
 			if not raycast.get_collider():
 				return
 				
@@ -124,7 +125,6 @@ func _process(delta):
 						break
 				timer.start(2)
 		"chase": #120+ (margin : 10)
-			entity.get_node("Sprite2D").modulate = Color(1,0.5,0.5,1)
 			if (entity.position - GameDirector.player.entity.position).length() < 110:
 				state = "surround"
 				return
@@ -133,14 +133,13 @@ func _process(delta):
 				return
 				
 			if weapon_timer.time_left == 0:
-				entity.animation_player.play("charge")
+				entity.animation_player.play("shoot")
 				weapon_timer.start(2)
 				
 			if timer.time_left == 0:
 				nav_agent.target_position = GameDirector.player.entity.position
 				timer.start(0.5)
 		"surround": #60 ~ 120 (margin : 10)
-			entity.get_node("Sprite2D").modulate = Color(0.5,1,0.5,1)
 			if (entity.position - GameDirector.player.entity.position).length() > 130:
 				state = "chase"
 				return
@@ -149,7 +148,7 @@ func _process(delta):
 				return
 				
 			if weapon_timer.time_left == 0:
-				entity.animation_player.play("charge")
+				entity.animation_player.play("shoot")
 				weapon_timer.start(2)
 				
 			if timer.time_left == 0:
@@ -170,7 +169,6 @@ func _process(delta):
 				timer.start(2)
 				
 		"retreat": #<60 (margin : 10)
-			entity.get_node("Sprite2D").modulate = Color(0.5,0.5,1,1)
 			if (entity.position - GameDirector.player.entity.position).length() > 70:
 				state = "surround"
 				return

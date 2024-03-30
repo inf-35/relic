@@ -31,6 +31,8 @@ var module_dict : Dictionary = {
 }
 		
 func _ready():
+	if not GameDirector.run_active: await GameDirector.run_start
+
 	bonds = 2000
 	
 	generate_weapons()
@@ -61,8 +63,6 @@ func _ready():
 				entity.modifiers.dash = false
 			)
 	)
-	
-	entity.position = GameDirector.floors_to_create[0] * 20
 	
 	entity.died.connect(func():
 		queue_free()

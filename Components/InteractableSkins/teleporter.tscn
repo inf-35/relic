@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://duqo3j8ttb2sr"]
 
 [ext_resource type="Script" path="res://Components/entity.gd" id="1_ofefu"]
-[ext_resource type="Script" path="res://Components/Controllers/teleporter_prompt.gd" id="2_18sra"]
-[ext_resource type="Texture2D" uid="uid://c4nt7vm1gxdj4" path="res://rock (2).png" id="3_k08pb"]
+[ext_resource type="Script" path="res://Components/Prompts/teleporter_prompt.gd" id="2_18sra"]
+[ext_resource type="Texture2D" uid="uid://q66r2p2a17tj" path="res://tilemap.png" id="3_0et2k"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yagey"]
 
@@ -17,7 +17,9 @@ position = Vector2(10, 10)
 shape = SubResource("RectangleShape2D_yagey")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.376471, 1, 1, 1)
 position = Vector2(10, 10)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("3_k08pb")
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_0et2k")
+hframes = 20
+vframes = 20
+frame = 80

@@ -1,4 +1,4 @@
-extends Label
+extends RichTextLabel
 
 
 # Called when the node enters the scene tree for the first time.
@@ -6,9 +6,9 @@ func _ready():
 	GuiDirector.customisation_menu_changed.connect(func():
 		match GuiDirector.customisation_menu_type:
 			"standard":
-				text = "Weapons"	
+				text = "[center]Weapons"	
 			"weapon_swap":
-				text = "Weapons"
+				text = "[center]Weapons"
 			"module_swap":
-				text = "Module Upgrades"
+				text = "[center]Module Upgrades"
 	)

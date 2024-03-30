@@ -1,0 +1,109 @@
+[gd_scene load_steps=10 format=3 uid="uid://dsxg3br1opnq7"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_6h67t"]
+[ext_resource type="Texture2D" uid="uid://biclc64kndju5" path="res://entitysheet.png" id="2_8kkmi"]
+[ext_resource type="Script" path="res://Components/hitbox.gd" id="3_dko3i"]
+[ext_resource type="Script" path="res://Components/movement_component.gd" id="4_cdit4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j2joq"]
+size = Vector2(18, 7)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p7de2"]
+size = Vector2(7, 31)
+
+[sub_resource type="Animation" id="Animation_6h1a0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [40]
+}
+
+[sub_resource type="Animation" id="Animation_btdb6"]
+resource_name = "jump"
+length = 0.833342
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0833333, 0.166667, 0.25, 0.333333, 0.416667, 0.5, 0.583333, 0.666667, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": ["fire"],
+"method": &"animation_callback_func"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_netw8"]
+_data = {
+"RESET": SubResource("Animation_6h1a0"),
+"jump": SubResource("Animation_btdb6")
+}
+
+[node name="Boss" type="CharacterBody2D" node_paths=PackedStringArray("movement_component", "animation_player", "main_hitbox")]
+z_index = 100
+z_as_relative = false
+y_sort_enabled = true
+position = Vector2(0, 5)
+collision_layer = 2
+collision_mask = 16
+script = ExtResource("1_6h67t")
+base_max_hp = 100.0
+movement_component = NodePath("MovementComponent")
+animation_player = NodePath("AnimationPlayer")
+main_hitbox = NodePath("Hitbox")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-2, 14)
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("2_8kkmi")
+hframes = 20
+vframes = 10
+frame = 40
+region_rect = Rect2(0, 2000, 400, 400)
+
+[node name="LevelCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5.5)
+shape = SubResource("RectangleShape2D_j2joq")
+
+[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
+collision_layer = 2
+collision_mask = 13
+script = ExtResource("3_dko3i")
+entity = NodePath("..")
+
+[node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -20.5)
+shape = SubResource("RectangleShape2D_p7de2")
+
+[node name="MovementComponent" type="Node" parent="."]
+script = ExtResource("4_cdit4")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_netw8")
+}

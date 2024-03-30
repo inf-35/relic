@@ -20,6 +20,8 @@ signal customisation_exit
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if not GameDirector.run_active: await GameDirector.run_start
+	
 	update()
 		
 	GameDirector.player.weapon_update.connect(func():

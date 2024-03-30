@@ -5,7 +5,7 @@ class_name UltraWeapon
 func setup_stats():
 	item_texture = preload("res://Interface Assets/ultra.png")
 	proper_name = "Ultra"
-	data_name = "basic_weapon"
+	data_name = "ultra_weapon"
 	description = "A less basic pistol."
 	
 	cooldown_time = 0.01

@@ -18,6 +18,7 @@ var controller #typing this would cause a cyclic reference
 @export var base_max_hp : float
 @export var base_resistance : float
 @export var base_movement_speed : float #base movement speed
+@export var mass : float
 
 @onready var hp : float = base_max_hp:
 	set(new_hp):
@@ -38,7 +39,9 @@ var modifiers : Dictionary = { #permanent modifiers (from like modules and stuff
 var status_effects : Dictionary = { #temporary modifiers
 	"resistance_boost" : 0,
 	"max_hp_boost" : 0,
-	"speed_boost" : 0,
+	"light_freeze" : 0.0,
+	"med_freeze" : 0.0,
+	"heavy_freeze" : 0.0,
 	#setter status effects must be placed at the back
 	"iframe" : false, #invincibilty frames for players after taking damage,
 }
@@ -79,19 +82,23 @@ func reset_stats():
 	speed_perc = 1
 	
 func hit(attacking_hitbox : Area2D, attacked_hitbox : Hitbox):
+	var clone_attacking_hitbox : Area2D = attacking_hitbox.duplicate()
+	var attacking_status_effects = attacking_hitbox.status_effects
 	hit_cache += 1
-	var intended_damage : float = attacking_hitbox.contact_damage * attacked_hitbox.damage_multiplier
-	await get_tree().create_timer(0.05 * hit_cache).timeout
-	hp -= intended_damage * (1-stats.resistance.final)
+	await get_tree().create_timer(0.02 * hit_cache).timeout
+	for status_effect in attacking_status_effects:
+		status_effects[status_effect] += attacking_status_effects[status_effect]
+	hp -= clone_attacking_hitbox.contact_damage * attacked_hitbox.damage_multiplier * (1-stats.resistance.final)
 	hit_cache -= 1
+	clone_attacking_hitbox.queue_free()
 	
 func animation_callback_func(identifier : String): #animation player calls this function
 	animation_callback.emit(identifier)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	parse_modifiers()
-	parse_status_effects()
+func _process(delta):
+	parse_modifiers(delta)
+	parse_status_effects(delta)
 	
 func _physics_process(delta : float):
 	if immobile or not movement_component:
@@ -99,7 +106,7 @@ func _physics_process(delta : float):
 	movement_component.movement(self,movement_vector,stats.movement_speed.final,speed_perc,delta)
 	movement_component.friction(self,1 - 0.3 * 60 * delta)
 
-func parse_modifiers():
+func parse_modifiers(delta : float):
 	#default values of stats
 	for modifier in modifiers:
 		var value = modifiers[modifier]
@@ -122,15 +129,26 @@ func parse_modifiers():
 			stats[stat].signal.emit()
 			stats[stat].cache = stats[stat].modified
 		
-func parse_status_effects():
+func parse_status_effects(delta : float):
+	for stat in stats:
+		stats[stat].final = stats[stat].modified
+		
 	for status_effect in status_effects:
 		var value = status_effects[status_effect]
 		match status_effect:
-			"speed_boost":
-				stats.movement_speed.final = stats.movement_speed.modified + value
-			"max_hp_boost":
+			"light_freeze" when value > 0:
+				stats.movement_speed.final = stats.movement_speed.modified * 0.75
+			"med_freeze" when value > 0:
+				stats.movement_speed.final = stats.movement_speed.modified * 0.5
+			"heavy_freeze" when value > 0:
+				stats.movement_speed.final = stats.movement_speed.modified * 0.2
+				
+			"max_hp_boost" when value > 0:
 				stats.max_hp.final = stats.max_hp.modified + value
-			"resistance_boost":
+			"resistance_boost" when value > 0:
 				stats.resistance.final = stats.resistance.modified + value
 			"iframe" when value:
 				stats.resistance.final = 1
+		#status effects decay
+		if value is float or value is int:
+			status_effects[status_effect] = max(status_effects[status_effect] - delta,0)

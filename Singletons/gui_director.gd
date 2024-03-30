@@ -1,19 +1,19 @@
 extends Node
 
-@onready var main_gui : Control = GameDirector.world.get_node("UI").get_node("MainGui")
-@onready var overlay : Control = main_gui.get_node("Overlay")
-@onready var customisation : Control = main_gui.get_node("Customisation")
-@onready var visibility_manager : VisibilityManager = customisation.get_node("Panel/HBoxContainer/Centre")
+var main_gui : Control
+var overlay : Control
+var customisation : Control
+var visibility_manager : VisibilityManager
 
 var lockout : bool = false
 
-signal customisation_menu_changed
+signal customisation_menu_changed #ie from 
 signal customisation_menu_activated
 
 signal weapon_swap
 signal module_swap
 
-@export var customisation_menu_type : String = "standard": #"standard", "weapon_swap", "module_swap"
+@export var customisation_menu_type : String = "standard": #"standard", "weapon_swap", "module_swap", "shop"
 	set(new_menu_type):
 		customisation_menu_type = new_menu_type
 		customisation_menu_changed.emit()
@@ -55,6 +55,14 @@ signal module_swap
 			
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	if not GameDirector.run_active: await GameDirector.run_start
+
+	main_gui = GameDirector.world.get_node("UI").get_node("MainGui")
+	overlay = main_gui.get_node("Overlay")
+	customisation = main_gui.get_node("Customisation")
+	visibility_manager = customisation.get_node("Panel/HBoxContainer/Centre")
+	
 	customisation.visible = false
 	customisation.modulate = Color(1,1,1,0)
 

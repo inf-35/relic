@@ -1,0 +1,83 @@
+[gd_scene load_steps=10 format=3 uid="uid://bkenwi6mxpi82"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_aeuji"]
+[ext_resource type="Texture2D" uid="uid://biclc64kndju5" path="res://entitysheet.png" id="2_q7tgt"]
+[ext_resource type="Script" path="res://Components/hitbox.gd" id="3_vca7d"]
+[ext_resource type="Script" path="res://Components/movement_component.gd" id="4_fbq04"]
+[ext_resource type="Script" path="res://Components/Prompts/vending_prompt.gd" id="5_hb05j"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nciuc"]
+size = Vector2(5, 13)
+
+[sub_resource type="Animation" id="Animation_iahkp"]
+resource_name = "dash"
+length = 0.1
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": ["dash"],
+"method": &"animation_callback_func"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vqw2h"]
+_data = {
+"dash": SubResource("Animation_iahkp")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b3mnd"]
+size = Vector2(24, 26.5)
+
+[node name="VendingMachine" type="CharacterBody2D" node_paths=PackedStringArray("movement_component", "animation_player", "main_hitbox")]
+z_index = 100
+z_as_relative = false
+y_sort_enabled = true
+collision_mask = 16
+script = ExtResource("1_aeuji")
+base_max_hp = 1000.0
+base_movement_speed = 15.0
+movement_component = NodePath("MovementComponent")
+animation_player = NodePath("AnimationPlayer")
+main_hitbox = NodePath("Hitbox")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+y_sort_enabled = true
+position = Vector2(10, 10)
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("2_q7tgt")
+region_enabled = true
+region_rect = Rect2(0, 7600, 400, 400)
+
+[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
+visible = false
+position = Vector2(0, 10)
+collision_mask = 14
+script = ExtResource("3_vca7d")
+entity = NodePath("..")
+contact_damage = 0.0
+
+[node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(-2, -6)
+shape = SubResource("RectangleShape2D_nciuc")
+
+[node name="MovementComponent" type="Node" parent="."]
+script = ExtResource("4_fbq04")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_vqw2h")
+}
+
+[node name="VendingPrompt" type="Area2D" parent="."]
+script = ExtResource("5_hb05j")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="VendingPrompt"]
+position = Vector2(10, 13)
+shape = SubResource("RectangleShape2D_b3mnd")

@@ -11,10 +11,6 @@ func _enter_tree():
 	
 	resized.connect(func():
 		stretch_mode = AspectRatioContainer.STRETCH_FIT
-		await get_tree().create_timer(0.01).timeout
-		set_custom_minimum_size(Vector2(child.size.x,0))
-		await get_tree().create_timer(0.01).timeout
-		stretch_mode = AspectRatioContainer.STRETCH_COVER
 	)
 	
 func _on_child_entered_tree(new_child : Node):
@@ -26,8 +22,8 @@ func _on_child_entered_tree(new_child : Node):
 		child.resized.connect(func():
 			set_custom_minimum_size(Vector2(child.size.x,0))
 		)
-	await get_tree().create_timer(0.01).timeout
-	stretch_mode = AspectRatioContainer.STRETCH_COVER
+		await get_tree().create_timer(0.01).timeout
+		stretch_mode = AspectRatioContainer.STRETCH_COVER
 
 		
 func _on_child_exiting_tree(leaving_child : Node):

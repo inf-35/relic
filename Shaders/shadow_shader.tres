@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bsumtkshgfsf2"]
+
+[ext_resource type="Shader" path="res://Shaders/shadow.gdshader" id="1_ekjpx"]
+
+[resource]
+shader = ExtResource("1_ekjpx")
+shader_parameter/hframes = 20.0
+shader_parameter/vframes = 20.0
+shader_parameter/shadow_scale = 1.0
+shader_parameter/shadow_color = Vector4(0.0824, 0.0784, 0.1019, 0.3)

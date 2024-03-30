@@ -5,10 +5,10 @@
 [ext_resource type="Script" path="res://Components/hitbox.gd" id="3_x4nt5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_oph60"]
-size = Vector2(100, 100)
+size = Vector2(100, 95)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gu6j3"]
-size = Vector2(100, 100)
+size = Vector2(100, 95)
 
 [node name="Rock" type="StaticBody2D"]
 z_index = -1
@@ -25,11 +25,13 @@ texture_filter = 1
 position = Vector2(50, 50)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_gqskr")
-region_enabled = true
+hframes = 20
+vframes = 20
+frame = 81
 region_rect = Rect2(0, 600, 200, 200)
 
 [node name="LevelCollision" type="CollisionShape2D" parent="."]
-position = Vector2(50, 50)
+position = Vector2(50, 47.5)
 shape = SubResource("RectangleShape2D_oph60")
 
 [node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
@@ -39,5 +41,5 @@ script = ExtResource("3_x4nt5")
 entity = NodePath("..")
 
 [node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(50, 50)
+position = Vector2(50, 47.5)
 shape = SubResource("RectangleShape2D_gu6j3")

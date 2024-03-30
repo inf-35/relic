@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="relic"
-run/main_scene="res://world.tscn"
+run/main_scene="res://main_menu.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 
 [autoload]
@@ -20,6 +20,7 @@ GameDirector="*res://Singletons/game_director.gd"
 EntityDirector="*res://Singletons/entity_skins.gd"
 GuiDirector="*res://Singletons/gui_director.gd"
 InputDirector="*res://Singletons/input_director.gd"
+LootDirector="*res://Singletons/lootpools.gd"
 
 [display]
 
