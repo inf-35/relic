@@ -29,10 +29,8 @@ func update_nav():
 	var local_cache = cache
 	await get_tree().create_timer(1).timeout
 	if local_cache == cache: #no updates in the past 1 second
-		print("yes")
 		nav_region.bake_navigation_polygon(true)
 	elif local_cache > cache + 7:
-		print("overload")
 		nav_region.bake_navigation_polygon(true)
 		
 func create_features(features : Dictionary):

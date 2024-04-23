@@ -10,16 +10,21 @@ func setup_stats():
 	
 	cooldown_time = 0.2
 	projectile_types = {
-		"basic" : {
+		"basic" : { #basic projectile used for most weapons
 			"contact_damage" : 40,
-			"initial_speed" : 100
+			"initial_speed" : 0.1,
+			"status_effects" : {"heavy_freeze" = 0.5},
+			"bounces" : 1000,
+			"acceleration" : 100,
 		}
 	}
+	projectile_types.make_read_only()
 	
 func fire(target : Vector2): #primary fire function
 	if cooldown_timer.time_left != 0:
 		return
 		
+	GameDirector.camera.shake_vector = -GameDirector.player.entity.get_local_mouse_position().normalized() * 2
 	shot.emit()
 	cooldown_timer.start(cooldown_time)
-	single_fire("basic",target,{"med_freeze" = 0.5})
+	single_fire("basic",target)

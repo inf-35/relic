@@ -17,26 +17,21 @@ func _process(_delta):
 	weapon_timer_update()
 
 func weapon_timer_update():
-	
-	if not GameDirector.player.weapon_dict.has(weapon_slot):
-		cooldown_label.text = ""
-		return
-	
-	if GameDirector.player.weapon_dict[weapon_slot] == null:
+	if len(GameDirector.player.active_weapons_array) <= weapon_slot:
 		cooldown_label.text = ""
 		return
 		
-	if GameDirector.player.weapon_dict[weapon_slot].cooldown_timer.time_left == 0:
+	if GameDirector.player.active_weapons_array[weapon_slot].cooldown_timer.time_left == 0:
 		cooldown_label.text = "[center]RDY"
 	else:
-		cooldown_label.text = "[center]" + str(round(GameDirector.player.weapon_dict[weapon_slot].cooldown_timer.time_left * 100) * 0.01)
+		cooldown_label.text = "[center]" + str(round(GameDirector.player.active_weapons_array[weapon_slot].cooldown_timer.time_left * 100) * 0.01)
 		
 func update():
-	if not GameDirector.player.weapon_dict.has(weapon_slot):
+	if len(GameDirector.player.active_weapons_array) <= weapon_slot:
 		modulate = Color(1,1,1,0)
 		return
 	
-	if GameDirector.player.weapon_dict[weapon_slot] == null:
+	if GameDirector.player.active_weapons_array[weapon_slot] == null:
 		modulate = Color(1,1,1,0)
 		return
 		
@@ -53,5 +48,5 @@ func update():
 		tween.set_parallel().tween_property(self,"scale",Vector2(1,1),0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 		tween.play()
 	
-	get_node("AspectRatio/PanelContainer/TextureRect").texture = GameDirector.player.weapon_dict[weapon_slot].item_texture
+	get_node("AspectRatio/PanelContainer/TextureRect").texture = GameDirector.player.active_weapons_array[weapon_slot].item_texture
 	

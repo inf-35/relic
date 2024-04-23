@@ -11,9 +11,9 @@ signal customisation_menu_changed #ie from
 signal customisation_menu_activated
 
 signal weapon_swap
-signal module_swap
+signal passive_swap
 
-@export var customisation_menu_type : String = "standard": #"standard", "weapon_swap", "module_swap", "shop"
+@export var customisation_menu_type : String = "standard": #"standard", "weapon_swap", "passive_swap", "shop"
 	set(new_menu_type):
 		customisation_menu_type = new_menu_type
 		customisation_menu_changed.emit()
@@ -36,8 +36,6 @@ signal module_swap
 			)
 		else:
 			InputDirector.context = "gameplay"
-			print("On gameplay entered:")
-			print(GameDirector.player.weapon_dict)
 			if GameDirector.player.weapon_dict[1000] is Weapon: #drops weapon
 				var dropped_weapon = DroppedWeapon.new()
 				dropped_weapon.weapon_name = GameDirector.player.weapon_dict[1000].data_name
@@ -61,19 +59,29 @@ func _ready():
 	main_gui = GameDirector.world.get_node("UI").get_node("MainGui")
 	overlay = main_gui.get_node("Overlay")
 	customisation = main_gui.get_node("Customisation")
-	visibility_manager = customisation.get_node("Panel/HBoxContainer/Centre")
 	
 	customisation.visible = false
 	customisation.modulate = Color(1,1,1,0)
 
 func swap_weapons():
 	var store = GameDirector.player.weapon_dict[1000]
-	GameDirector.player.weapon_dict[1000] = GameDirector.player.weapon_dict[visibility_manager.weapon_upgrades.index]
+	var selected_weapon 
+	if GameDirector.player.weapon_dict.has(visibility_manager.weapon_upgrades.index):
+		selected_weapon = GameDirector.player.weapon_dict[visibility_manager.weapon_upgrades.index]
+	else:
+		selected_weapon = null
+		
+	GameDirector.player.weapon_dict[1000] = selected_weapon
 	GameDirector.player.weapon_dict[visibility_manager.weapon_upgrades.index] = store
 	weapon_swap.emit(visibility_manager.weapon_upgrades.index)
 	
-func swap_modules():
-	var store = GameDirector.player.module_dict[1000]
-	GameDirector.player.module_dict[1000] = GameDirector.player.module_dict[visibility_manager.module_upgrades.index]
-	GameDirector.player.module_dict[visibility_manager.module_upgrades.index] = store
-	module_swap.emit(visibility_manager.module_upgrades.index)
+func swap_passives():
+	var store = GameDirector.player.passive_dict[1000]
+	var selected_passive
+	if GameDirector.player.weapon_dict.has(visibility_manager.weapon_upgrades.index):
+		selected_passive = GameDirector.player.weapon_dict[visibility_manager.weapon_upgrades.index]
+	else:
+		selected_passive = null
+	GameDirector.player.passive_dict[1000] = selected_passive
+	GameDirector.player.passive_dict[visibility_manager.passive_upgrades.index] = store
+	passive_swap.emit(visibility_manager.passive_upgrades.index)

@@ -1,6 +1,6 @@
 extends Node
 
-class_name Module
+class_name Passive
 
 var player : Player
 
@@ -24,7 +24,7 @@ func _init():
 	setup_stats()
 	
 func activate():
-	push_error(str(self), " module behaviour undefined.")
+	push_error(str(self), " passive behaviour undefined.")
 	
 func deactivate():
-	push_error(str(self), " module behaviour undefined.")
+	push_error(str(self), " passive behaviour undefined.")

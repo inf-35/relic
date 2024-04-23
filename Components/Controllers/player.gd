@@ -4,7 +4,7 @@ class_name Player #controller for the player entity
 
 signal bonds_changed
 signal weapon_swapped
-signal module_update
+signal passive_update
 
 var raycast : RayCast2D = RayCast2D.new()
 var i_timer : Timer = Timer.new()
@@ -14,19 +14,17 @@ var cur_weapon_index : int = 0:
 		cur_weapon_index = new_weapon_index
 		weapon_swapped.emit()
 		
-var max_weapons : int = 2
+var max_weapons : int = 1
 
 var bonds : int = 0:
 	set(new_bonds):
 		bonds = new_bonds
 		bonds_changed.emit()
 		
-var modules : Node = Node.new()
+var passives : Node = Node.new()
 
-var module_dict : Dictionary = {
+var passive_dict : Dictionary = {
 	1 : null,
-	2 : null,
-	3 : null,
 	1000 : null #reserved for gui 
 }
 		
@@ -37,18 +35,23 @@ func _ready():
 	
 	generate_weapons()
 	
-	var basic_weapon : BasicWeapon = preload("res://Components/Weapons/basic_weapon.tscn").instantiate()
+	var basic_weapon : UltraWeapon = preload("res://Components/Weapons/ultra_weapon.tscn").instantiate()
 	basic_weapon.controller = self
 	weapons.add_child(basic_weapon)
 	weapon_dict[0] = basic_weapon
 	
+	var modifier : ModifierWeapon = preload("res://Components/Weapons/modifier_weapon.tscn").instantiate()
+	modifier.controller = self
+	weapons.add_child(modifier)
+	weapon_dict[1] = modifier
+	
 	skin = "circle"
 	
-	add_child(modules)
-	var speedy : Speedy = preload("res://Components/Modules/speedy.tscn").instantiate()
+	add_child(passives)
+	var speedy : Speedy = preload("res://Components/passives/speedy.tscn").instantiate()
 	speedy.player = self
-	modules.add_child.call_deferred(speedy)
-	module_dict[0] = speedy
+	passives.add_child.call_deferred(speedy)
+	passive_dict[0] = speedy
 	speedy.activate()
 	
 	entity.animation_callback.connect(func(identifier : String):
@@ -87,12 +90,12 @@ func _ready():
 		i_timer.start(0.3)
 	)
 	
-	var old_module_hash : int
+	var old_passive_hash : int
 	
-	while is_instance_valid(modules): #detects differences in weapon update
+	while is_instance_valid(passives): #detects differences in weapon update
 		await get_tree().create_timer(0.1).timeout
-		if old_module_hash != module_dict.hash():
-			module_update.emit()
-			old_module_hash = module_dict.hash()
+		if old_passive_hash != passive_dict.hash():
+			passive_update.emit()
+			old_passive_hash = passive_dict.hash()
 	
 

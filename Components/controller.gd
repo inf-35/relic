@@ -15,10 +15,13 @@ var entity_type : String = "" #determines a unique entity type
 
 var weapon_dict : Dictionary = {
 	0 : null, #null keys are for the player
-	1 : null,
-	2 : null,
 	1000 : null #key 1000 is for player weapon selection in GUI	
 }
+
+var active_weapons_array : Array = []
+
+var sorted_weapon_key_array : Array = []
+
 var actions_list : Array = []
 
 @export var stasis_exception : bool = false #whether this controller is immune to stasis
@@ -53,7 +56,7 @@ func generate_skin(generating_skin):
 					
 			if not entity.animation_player:
 				return
-	
+				
 			if entity.animation_player.current_animation != "":
 				entity.animation_player.pause()
 		else:
@@ -66,8 +69,6 @@ func generate_skin(generating_skin):
 			
 			if entity.animation_player.current_animation != "":
 				entity.animation_player.play()
-				
-
 	)
 
 func generate_weapons():
@@ -82,10 +83,37 @@ func generate_weapons():
 			weapon_dict[weapon_dict.find_key(weapon)] = null
 	)
 	
-	while is_instance_valid(weapons): #detects differences in weapon update
+	compile_weapons()
+	
+	while is_instance_valid(weapons): #detects differences in weapon dict
 		await get_tree().create_timer(0.1).timeout
 		if old_weapon_hash != weapon_dict.hash():
+			compile_weapons()
 			weapon_update.emit()
 		old_weapon_hash = weapon_dict.hash()
+		
+func compile_weapons(): #assign active weapons and secondaries
+	sorted_weapon_key_array = []
+	active_weapons_array = []
+	for weapon in weapon_dict:
+		sorted_weapon_key_array.append(weapon)
+	sorted_weapon_key_array.sort() #sorted array of all keys in weapon dict
 	
+	var cur_target_weapon = null
+	for weapon_key in sorted_weapon_key_array:
+		if not weapon_dict[weapon_key]:
+			continue
+			
+		if weapon_dict[weapon_key].primary: #creates primary-secondary relationships
+			cur_target_weapon = weapon_dict[weapon_key]
+			cur_target_weapon.secondaries.clear()
+			cur_target_weapon.targeted_primary = null
+			
+			active_weapons_array.append(cur_target_weapon)
+		elif cur_target_weapon:
+			cur_target_weapon.secondaries.append(weapon_dict[weapon_key])
+			weapon_dict[weapon_key].targeted_primary = cur_target_weapon
+		for active_weapon in active_weapons_array:
+			active_weapon.trigger_secondaries()
+		
 

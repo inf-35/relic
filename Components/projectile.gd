@@ -4,6 +4,7 @@ class_name Projectile
 
 var controller
 var velocity : Vector2 = Vector2.ZERO
+var acceleration : float = 0.0
 
 var contact_damage : float = 20
 var initial_speed : float = 40
@@ -15,6 +16,8 @@ var lifetime : float = 10.0
 var lifetime_timer : Timer
 var status_effects : Dictionary
 
+var raycast : RayCast2D = RayCast2D.new()
+
 @onready var corona : Sprite2D = get_node("Corona")
 @onready var core : Sprite2D = get_node("Core")
 
@@ -23,6 +26,9 @@ var core_spin : float = randf_range(0.5,2)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	raycast.set_collision_mask_value(5,true)
+	add_child(raycast)
+	
 	if not GameDirector.run_active: await GameDirector.run_start
 	
 	if neutral:
@@ -59,21 +65,26 @@ func _ready():
 	looping_corona_tween.set_ease(Tween.EASE_IN_OUT)
 	looping_corona_tween.set_loops()
 	looping_corona_tween.play()
+	
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
+	raycast.target_position = velocity.rotated(-rotation) * delta * 2
+	if raycast.is_colliding() and raycast.get_collider() is TileMap:
+		if bounces > 0:
+			bounces -= 1
+			var normal = raycast.get_collision_normal()
+			velocity = velocity.bounce(normal)
+		else:
+			queue_free()
+		
 	if GameDirector.stasis:
 		return
 	
 	rotation = velocity.angle()
 	position += velocity * delta
-
-func _on_body_entered(body):
-	if body is TileMap:
-		queue_free()
-
-func _on_area_exited(area):
-	pass
+	velocity += velocity.normalized() * acceleration * delta
 	
 func collide():
 	queue_free()

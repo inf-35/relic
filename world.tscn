@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://b64j3iwyywwrw"]
+[gd_scene load_steps=16 format=3 uid="uid://b64j3iwyywwrw"]
 
 [ext_resource type="Script" path="res://Components/Controllers/player.gd" id="2_qvbn3"]
 [ext_resource type="Texture2D" uid="uid://q66r2p2a17tj" path="res://tilemap.png" id="3_2tuho"]
@@ -8,7 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://b6vdcm8cm426c" path="res://rect14284.png" id="6_fxgxh"]
 [ext_resource type="PackedScene" uid="uid://drk4fgegngman" path="res://Interfaces/main_gui.tscn" id="7_pbcva"]
 [ext_resource type="Shader" path="res://Shaders/test.gdshader" id="8_hc8cb"]
-[ext_resource type="Texture2D" uid="uid://biclc64kndju5" path="res://entitysheet.png" id="9_wuitk"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_l2qjg"]
 source_geometry_group_name = &"navigation_polygon_source_group"
@@ -23,6 +22,11 @@ texture_region_size = Vector2i(200, 200)
 0:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 0:1/0/physics_layer_0/angular_velocity = 0.0
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_hopey"]
+polygon = PackedVector2Array(-100, -100, 100, -100, 100, 100, -100, 100)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_qanjf"]
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p86ur"]
 texture = ExtResource("3_2tuho")
 texture_region_size = Vector2i(200, 200)
@@ -31,6 +35,7 @@ texture_region_size = Vector2i(200, 200)
 0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 0:0/0/physics_layer_0/angular_velocity = 0.0
 2:0/0 = 0
+2:0/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_qanjf")
 2:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 2:0/0/physics_layer_0/angular_velocity = 0.0
 0:1/0 = 0
@@ -51,6 +56,7 @@ texture_region_size = Vector2i(200, 200)
 1:0/size_in_atlas = Vector2i(1, 2)
 1:0/0 = 0
 1:0/0/texture_origin = Vector2i(0, -100)
+1:0/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_hopey")
 1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 1:0/0/physics_layer_0/angular_velocity = 0.0
 1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-100, -100, 100, -100, 100, 100, -100, 100)
@@ -192,15 +198,12 @@ texture_region_size = Vector2i(200, 200)
 
 [sub_resource type="TileSet" id="TileSet_xxhqg"]
 tile_size = Vector2i(200, 200)
+occlusion_layer_0/light_mask = 1
 physics_layer_0/collision_layer = 16
 physics_layer_0/collision_mask = 31
 terrain_set_0/mode = 2
 terrain_set_0/terrain_0/name = "Terrain 0"
 terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
-custom_data_layer_0/name = "arg1"
-custom_data_layer_0/type = 0
-custom_data_layer_1/name = "arg2"
-custom_data_layer_1/type = 0
 sources/1 = SubResource("TileSetAtlasSource_p86ur")
 sources/0 = SubResource("TileSetAtlasSource_g27om")
 
@@ -209,17 +212,6 @@ shader = ExtResource("8_hc8cb")
 shader_parameter/r_displacement = Vector2(2, 0)
 shader_parameter/g_displacement = Vector2(0, 0)
 shader_parameter/b_displacement = Vector2(-2, 0)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_7dvse"]
-noise_type = 0
-frequency = 0.05
-fractal_octaves = 1
-fractal_lacunarity = 0.0
-fractal_gain = 0.2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6kyer"]
-invert = true
-noise = SubResource("FastNoiseLite_7dvse")
 
 [node name="World" type="Node2D"]
 process_mode = 1
@@ -264,22 +256,26 @@ layer_0/z_index = -100
 layer_1/name = "Base"
 layer_1/y_sort_enabled = true
 layer_1/z_index = -200
-layer_1/tile_data = PackedInt32Array(131082, 65537, 0, 131083, 65537, 0, 131084, 65537, 0, 131085, 65537, 0)
+layer_1/tile_data = PackedInt32Array()
 layer_2/name = "Decor Base"
 layer_2/y_sort_enabled = true
 layer_2/z_index = -199
 layer_2/tile_data = PackedInt32Array()
-layer_3/name = "Decor"
-layer_3/y_sort_enabled = true
-layer_3/z_index = -100
+layer_3/name = "Decor Base 2"
+layer_3/z_index = -198
 layer_3/tile_data = PackedInt32Array()
-layer_4/name = "Decor 2"
+layer_4/name = "Decor"
 layer_4/y_sort_enabled = true
-layer_4/z_index = -200
+layer_4/z_index = -100
 layer_4/tile_data = PackedInt32Array()
+layer_5/name = "Decor 2"
+layer_5/y_sort_enabled = true
+layer_5/z_index = -100
+layer_5/tile_data = PackedInt32Array()
 script = ExtResource("4_dxgbv")
 
 [node name="CeilingMap" type="TileMap" parent="NavigationRegion2D"]
+light_mask = 2
 z_as_relative = false
 y_sort_enabled = true
 position = Vector2(0, -10)
@@ -321,14 +317,3 @@ offset_bottom = 3288.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("9_wuitk")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture_filter = 1
-position = Vector2(-581, -41.5)
-scale = Vector2(0.15, 0.15875)
-texture = SubResource("NoiseTexture2D_6kyer")
-hframes = 20
-vframes = 20
-frame = 80
-region_rect = Rect2(0, 2000, 400, 400)

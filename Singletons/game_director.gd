@@ -18,6 +18,7 @@ var floors_to_create : Dictionary = {} #contains coords of floor tiles to be cre
 var walls_to_create : Dictionary = {}
 var ceilings_to_create : Dictionary = {}
 var floors_blocked : Dictionary = {} #floors on which obstacles are blocked from spawning
+var floors_occupied : Dictionary = {} #floors unavailable for spawning
 var rooms_to_create : Array[Dictionary] = [] #contains pattern indexes and positions of rooms to be created
 var features_to_create : Dictionary = {}
 var enemy_spawns : Array[Dictionary] = [{"captures" : null, "position" : Vector2i.ZERO}]
@@ -103,10 +104,10 @@ func create_map(level : int, world_name : String, level_type : String):
 		
 	match world_name + " " + str(level) + " " + level_type:
 		"grottos 1 gameplay":
-			rooms_to_create.append({ "position" : Vector2i(0,0), "identifier" : "start"})
-			level_end_pos = create_path(Vector2i(0,0),40,{Vector2.LEFT : 5, Vector2.RIGHT : 6, Vector2.UP : 5, Vector2.DOWN : 5},Vector2i.ONE,Vector2i(1,1),1,1)
+			write_room({ "position" : Vector2i(0,0), "identifier" : "start"})
+			level_end_pos = create_path(Vector2i(0,0),10,{Vector2.LEFT : 5, Vector2.RIGHT : 6, Vector2.UP : 5, Vector2.DOWN : 5},Vector2i.ONE)
 			
-			rooms_to_create.append(
+			write_room(
 				{ "position" : level_end_pos, "identifier" : "end", #identifier - type of room
 					"teleporter" : {
 						"world" : "grottos", 
@@ -115,8 +116,10 @@ func create_map(level : int, world_name : String, level_type : String):
 					}
 				}
 			)
+
+			place_features(floors_to_create,0.8,Vector2i(1,1),Grunt.new())
 		"grottos 2 shop":
-			rooms_to_create.append(
+			write_room(
 				{ "position" : level_end_pos, "identifier" : "shop", #identifier - type of room
 					"teleporter" : {
 						"world" : "grottos", 
@@ -161,7 +164,6 @@ func create_map(level : int, world_name : String, level_type : String):
 					}
 				}
 			)
-	write_rooms()
 	write_tiles()
 	await get_tree().create_timer(0.05).timeout
 	spawn_post_processing()
@@ -179,23 +181,20 @@ func create_map(level : int, world_name : String, level_type : String):
 	
 	tilemap.nav_region.bake_navigation_polygon(true)
 	
-func create_path(origin : Vector2i, limit : float, direction_weights : Dictionary, initial_draw : Vector2i = Vector2i.ONE, overlap_draw : Vector2i = Vector2i.ONE, overlap_chance : float = 0.5, base_captures : float = 0):
-	var position : Vector2i = Vector2.ZERO
+func create_path(origin : Vector2i, limit : float, direction_weights : Dictionary, initial_draw : Vector2i = Vector2i.ONE, base_captures : float = 0):
+	var position : Vector2i = origin
 	var weighted_directions : Array[Vector2i] = []
 	for direction in direction_weights:
 		for i in direction_weights[direction]:
 			weighted_directions.append(Vector2i(direction))
 			
 	while (position - origin).length() < limit:
-		if draw(position,initial_draw):
-			if randf() < overlap_chance:
-				draw(position,overlap_draw)
-				enemy_spawns.append({"captures" : base_captures, "position" : position})
+		draw(position,initial_draw)
 		position += weighted_directions.pick_random()
 				
 	return position
 	
-func write_rooms():
+func write_room(room) -> Vector2i:
 	const room_scenes : Dictionary = {
 		"shop" : preload("res://Rooms/shop.tscn"),
 		"start" : preload("res://Rooms/start.tscn"),
@@ -203,78 +202,46 @@ func write_rooms():
 		"boss" : preload("res://Rooms/boss.tscn")
 	}
 	
-	for room in rooms_to_create:
-		var room_scene : TileMap = room_scenes[room.identifier].instantiate()
+	var room_scene : TileMap = room_scenes[room.identifier].instantiate()
+	
+	var offset = room_scene.get_used_cells_by_id(0,0,Vector2i(0,0))[0]
+	var exit = room_scene.get_used_cells_by_id(0,0,Vector2i(0,1))[0]
+	var floor_array : Array = room_scene.get_used_cells_by_id(2,1,Vector2i(0,0))
+	var wall_array : Array = room_scene.get_used_cells_by_id(2,1,Vector2i(1,0))
+	
+	for floor in floor_array:
+		floors_blocked[room.position + floor - offset] = true
+		floors_to_create[room.position + floor - offset] = true
 		
-		var offset = room_scene.get_used_cells_by_id(0,0,Vector2i(0,0))[0]
-		var floor_array : Array = room_scene.get_used_cells_by_id(2,1,Vector2i(0,0))
-		var wall_array : Array = room_scene.get_used_cells_by_id(2,1,Vector2i(1,0))
-		
-		for floor in floor_array:
-			floors_blocked[floor] = true
-			floors_to_create[room.position + floor - offset] = true
-			
-		for wall in wall_array:
-			walls_to_create[room.position + wall - offset] = true
-		
-		for feature_tile in room_scene.get_used_cells(1):
-			var feature
-			match room_scene.get_cell_source_id(1,feature_tile):
-				3: #entities
-					match room_scene.get_cell_atlas_coords(1,feature_tile):
-						Vector2i(1,19): #teleporter
-							feature = Teleporter.new()
-							feature.destination_level = room.teleporter.level
-							feature.destination_level_type = room.teleporter.type
-							feature.destination_world = room.teleporter.world
-						Vector2i(0,19):
-							feature = VendingMachine.new()
-						Vector2i(2,19):
-							feature = BossWall.new()
-						Vector2i(0,4):
-							feature = Boss.new()
-										
-			if feature:
+	for wall in wall_array:
+		walls_to_create[room.position + wall - offset] = true
+	
+	for feature_tile in room_scene.get_used_cells(1):
+		var feature
+		match room_scene.get_cell_source_id(1,feature_tile):
+			3: #entities
+				match room_scene.get_cell_atlas_coords(1,feature_tile):
+					Vector2i(1,19): #teleporter
+						feature = Teleporter.new()
+						feature.destination_level = room.teleporter.level
+						feature.destination_level_type = room.teleporter.type
+						feature.destination_world = room.teleporter.world
+					Vector2i(0,19):
+						feature = VendingMachine.new()
+					Vector2i(2,19):
+						feature = BossWall.new()
+					Vector2i(0,4):
+						feature = Boss.new()
+									
+		if feature:
 				features_to_create[room.position + feature_tile - offset] = feature
+				
+	return exit - offset
 		
 func write_tiles(): #function for writing tiles to the tilemap
+	
 	for floor_tile in floors_to_create:
-		
-		var terrain_noise : FastNoiseLite = FastNoiseLite.new()
-		terrain_noise.seed = randi()
-		terrain_noise.frequency = 3
-		terrain_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
-		terrain_noise.fractal_type = FastNoiseLite.FRACTAL_NONE
-		
-		if terrain_noise.get_noise_2d(floor_tile.x,floor_tile.y) > 0.5:
-			tilemap.set_cell(1,floor_tile,1,Vector2i(3,1))
-		else:
-			tilemap.set_cell(1,floor_tile,1,Vector2i(0,0))
-		
-		
-		
-		var vegetation_noise : FastNoiseLite = FastNoiseLite.new()
-		vegetation_noise.seed = randi()
-		vegetation_noise.frequency = 0.02
-		if vegetation_noise.get_noise_3d(floor_tile.x,floor_tile.y,0) > 0.1:
-			tilemap.set_cell(2,floor_tile,1,Vector2i(0,1)) #creates grass
-		if vegetation_noise.get_noise_3d(floor_tile.x,floor_tile.y,0.2) > 0.2:
-			tilemap.set_cell(3,floor_tile,1,Vector2i(0,2)) #creates flowers
-		elif vegetation_noise.get_noise_3d(floor_tile.x,floor_tile.y,0.4) > 0.3:
-			tilemap.set_cell(3,floor_tile,1,Vector2i(1,2))
-		
-		
-		var rock_noise : FastNoiseLite = FastNoiseLite.new()
-		rock_noise.seed = randi()
-		rock_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
-		rock_noise.frequency = 0.2
-		rock_noise.fractal_type = FastNoiseLite.FRACTAL_NONE
-		if (not floors_blocked.has(floor_tile)) and rock_noise.get_noise_2d(floor_tile.x,floor_tile.y) > 0.7:
-			if not features_to_create.has(floor_tile):
-				features_to_create[floor_tile] = Rock.new()
-			pass
-		if rock_noise.get_noise_2d(floor_tile.x,floor_tile.y) > 0.5:
-			tilemap.set_cell(3,floor_tile,1,Vector2i(2,2)) #creates flowers
+		tilemap.set_cell(1,floor_tile,1,Vector2i(0,0))
 		
 		#create walls from floors
 		var wall_adjacencies : Array[Vector2i] = [
@@ -294,16 +261,83 @@ func write_tiles(): #function for writing tiles to the tilemap
 		for adjacency in ceiling_adjacencies:
 			if not ceilings_to_create.has(floor_tile + adjacency) and not floors_to_create.has(floor_tile + adjacency):
 				ceilings_to_create[floor_tile + adjacency] = true
-			
-	for wall_tile in walls_to_create:
-		tilemap.set_cell(0,wall_tile,1,Vector2i(1,0))
 		
+		write_walls()
+		write_ceilings()
+				
+func noise_decor(tiles_to_check, frequency : float,threshold : float,tilemap_layer : int,source_id : int,atlas_coords : Vector2i,ignore_blockers : bool = false,ignore_occupiers : bool = false,seed : int = randi()):
+	for pos in tiles_to_check:
+		if not ignore_blockers:
+			if floors_blocked.has(pos):
+				continue
+		if not ignore_occupiers:
+			if floors_occupied.has(pos):
+				continue
+		
+		var noise = FastNoiseLite.new()
+		noise.seed = seed
+		noise.frequency = frequency
+		noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+		noise.fractal_type = FastNoiseLite.FRACTAL_NONE
+		
+		if noise.get_noise_2d(pos.x,pos.y) > threshold:
+			tilemap.set_cell(tilemap_layer,pos,source_id,atlas_coords)
+		
+func noise_features(tiles_to_check,frequency : float,threshold : float,feature : Node,ignore_blockers : bool = false,ignore_occupiers : bool = false,seed : int =randi()):
+	for pos in tiles_to_check:
+		if not ignore_blockers:
+			if floors_blocked.has(pos):
+				continue
+		if not ignore_occupiers:
+			if floors_occupied.has(pos):
+				continue
+		
+		var noise = FastNoiseLite.new()
+		noise.seed = seed
+		noise.frequency = frequency
+		noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+		noise.fractal_type = FastNoiseLite.FRACTAL_NONE
+		
+		if noise.get_noise_2d(pos.x,pos.y) > threshold:
+			features_to_create[pos] = feature.duplicate()
+			floors_occupied[pos] = true
+	feature.free()
+		
+func place_features(tiles_to_check, threshold : float, size : Vector2i, feature : Node,ignore_blockers = false,ignore_occupiers = false,seed=randi()):
+	for pos in tiles_to_check:
+		var valid : bool = true
+		for x in size.x:
+			for y in size.y:
+				var local_pos : Vector2i = Vector2i(pos.x + x, pos.y + y)
+				if not floors_to_create.has(local_pos):
+					valid = false
+					break
+				if (not ignore_blockers) and (floors_blocked.has(local_pos)):
+					valid = false
+					break
+				if (not ignore_occupiers) and (floors_occupied.has(local_pos)):
+					valid = false
+					break
+			if not valid:
+				break
+		if valid:
+			if randf() > threshold:
+				features_to_create[pos] = feature.duplicate()
+				for x in size.x:
+					for y in size.y:
+						floors_occupied[Vector2i(pos.x + x,pos.y + y)] = true
+	feature.free()
+
+func write_ceilings():
 	for ceiling_tile in ceilings_to_create:
 		ceilingmap.set_cell(0,ceiling_tile,1,Vector2i(2,0))
 		
+func write_walls():
+	for wall_tile in walls_to_create:
+		tilemap.set_cell(0,wall_tile,1,Vector2i(1,0))
+		
 func write_enemies(world : String):
 	for spawn in enemy_spawns:
-		
 		if spawn.captures != null:
 			var enemy : Controller
 			if spawn.captures > 4:
@@ -318,14 +352,14 @@ func draw(start : Vector2i, size : Vector2i) -> bool:
 	for x in size.x:
 		for y in size.y:
 			var local_pos : Vector2i = Vector2i(start.x + x,start.y + y)
-			if floors_to_create.has(local_pos):
-				overlap += 1
-			else:
-				floors_to_create[local_pos] = true
+			floors_to_create[local_pos] = true
 				
 	return overlap >= size.x * size.y #if complete overlap return true else false
 	
 func spawn_post_processing(): #processes all spawns, for fairness
+	#for floor in floors_to_create:
+		#enemy_spawns.append({"position" : floor,"captures" : 0})
+		
 	var raycast : RayCast2D = RayCast2D.new()
 	raycast.set_collision_mask_value(5,true)
 	nav_region.add_child(raycast)

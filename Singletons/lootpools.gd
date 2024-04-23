@@ -2,7 +2,7 @@ extends Node
 
 var shop_pool : Dictionary = {
 	"basic_weapon" : { #data name
-		"type" : "weapon", #weapon, module, perk or boost
+		"type" : "weapon", #weapon, passive, perk or boost
 		"cost" : 500, #cost in the shop
 		"weight" : 10 #probability weight
 	},
@@ -10,5 +10,10 @@ var shop_pool : Dictionary = {
 		"type" : "weapon",
 		"cost" : 2000,
 		"weight" : 2
+	},
+	"modifier_weapon" : {
+		"type" : "weapon",
+		"cost" : 400,
+		"weight" : 20,
 	}
 }

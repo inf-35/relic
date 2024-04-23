@@ -1,10 +1,10 @@
-extends Module
+extends Passive
 
 class_name Speedy
 
 func setup_stats():
 	item_texture = preload("res://Interface Assets/basic.png")
-	data_name = "basic_module"
+	data_name = "basic_passive"
 	proper_name = "Speedy"
 	description = "speeeeeeeeeeeeed"
 

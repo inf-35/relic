@@ -27,7 +27,7 @@ var controller #typing this would cause a cyclic reference
 		hp = new_hp
 		hp_changed.emit()
 		
-var modifiers : Dictionary = { #permanent modifiers (from like modules and stuff)
+var modifiers : Dictionary = { #permanent modifiers (from like passives and stuff)
 	"additive_speed_boost" : 0,
 	"multiplicative_speed_boost" : 1,
 	"additive_max_hp_boost" : 0,

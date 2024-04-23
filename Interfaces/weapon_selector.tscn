@@ -1,29 +1,35 @@
-[gd_scene load_steps=5 format=3 uid="uid://dx8irdnbkca83"]
+[gd_scene load_steps=6 format=3 uid="uid://dx8irdnbkca83"]
 
 [ext_resource type="Script" path="res://Interfaces/label_autosized.gd" id="1_e3wvp"]
 [ext_resource type="Script" path="res://Interfaces/weapon_selector.gd" id="1_r8eyg"]
 [ext_resource type="Texture2D" uid="uid://uk2kfirpirsk" path="res://Interface Assets/basic.png" id="2_4fbgn"]
+[ext_resource type="Script" path="res://Interfaces/aspectratio_bodge.gd" id="3_nxdaq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_keojk"]
 bg_color = Color(1, 1, 1, 1)
 
 [node name="Weapon" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 42.0
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
+theme_override_constants/separation = 0
 script = ExtResource("1_r8eyg")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.7
+theme_override_font_sizes/normal_font_size = 1
 bbcode_enabled = true
 text = "[center]RDY"
+scroll_active = false
 script = ExtResource("1_e3wvp")
 string_size = "autoexpand"
 
 [node name="AspectRatio" type="AspectRatioContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
+script = ExtResource("3_nxdaq")
 
 [node name="PanelContainer" type="PanelContainer" parent="AspectRatio"]
 layout_mode = 2

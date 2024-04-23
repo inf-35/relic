@@ -9,7 +9,6 @@ func _ready():
 		
 	skin = "dropped_weapon"
 	
-	print("Entered : " + weapon_name)
 	if weapon_name != "":
 		entity.get_node("DroppedWeaponPrompt").weapon_name = weapon_name
 		
