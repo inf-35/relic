@@ -10,7 +10,7 @@ func _enter_tree():
 	child_exiting_tree.connect(_on_child_exiting_tree)
 	
 	resized.connect(func():
-		stretch_mode = AspectRatioContainer.STRETCH_FIT
+		pass
 	)
 	
 func _on_child_entered_tree(new_child : Node):

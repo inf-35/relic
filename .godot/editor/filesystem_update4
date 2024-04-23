@@ -1,5 +1,4 @@
 res://Interfaces/main_gui.tscn
 res://Shaders/test.gdshader
 res://Shaders/shadow.gdshader
-res://world.tscn
-res://Interfaces/weapon_selector.tscn
+res://Interfaces/aspectratio_bodge.gd
