@@ -17,6 +17,8 @@ func _process(_delta):
 	weapon_timer_update()
 
 func weapon_timer_update():
+	if not is_instance_valid(GameDirector.player):
+		return
 	if len(GameDirector.player.active_weapons_array) <= weapon_slot:
 		cooldown_label.text = ""
 		return

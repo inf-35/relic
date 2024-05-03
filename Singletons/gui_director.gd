@@ -5,13 +5,23 @@ var overlay : Control
 var customisation : Control
 var visibility_manager : VisibilityManager
 
+var module_dict_index : int = 0:
+	set(weapon_new):
+		module_dict_index = weapon_new
+		index_change.emit()
+var passive_dict_index : int = 0:
+	set(passive_new):
+		passive_dict_index = passive_new
+		index_change.emit()
+
 var lockout : bool = false
 
-signal customisation_menu_changed #ie from 
-signal customisation_menu_activated
+signal customisation_menu_changed #ie from submenus to each other
+signal customisation_menu_activated #
 
 signal weapon_swap
 signal passive_swap
+signal index_change
 
 @export var customisation_menu_type : String = "standard": #"standard", "weapon_swap", "passive_swap", "shop"
 	set(new_menu_type):
@@ -66,22 +76,22 @@ func _ready():
 func swap_weapons():
 	var store = GameDirector.player.weapon_dict[1000]
 	var selected_weapon 
-	if GameDirector.player.weapon_dict.has(visibility_manager.weapon_upgrades.index):
-		selected_weapon = GameDirector.player.weapon_dict[visibility_manager.weapon_upgrades.index]
+	if GameDirector.player.weapon_dict.has(module_dict_index):
+		selected_weapon = GameDirector.player.weapon_dict[module_dict_index]
 	else:
 		selected_weapon = null
 		
 	GameDirector.player.weapon_dict[1000] = selected_weapon
-	GameDirector.player.weapon_dict[visibility_manager.weapon_upgrades.index] = store
-	weapon_swap.emit(visibility_manager.weapon_upgrades.index)
+	GameDirector.player.weapon_dict[module_dict_index] = store
+	weapon_swap.emit(module_dict_index)
 	
 func swap_passives():
 	var store = GameDirector.player.passive_dict[1000]
 	var selected_passive
-	if GameDirector.player.weapon_dict.has(visibility_manager.weapon_upgrades.index):
-		selected_passive = GameDirector.player.weapon_dict[visibility_manager.weapon_upgrades.index]
+	if GameDirector.player.passive_dict.has(passive_dict_index):
+		selected_passive = GameDirector.player.passive_dict[passive_dict_index]
 	else:
 		selected_passive = null
 	GameDirector.player.passive_dict[1000] = selected_passive
-	GameDirector.player.passive_dict[visibility_manager.passive_upgrades.index] = store
-	passive_swap.emit(visibility_manager.passive_upgrades.index)
+	GameDirector.player.passive_dict[passive_dict_index] = store
+	passive_swap.emit(passive_dict_index)

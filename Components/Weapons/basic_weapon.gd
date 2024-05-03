@@ -20,11 +20,5 @@ func setup_stats():
 	}
 	projectile_types.make_read_only()
 	
-func fire(target : Vector2): #primary fire function
-	if cooldown_timer.time_left != 0:
-		return
-		
-	GameDirector.camera.shake_vector = -GameDirector.player.entity.get_local_mouse_position().normalized() * 2
-	shot.emit()
-	cooldown_timer.start(cooldown_time)
+func fire_payload(target : Vector2): #primary fire function
 	single_fire("basic",target)

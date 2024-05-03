@@ -207,11 +207,11 @@ terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
 sources/1 = SubResource("TileSetAtlasSource_p86ur")
 sources/0 = SubResource("TileSetAtlasSource_g27om")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6ptl8"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x7b45"]
 shader = ExtResource("8_hc8cb")
-shader_parameter/r_displacement = Vector2(2, 0)
+shader_parameter/r_displacement = Vector2(1, 0)
 shader_parameter/g_displacement = Vector2(0, 0)
-shader_parameter/b_displacement = Vector2(-2, 0)
+shader_parameter/b_displacement = Vector2(1, 0)
 
 [node name="World" type="Node2D"]
 process_mode = 1
@@ -302,18 +302,13 @@ process_mode = 3
 [node name="MainGui" parent="UI" instance=ExtResource("7_pbcva")]
 
 [node name="Chromatic" type="CanvasLayer" parent="."]
+layer = 0
+visible = false
 
-[node name="chromatic aberration" type="TextureRect" parent="Chromatic"]
-z_index = 1000
-z_as_relative = false
-material = SubResource("ShaderMaterial_6ptl8")
+[node name="ColorRect" type="ColorRect" parent="Chromatic"]
+material = SubResource("ShaderMaterial_x7b45")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -4962.0
-offset_top = -3632.0
-offset_right = 1118.0
-offset_bottom = 3288.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2

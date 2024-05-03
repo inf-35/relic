@@ -8,11 +8,11 @@ var acceleration : float = 0.0
 
 var contact_damage : float = 20
 var initial_speed : float = 40
-var neutral : bool = false
 
 var bounces : int = 0
 var lifetime : float = 10.0
 
+var affiliation : String = ""
 var lifetime_timer : Timer
 var status_effects : Dictionary
 
@@ -31,10 +31,19 @@ func _ready():
 	
 	if not GameDirector.run_active: await GameDirector.run_start
 	
-	if neutral:
-		set_collision_layer_value(1,false) #player to false
-		set_collision_layer_value(2,false) #enemy to false
-		set_collision_layer_value(4,true) #neutral to true
+	match affiliation:
+		"neutral":
+			set_collision_layer_value(1,false) #player to false
+			set_collision_layer_value(2,false) #enemy to false
+			set_collision_layer_value(4,true) #neutral to true
+		"player":
+			set_collision_layer_value(1,true) #player to false
+			set_collision_layer_value(2,false) #enemy to false
+			set_collision_layer_value(4,false) #neutral to true
+		"enemy":
+			set_collision_layer_value(1,false) #player to false
+			set_collision_layer_value(2,true) #enemy to false
+			set_collision_layer_value(4,false) #neutral to true
 		
 	lifetime_timer = Timer.new()
 	add_child(lifetime_timer)

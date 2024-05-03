@@ -11,10 +11,10 @@ func setup_stats():
 	cooldown_time = 0.01
 	projectile_types = {
 		"basic" : {
+			"lifetime" : 50,
 			"contact_damage" : 40,
 			"initial_speed" : 100,
-			"bounces" : 1000,
-			"acceleration" : 100
+			"bounces" : 100000,
 		}
 	}
 

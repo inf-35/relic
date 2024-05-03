@@ -1,4 +1,9 @@
-res://Interfaces/main_gui.tscn
+res://world.tscn
 res://Shaders/test.gdshader
 res://Shaders/shadow.gdshader
-res://Interfaces/aspectratio_bodge.gd
+res://Shaders/shadow_shader.tres
+res://Interfaces/main_gui.tscn
+res://Components/EntitySkins/grunt.tscn
+res://Components/EntitySkins/player.tscn
+res://Components/projectile.gd
+res://Components/weapon.gd

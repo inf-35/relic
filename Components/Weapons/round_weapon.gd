@@ -11,11 +11,6 @@ func setup_stats():
 		}
 	}
 
-func fire(target : Vector2): #primary fire function
-	if cooldown_timer.time_left != 0:
-		return
-	
-	shot.emit()
-	cooldown_timer.start(cooldown_time)
+func fire_payload(target : Vector2):
 	arc_fire("basic",12,360,target)
 

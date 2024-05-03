@@ -1,4 +1,3 @@
-@tool
 extends RichTextLabel
 
 class_name LabelAutosized
@@ -48,6 +47,9 @@ func update_payload():
 					break
 				if font_size > upper_bound:
 					font_size = upper_bound
+					break
+				if font_size > 500:
+					font_size = last_font_size
 					break
 					
 	add_theme_font_size_override("normal_font_size",font_size)

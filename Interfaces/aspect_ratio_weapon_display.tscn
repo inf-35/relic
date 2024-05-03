@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://dk536vk7t2sie"]
+
+[ext_resource type="Script" path="res://Interfaces/aspectratio_bodge.gd" id="1_a5hhf"]
+[ext_resource type="Texture2D" uid="uid://8u405h5e6yoq" path="res://Interface Assets/null.png" id="2_8ok0q"]
+[ext_resource type="Script" path="res://Interfaces/weapon_display.gd" id="3_ih27n"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7uprl"]
+bg_color = Color(0.15, 0.15, 0.15, 1)
+
+[node name="AspectRatioContainer" type="AspectRatioContainer"]
+stretch_mode = 3
+script = ExtResource("1_a5hhf")
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7uprl")
+
+[node name="WeaponDisplay" type="TextureRect" parent="."]
+modulate = Color(0.05, 1, 1, 1)
+layout_mode = 2
+texture = ExtResource("2_8ok0q")
+expand_mode = 1
+script = ExtResource("3_ih27n")
+weapon = 1000

@@ -13,6 +13,7 @@ var projectile_types : Dictionary = {
 	"basic" : {
 		"contact_damage" : 40,
 		"initial_speed" : 100,
+		"affiliation" : "player",
 	}
 }
 
@@ -35,13 +36,22 @@ func _init():
 	add_child(cooldown_timer)
 	cooldown_timer.one_shot = true
 	
-func fire(target : Vector2) -> void: #overriden by child class function
+func fire(target : Vector2) -> void: 
+	if cooldown_timer.time_left != 0:
+		return
+		
+	GameDirector.camera.shake_vector = -GameDirector.player.entity.get_local_mouse_position().normalized() * 2
+	fire_payload(target)
+	shot.emit()
+	cooldown_timer.start(cooldown_time)
+	
+func fire_payload(target : Vector2) -> void: #overriden by child class function
 	pass
 	
 func modify(primary : Node ) -> void: #takes in a primary[weapon] and modifies it in some fashion
 	pass
 
-func trigger_secondaries() -> void: #should be trigger with changes in secondary functionality
+func trigger_secondaries() -> void: #should be triggered with changes in secondary functionality
 	modified_projectile_types = projectile_types.duplicate(true)
 	for secondary in secondaries:
 		secondary.modify(self)
@@ -65,12 +75,9 @@ func arc_fire(projectile_type : String, projectiles : int, angle : float = 360, 
 			
 func create_projectile(projectile_type : String) -> Projectile:
 	var projectile : Projectile = basic_projectile.instantiate()
+	projectile.affiliation = "player"
 	for property in modified_projectile_types[projectile_type]:
 		projectile[property] = modified_projectile_types[projectile_type][property]
-	if controller is Player:
-		projectile.set_collision_layer_value(1,true) #player-fired projectile
-	else:
-		projectile.set_collision_layer_value(2,true) #enemy-fired projectile
 	return projectile
 	
 	

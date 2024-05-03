@@ -44,7 +44,7 @@ func _ready():
 	modifier.controller = self
 	weapons.add_child(modifier)
 	weapon_dict[1] = modifier
-	
+	#
 	skin = "circle"
 	
 	add_child(passives)

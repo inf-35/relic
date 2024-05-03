@@ -8,6 +8,9 @@ func _ready():
 func _input(event : InputEvent):
 	if not GameDirector.run_active:
 		return
+	
+	if not is_instance_valid(GameDirector.player):
+		return
 		
 	match context:
 		"gameplay":
@@ -18,13 +21,12 @@ func _input(event : InputEvent):
 						GameDirector.player.cur_weapon_index = (GameDirector.player.cur_weapon_index + 1) % (len(GameDirector.player.active_weapons_array))
 			
 			if Input.is_action_just_pressed("interact"):
-				GameDirector.boss_killed.emit()
 				if len(GameDirector.player.actions_list) <= 0:
 					return
 				var selected_prompt : Prompt
 				var index : int = 0
 				
-				while true: #passiveernates between stacked prompts
+				while true: #alternates between stacked prompts
 					if is_instance_valid(GameDirector.player.actions_list[index]):
 						if not GameDirector.player.actions_list[index].just_activated:
 							selected_prompt = GameDirector.player.actions_list[index]
@@ -54,17 +56,21 @@ func _input(event : InputEvent):
 				GuiDirector.customisation_menu_visible = true
 				
 			GameDirector.player.entity.movement_vector = Input.get_vector("left","right","up","down")
+			
 		"customisation":
 			if Input.is_action_just_pressed("menu"):
 				GuiDirector.customisation_menu_visible = false
 				
 			match GuiDirector.customisation_menu_type:
 				"standard":
-					pass
-				"weapon_swap":
+					if Input.is_action_just_pressed("up"):
+						GuiDirector.module_dict_index += 1
+					if Input.is_action_just_pressed("down"):
+						GuiDirector.module_dict_index -= 1
 					if Input.is_action_just_pressed("interact"):
 						GuiDirector.swap_weapons()
-						
+				
+				
 				"passive_swap":
 					if Input.is_action_just_pressed("interact"):
 						GuiDirector.swap_passives()

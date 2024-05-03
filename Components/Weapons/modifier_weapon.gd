@@ -14,8 +14,5 @@ func setup_stats():
 	projectile_types = {
 	}
 
-func fire(target : Vector2): #primary fire function
-	pass
-
 func modify(target : Node): #primary modifier function
-	pass
+	target.modified_projectile_types.basic.acceleration = 0
