@@ -52,7 +52,6 @@ func update():
 				panel.queue_free()
 		
 		for secondary in module.secondaries:
-			print(secondary)
 			var secondary_panel : Control = preload("res://Interfaces/aspect_ratio_weapon_display.tscn").instantiate()
 			dependencies_container.add_child(secondary_panel)
 			dependency_controls.append(secondary_panel)

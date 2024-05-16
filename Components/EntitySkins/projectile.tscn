@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://b701moxsa2gmw"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_1uur3"]
+[ext_resource type="Script" path="res://Components/hitbox.gd" id="2_mye7d"]
+[ext_resource type="Script" path="res://Components/movement_component.gd" id="3_pyf2i"]
+[ext_resource type="Texture2D" uid="uid://ojhqm06mn8xd" path="res://player (2).png" id="4_ymvyn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_blogl"]
+size = Vector2(4, 4)
+
+[node name="Projectile" type="CharacterBody2D" node_paths=PackedStringArray("movement_component", "main_hitbox")]
+z_index = 100
+z_as_relative = false
+y_sort_enabled = true
+position = Vector2(2.08165e-12, 2.08165e-12)
+collision_layer = 2
+collision_mask = 16
+script = ExtResource("1_1uur3")
+base_max_hp = 20.0
+base_movement_speed = 8.0
+skin = "projectile"
+movement_component = NodePath("MovementComponent")
+main_hitbox = NodePath("Hitbox")
+
+[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
+collision_layer = 2
+collision_mask = 13
+script = ExtResource("2_mye7d")
+entity = NodePath("..")
+affiliation = "enemy"
+
+[node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -2.08165e-12)
+shape = SubResource("RectangleShape2D_blogl")
+
+[node name="MovementComponent" type="Node" parent="."]
+script = ExtResource("3_pyf2i")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-1.90735e-06, 0)
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("4_ymvyn")

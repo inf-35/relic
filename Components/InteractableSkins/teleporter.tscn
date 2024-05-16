@@ -8,6 +8,7 @@
 
 [node name="Teleporter" type="CharacterBody2D"]
 script = ExtResource("1_ofefu")
+skin = "teleporter"
 
 [node name="TeleportPrompt" type="Area2D" parent="."]
 script = ExtResource("2_18sra")

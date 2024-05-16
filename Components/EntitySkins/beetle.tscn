@@ -74,6 +74,7 @@ collision_mask = 16
 script = ExtResource("1_piyto")
 base_max_hp = 100.0
 base_movement_speed = 3.0
+skin = "beetle"
 movement_component = NodePath("MovementComponent")
 animation_player = NodePath("AnimationPlayer")
 main_hitbox = NodePath("Hitbox")
@@ -98,6 +99,7 @@ collision_layer = 2
 collision_mask = 13
 script = ExtResource("3_wacnv")
 entity = NodePath("..")
+affiliation = "enemy"
 
 [node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
 position = Vector2(0, -15)

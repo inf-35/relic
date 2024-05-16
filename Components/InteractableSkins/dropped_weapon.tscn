@@ -9,6 +9,7 @@ size = Vector2(12, 12)
 
 [node name="DroppedWeapon" type="CharacterBody2D"]
 script = ExtResource("1_bsfrj")
+skin = "dropped_weapon"
 
 [node name="DroppedWeaponPrompt" type="Area2D" parent="."]
 script = ExtResource("2_jjh5q")

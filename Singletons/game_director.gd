@@ -19,7 +19,6 @@ var walls_to_create : Dictionary = {}
 var ceilings_to_create : Dictionary = {}
 var floors_blocked : Dictionary = {} #floors on which obstacles are blocked from spawning
 var floors_occupied : Dictionary = {} #floors unavailable for spawning
-var rooms_to_create : Array[Dictionary] = [] #contains pattern indexes and positions of rooms to be created
 var features_to_create : Dictionary = {}
 var enemy_spawns : Array[Dictionary] = [{"captures" : null, "position" : Vector2i.ZERO}]
 
@@ -91,7 +90,6 @@ func reset_scene(reset_controllers : bool): #reset scenes, clears all tilemaps a
 	player.entity.position = Vector2.ZERO
 		
 func create_map(level : int, world_name : String, level_type : String):
-	rooms_to_create = []
 	floors_blocked = {}
 	floors_to_create = {}
 	walls_to_create = {}
@@ -104,10 +102,10 @@ func create_map(level : int, world_name : String, level_type : String):
 		
 	match world_name + " " + str(level) + " " + level_type:
 		"grottos 1 gameplay":
-			write_room({ "position" : Vector2i(0,0), "identifier" : "start"})
-			level_end_pos = create_path(Vector2i(0,0),10,{Vector2.LEFT : 5, Vector2.RIGHT : 6, Vector2.UP : 5, Vector2.DOWN : 5},Vector2i.ONE)
+			level_end_pos = write_room({ "position" : Vector2i(0,0), "identifier" : "start"})
+			level_end_pos = create_path(level_end_pos,10,{Vector2.LEFT : 5, Vector2.RIGHT : 6, Vector2.UP : 5, Vector2.DOWN : 5},Vector2i.ONE)
 			
-			write_room(
+			level_end_pos = write_room(
 				{ "position" : level_end_pos, "identifier" : "end", #identifier - type of room
 					"teleporter" : {
 						"world" : "grottos", 
@@ -117,7 +115,8 @@ func create_map(level : int, world_name : String, level_type : String):
 				}
 			)
 
-			place_features(floors_to_create,0.8,Vector2i(1,1),Grunt.new())
+			#place_features(floors_to_create,0.8,Vector2i(1,1),Grunt.new())
+			#place_features(floors_to_create,0.8,Vector2i(2,2),Beetle.new())
 		"grottos 2 shop":
 			write_room(
 				{ "position" : level_end_pos, "identifier" : "shop", #identifier - type of room
@@ -129,10 +128,11 @@ func create_map(level : int, world_name : String, level_type : String):
 				}
 			)
 		"grottos 2 gameplay":
-			rooms_to_create.append({ "position" : Vector2i(0,0), "identifier" : "start"})
-			level_end_pos = create_path(Vector2i(0,0),50,{Vector2.LEFT : 5, Vector2.RIGHT : 6, Vector2.UP : 5, Vector2.DOWN : 5})
+			level_end_pos = write_room({"position" : Vector2i(0,0),"identifier" : "start"})
+			level_end_pos = create_path(level_end_pos,30,{Vector2.LEFT : 5, Vector2.RIGHT : 6, Vector2.UP : 5, Vector2.DOWN : 5})
+			level_end_pos = write_room({"position" : level_end_pos,"identifier" : "boss"})
 			
-			rooms_to_create.append(
+			level_end_pos = write_room(
 				{ "position" : level_end_pos, "identifier" : "end", 
 					"teleporter" : {
 						"world" : "grottos", 
@@ -141,29 +141,10 @@ func create_map(level : int, world_name : String, level_type : String):
 					}
 				}
 			)
-		"grottos 3 shop":
-			rooms_to_create.append(
-				{ "position" : level_end_pos, "identifier" : "shop", #identifier - type of room
-					"teleporter" : {
-						"world" : "grottos", 
-						"level" : 3, 
-						"type" : "gameplay"
-					}
-				}
-			)
-		"grottos 3 gameplay":
-			rooms_to_create.append({ "position" : Vector2i(0,0), "identifier" : "start"})
-			level_end_pos = create_path(Vector2i(0,0),60,{Vector2.LEFT : 5, Vector2.RIGHT : 6, Vector2.UP : 5, Vector2.DOWN : 5})
 			
-			rooms_to_create.append(
-				{ "position" : level_end_pos, "identifier" : "end", 
-					"teleporter" : {
-						"world" : "massif", 
-						"level" : 1, 
-						"type" : "gameplay"
-					}
-				}
-			)
+			place_features(floors_to_create,0.9,Vector2i(1,1),Grunt.new())
+			place_features(floors_to_create,0.9,Vector2i(2,2),Beetle.new())
+		
 	write_tiles()
 	await get_tree().create_timer(0.05).timeout
 	spawn_post_processing()
@@ -181,7 +162,7 @@ func create_map(level : int, world_name : String, level_type : String):
 	
 	tilemap.nav_region.bake_navigation_polygon(true)
 	
-func create_path(origin : Vector2i, limit : float, direction_weights : Dictionary, initial_draw : Vector2i = Vector2i.ONE, base_captures : float = 0):
+func create_path(origin : Vector2i, limit : float, direction_weights : Dictionary, initial_draw : Vector2i = Vector2i.ONE, base_captures : float = 0) -> Vector2i:
 	var position : Vector2i = origin
 	var weighted_directions : Array[Vector2i] = []
 	for direction in direction_weights:
@@ -236,7 +217,7 @@ func write_room(room) -> Vector2i:
 		if feature:
 				features_to_create[room.position + feature_tile - offset] = feature
 				
-	return exit - offset
+	return room.position + exit - offset
 		
 func write_tiles(): #function for writing tiles to the tilemap
 	
@@ -299,7 +280,7 @@ func noise_features(tiles_to_check,frequency : float,threshold : float,feature :
 		noise.fractal_type = FastNoiseLite.FRACTAL_NONE
 		
 		if noise.get_noise_2d(pos.x,pos.y) > threshold:
-			features_to_create[pos] = feature.duplicate()
+			features_to_create[pos] = feature.duplicate(7)
 			floors_occupied[pos] = true
 	feature.free()
 		
@@ -322,7 +303,7 @@ func place_features(tiles_to_check, threshold : float, size : Vector2i, feature 
 				break
 		if valid:
 			if randf() > threshold:
-				features_to_create[pos] = feature.duplicate()
+				features_to_create[pos] = feature.duplicate(7)
 				for x in size.x:
 					for y in size.y:
 						floors_occupied[Vector2i(pos.x + x,pos.y + y)] = true
@@ -358,7 +339,7 @@ func draw(start : Vector2i, size : Vector2i) -> bool:
 	
 func spawn_post_processing(): #processes all spawns, for fairness
 	#for floor in floors_to_create:
-		#enemy_spawns.append({"position" : floor,"captures" : 0})
+		##enemy_spawns.append({"position" : floor,"captures" : 0})
 		
 	var raycast : RayCast2D = RayCast2D.new()
 	raycast.set_collision_mask_value(5,true)

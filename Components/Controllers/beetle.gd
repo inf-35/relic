@@ -2,11 +2,7 @@ extends Controller
 
 class_name Beetle
 
-var nav_agent : NavigationAgent2D = NavigationAgent2D.new()
-var raycast : RayCast2D = RayCast2D.new()
-var raycast_timer : Timer = Timer.new()
 var bounce_timer : Timer = Timer.new()
-var timer : Timer = Timer.new()
 var state : String = "loiter":
 	set(new_state):
 		match new_state:
@@ -23,15 +19,18 @@ var state : String = "loiter":
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if not GameDirector.run_active: await GameDirector.run_start
+	skin = "beetle"
+	affiliation = "enemy"
 	
 	generate_weapons()
+	generate_nodes()
 	
-	var basic_weapon : RoundWeapon = preload("res://Components/Weapons/round_weapon.tscn").instantiate()
+	
+	var basic_weapon = RoundWeapon.new()
 	basic_weapon.controller = self
 	weapons.add_child(basic_weapon)
 	weapon_dict[0] = basic_weapon
 	
-	skin = "beetle"
 	
 	entity.animation_callback.connect(func(identifier : String):
 		if not is_instance_valid(GameDirector.player):
@@ -42,42 +41,15 @@ func _ready():
 			
 	)
 	
-	nav_agent.path_desired_distance = 0.5
-	nav_agent.avoidance_enabled = true
-	nav_agent.radius = 5
-	nav_agent.time_horizon = 0.8
-	
-	nav_agent.velocity_computed.connect(func(vel):
-		entity.movement_vector = vel.normalized()
-	)
-	
-	entity.add_child(nav_agent)
-	
-	timer.autostart = false
-	timer.one_shot = true
-	add_child(timer)
-	
 	bounce_timer.autostart = false
 	bounce_timer.one_shot = true
 	add_child(bounce_timer)
-	
-	raycast_timer.one_shot = false
-	raycast_timer.timeout.connect(func a():
-		if not is_instance_valid(GameDirector.player):
-			return 
-		raycast.position = entity.position
-		raycast.target_position = entity.to_local(GameDirector.player.entity.position)
-		raycast.force_raycast_update()
-	)
-	add_child(raycast_timer)
-	raycast_timer.start(0.2)
 	
 	raycast.set_collision_mask_value(5,true) #levels
 	raycast.collide_with_areas = true
 	raycast.collide_with_bodies = true
 	raycast.set_collision_mask_value(2,false)
 	raycast.add_exception(entity)
-	add_child(raycast)
 	
 	entity.died.connect(func():
 		var dropped_weapon : DroppedWeapon = DroppedWeapon.new()

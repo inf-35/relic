@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://d3ybi5vm60508"]
+[gd_scene load_steps=2 format=3 uid="uid://c86s3vmol0mis"]
 
 [ext_resource type="Script" path="res://Components/Weapons/modifier_weapon.gd" id="1_orlfv"]
 

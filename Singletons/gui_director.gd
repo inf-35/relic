@@ -23,7 +23,7 @@ signal weapon_swap
 signal passive_swap
 signal index_change
 
-@export var customisation_menu_type : String = "standard": #"standard", "weapon_swap", "passive_swap", "shop"
+@export var customisation_menu_type : String = "weapon_swap": #"weapon_swap", "passive_swap", "shop"
 	set(new_menu_type):
 		customisation_menu_type = new_menu_type
 		customisation_menu_changed.emit()
@@ -50,6 +50,7 @@ signal index_change
 				var dropped_weapon = DroppedWeapon.new()
 				dropped_weapon.weapon_name = GameDirector.player.weapon_dict[1000].data_name
 				dropped_weapon.property_cache.position = GameDirector.player.entity.position
+				GameDirector.player.weapon_dict[1000].free()
 				GameDirector.projectiles.add_child.call_deferred(dropped_weapon)
 					
 			GameDirector.player.weapon_dict[1000] = null

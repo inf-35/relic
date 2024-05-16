@@ -4,6 +4,15 @@ var context : String = "gameplay" #gameplay, customisation
 
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	
+func _process(_delta):
+	if not GameDirector.run_active:
+		return
+	
+	if not is_instance_valid(GameDirector.player):
+		return
+		
+	GameDirector.player.entity.movement_vector = Input.get_vector("left","right","up","down")
 
 func _input(event : InputEvent):
 	if not GameDirector.run_active:
@@ -52,17 +61,15 @@ func _input(event : InputEvent):
 				)
 
 			if Input.is_action_just_pressed("menu"):
-				GuiDirector.customisation_menu_type = "standard"
+				GuiDirector.customisation_menu_type = "weapon_swap"
 				GuiDirector.customisation_menu_visible = true
-				
-			GameDirector.player.entity.movement_vector = Input.get_vector("left","right","up","down")
 			
 		"customisation":
 			if Input.is_action_just_pressed("menu"):
 				GuiDirector.customisation_menu_visible = false
 				
 			match GuiDirector.customisation_menu_type:
-				"standard":
+				"weapon_swap":
 					if Input.is_action_just_pressed("up"):
 						GuiDirector.module_dict_index += 1
 					if Input.is_action_just_pressed("down"):

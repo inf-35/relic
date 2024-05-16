@@ -4,13 +4,6 @@ class_name BossWall
 
 #wall that drops upon gamedirector boss_killed signal
 
-var state : String = "active":
-	set(new_state):
-		match new_state:
-			"active":
-				pass
-		state = new_state
-		
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if not GameDirector.run_active: await GameDirector.run_start

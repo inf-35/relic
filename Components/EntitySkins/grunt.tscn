@@ -228,6 +228,7 @@ collision_mask = 16
 script = ExtResource("1_b7a8c")
 base_max_hp = 40.0
 base_movement_speed = 8.0
+skin = "grunt"
 movement_component = NodePath("MovementComponent")
 animation_player = NodePath("AnimationPlayer")
 main_hitbox = NodePath("Hitbox")
@@ -237,11 +238,11 @@ position = Vector2(0, 2.66531)
 shape = SubResource("RectangleShape2D_2vd6w")
 
 [node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
-visible = false
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("3_02ixm")
 entity = NodePath("..")
+affiliation = "enemy"
 
 [node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
 position = Vector2(0, -7)

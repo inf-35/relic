@@ -4,9 +4,8 @@ class_name Player #controller for the player entity
 
 signal bonds_changed
 signal weapon_swapped
-signal passive_update
 
-var raycast : RayCast2D = RayCast2D.new()
+
 var i_timer : Timer = Timer.new()
 
 var cur_weapon_index : int = 0:
@@ -21,33 +20,33 @@ var bonds : int = 0:
 		bonds = new_bonds
 		bonds_changed.emit()
 		
-var passives : Node = Node.new()
-
-var passive_dict : Dictionary = {
-	1 : null,
-	1000 : null #reserved for gui 
-}
-		
 func _ready():
 	if not GameDirector.run_active: await GameDirector.run_start
 
 	bonds = 2000
 	
-	generate_weapons()
+	skin = "player"
+	affiliation = "player"
 	
-	var basic_weapon : UltraWeapon = preload("res://Components/Weapons/ultra_weapon.tscn").instantiate()
+	generate_weapons()
+	generate_passives()
+	generate_nodes()
+	
+	var basic_weapon : UltraWeapon = UltraWeapon.new()
 	basic_weapon.controller = self
 	weapons.add_child(basic_weapon)
 	weapon_dict[0] = basic_weapon
 	
-	var modifier : ModifierWeapon = preload("res://Components/Weapons/modifier_weapon.tscn").instantiate()
+	var modifier : ModifierWeapon = ModifierWeapon.new()
 	modifier.controller = self
 	weapons.add_child(modifier)
 	weapon_dict[1] = modifier
-	#
-	skin = "circle"
 	
-	add_child(passives)
+	var ultra_weapon : BasicWeapon = BasicWeapon.new()
+	ultra_weapon.controller = self
+	weapons.add_child(ultra_weapon)
+	weapon_dict[2] = ultra_weapon
+	
 	var speedy : Speedy = preload("res://Components/passives/speedy.tscn").instantiate()
 	speedy.player = self
 	passives.add_child.call_deferred(speedy)
@@ -70,13 +69,7 @@ func _ready():
 	entity.died.connect(func():
 		queue_free()
 	)
-	
-	raycast.set_collision_mask_value(5,true) #levels
-	raycast.collide_with_areas = true
-	raycast.collide_with_bodies = true
-	raycast.add_exception(entity)
-	add_child.call_deferred(raycast)
-	
+
 	i_timer.autostart = false
 	i_timer.one_shot = true 
 	add_child.call_deferred(i_timer)
@@ -89,13 +82,5 @@ func _ready():
 		entity.status_effects.iframe = true
 		i_timer.start(0.3)
 	)
-	
-	var old_passive_hash : int
-	
-	while is_instance_valid(passives): #detects differences in weapon update
-		await get_tree().create_timer(0.1).timeout
-		if old_passive_hash != passive_dict.hash():
-			passive_update.emit()
-			old_passive_hash = passive_dict.hash()
 	
 

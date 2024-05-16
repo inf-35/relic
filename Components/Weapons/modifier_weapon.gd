@@ -15,4 +15,4 @@ func setup_stats():
 	}
 
 func modify(target : Node): #primary modifier function
-	target.modified_projectile_types.basic.acceleration = 0
+	target.modified_projectile_types.basic.acceleration[0] = 0

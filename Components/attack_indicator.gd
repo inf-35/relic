@@ -38,9 +38,6 @@ func close():
 		queue_free()
 	)
 	
-func _process(_delta):
-	queue_redraw()
-	
 func _draw():
 	match shape:
 		"arc":
