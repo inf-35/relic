@@ -8,15 +8,15 @@ func setup_stats():
 	proper_name = "Pistol"
 	description = "A [hint={hello}]basic[/hint] weapon"
 	
-	cooldown_time = 0.2
+	cooldown_time = 0.5
 	projectile_types = {
 		"basic" : { #basic projectile used for most weapons
 			"contact_damage" : [40,"hitbox"], #[value, scope]
-			"initial_speed" : [10,"controller"],
+			"initial_speed" : [30,"controller"],
 			"status_effects" : [{},"hitbox"],
 			"bounces" : [1,"controller"],
 			"pierce" : [1, "controller"],
-			"acceleration" : [100,"controller"],
+			"acceleration" : [0,"controller"],
 			"affiliation" : ["controller","hitbox"],
 			"parent_weapon" : [self,"controller"],
 		}

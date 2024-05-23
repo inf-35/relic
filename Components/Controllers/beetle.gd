@@ -62,12 +62,8 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if GameDirector.stasis:
-		entity.immobile = true
 		return
-	else:
-		entity.immobile = false
 		
-	
 	if not is_instance_valid(GameDirector.player):
 		return
 	
@@ -113,6 +109,8 @@ func _process(delta):
 				entity.animation_player.play("jump")
 				
 			if timer.time_left == 0:
+				if not is_instance_valid(GameDirector.player):
+					return
 				nav_agent.target_position = GameDirector.player.entity.position
 				timer.start(0.2)
 		

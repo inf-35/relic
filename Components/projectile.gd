@@ -34,7 +34,11 @@ var health : float = 100:
 			queue_free()
 			
 var lifetime_timer : Timer
-var age : float = 0
+var age : float = 0:
+	set(new_age):
+		age = new_age
+		if age > lifetime:
+			queue_free()
 
 var level_raycast : RayCast2D = RayCast2D.new()
 
@@ -55,44 +59,16 @@ func _ready():
 			hitbox[property] = hitbox_cache[property]
 			
 	hitbox.enabled = true
-	
-	add_child(level_raycast)
-	
-	lifetime_timer = Timer.new()
-	add_child(lifetime_timer)
-	lifetime_timer.one_shot = true
-	lifetime_timer.start(lifetime)
-	
-	lifetime_timer.timeout.connect(func():
-		entity.main_hitbox.monitorable = false
-		entity.main_hitbox.monitoring = false
-		queue_free()
-	)
-	
-	level_raycast.set_collision_mask_value(1,false)
-	await get_tree().create_timer(0.2).timeout
-	level_raycast.set_collision_mask_value(5,true)
-	
-	
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	age += delta
-	
-	level_raycast.position = entity.position + Vector2(0,bullet_height)
-	level_raycast.target_position = (entity.movement_vector * entity.stats.movement_speed.final) * delta * 10
-	level_raycast.force_update_transform()
-	level_raycast.force_raycast_update()
-	if level_raycast.is_colliding():
-		bounces -= 1
-		var normal = level_raycast.get_collision_normal()
-		entity.movement_vector = entity.movement_vector.bounce(normal)
-		
 	if GameDirector.stasis:
 		return
 	
-	entity.rotation = (entity.movement_vector).angle()
-	entity.base_movement_speed += acceleration * delta
+	age += delta
+
+	#entity.get_node("Physical").rotation = (entity.movement_vector).angle()
+	if acceleration != 0:
+		entity.base_movement_speed += acceleration * delta
 	
 func _exit_tree():
 	if is_instance_valid(parent_weapon):

@@ -8,6 +8,8 @@ var just_activated : bool
 func _ready():
 	if not GameDirector.run_active: await GameDirector.run_start
 	
+	if not is_instance_valid(GameDirector.player): return
+	
 	GameDirector.player.action_signal.connect(func():
 		just_activated = false
 	)

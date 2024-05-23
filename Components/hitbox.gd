@@ -67,6 +67,9 @@ func _process(delta):
 	pass
 	
 func on_area_entered(area):
+	if is_instance_valid(parent_projectile) and "area_entered" in parent_projectile: #callback
+		parent_projectile.area_entered(area)
+
 	if not area is Hitbox:
 		return
 	
@@ -98,6 +101,10 @@ func on_area_entered(area):
 			parent_projectile.pierce -= 1
 		if is_instance_valid(area.parent_projectile):
 			area.parent_projectile.pierce -= 1
+			
+func on_body_entered(body):
+	if is_instance_valid(parent_projectile) and "body_entered" in parent_projectile:
+		parent_projectile.body_entered(body)
 			
 func collide():
 	pass

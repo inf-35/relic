@@ -103,7 +103,7 @@ func create_map(level : int, world_name : String, level_type : String):
 	match world_name + " " + str(level) + " " + level_type:
 		"grottos 1 gameplay":
 			level_end_pos = write_room({ "position" : Vector2i(0,0), "identifier" : "start"})
-			level_end_pos = create_path(level_end_pos,10,{Vector2.LEFT : 5, Vector2.RIGHT : 6, Vector2.UP : 5, Vector2.DOWN : 5},Vector2i.ONE)
+			level_end_pos = create_path(level_end_pos,50,{Vector2(0,2) : 2, Vector2(0,-2) : 3, Vector2(2,0) : 2, Vector2(-2,0) : 2},Vector2i(3,3))
 			
 			level_end_pos = write_room(
 				{ "position" : level_end_pos, "identifier" : "end", #identifier - type of room
@@ -115,8 +115,9 @@ func create_map(level : int, world_name : String, level_type : String):
 				}
 			)
 
-			#place_features(floors_to_create,0.8,Vector2i(1,1),Grunt.new())
-			#place_features(floors_to_create,0.8,Vector2i(2,2),Beetle.new())
+			place_features(floors_to_create,0.9,Vector2i(1,1),Grunt.new())
+			place_features(floors_to_create,0.95,Vector2i(2,2),Beetle.new())
+			place_features(floors_to_create,0.2,Vector2i(2,2),Rock.new())
 		"grottos 2 shop":
 			write_room(
 				{ "position" : level_end_pos, "identifier" : "shop", #identifier - type of room
@@ -148,7 +149,6 @@ func create_map(level : int, world_name : String, level_type : String):
 	write_tiles()
 	await get_tree().create_timer(0.05).timeout
 	spawn_post_processing()
-	write_enemies(world_name)
 	tilemap.create_features(features_to_create)
 	
 	var bounding_rect : Rect2i = tilemap.get_used_rect()
@@ -316,17 +316,6 @@ func write_ceilings():
 func write_walls():
 	for wall_tile in walls_to_create:
 		tilemap.set_cell(0,wall_tile,1,Vector2i(1,0))
-		
-func write_enemies(world : String):
-	for spawn in enemy_spawns:
-		if spawn.captures != null:
-			var enemy : Controller
-			if spawn.captures > 4:
-				enemy = Beetle.new()
-			else:
-				enemy = Grunt.new()
-			enemy.property_cache.position = spawn.position * cell_size + Vector2i(cell_size * 0.5,cell_size * 0.5)
-			controllers.add_child(enemy)
 		
 func draw(start : Vector2i, size : Vector2i) -> bool:
 	var overlap : int = 0

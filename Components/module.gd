@@ -6,6 +6,7 @@ var player : Player
 
 var activated : bool = false:
 	set(new_activation):
+		player.entity.parse_modfiers()
 		if new_activation:
 			activate()
 		else:

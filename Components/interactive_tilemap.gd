@@ -8,7 +8,7 @@ var cells_to_scenes : Dictionary = {
 }
 
 var cache : int = 0
-
+var time_to_spawn : float = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -43,3 +43,4 @@ func create_features(features : Dictionary):
 			GameDirector.controllers.add_child.call_deferred(feature_scene)
 		else:
 			get_parent().add_child.call_deferred(feature_scene)
+		await get_tree().create_timer(time_to_spawn/len(features)).timeout

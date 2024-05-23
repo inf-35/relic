@@ -1,6 +1,6 @@
 extends LabelAutosized
 
-class_name HepassivehLabel
+class_name HealthLabel
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

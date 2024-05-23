@@ -1,7 +1,8 @@
-res://Components/projectile.tscn
+res://world.tscn
 res://Shaders/shadow.gdshader
 res://Shaders/test.gdshader
-res://Components/Weapons/basic_weapon.gd
-res://Components/projectile.gd
-res://Components/Weapons/round_weapon.gd
-res://Components/Weapons/ultra_weapon.gd
+res://Components/TileSkins/rock.tscn
+res://Components/EntitySkins/beetle.tscn
+res://Components/EntitySkins/player.tscn
+res://Components/EntitySkins/grunt.tscn
+res://Components/EntitySkins/projectile.tscn

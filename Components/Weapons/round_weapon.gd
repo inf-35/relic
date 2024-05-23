@@ -16,7 +16,7 @@ func setup_stats():
 			"status_effects" : [{},"hitbox"],
 			"bounces" : [1,"controller"],
 			"pierce" : [1, "controller"],
-			"acceleration" : [100,"controller"],
+			"acceleration" : [0,"controller"],
 			"affiliation" : ["controller","hitbox"],
 			"parent_weapon" : [self,"controller"],
 		}

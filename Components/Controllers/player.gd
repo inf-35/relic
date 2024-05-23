@@ -42,7 +42,7 @@ func _ready():
 	weapons.add_child(modifier)
 	weapon_dict[1] = modifier
 	
-	var ultra_weapon : BasicWeapon = BasicWeapon.new()
+	var ultra_weapon : SheathWeapon = SheathWeapon.new()
 	ultra_weapon.controller = self
 	weapons.add_child(ultra_weapon)
 	weapon_dict[2] = ultra_weapon
@@ -69,18 +69,10 @@ func _ready():
 	entity.died.connect(func():
 		queue_free()
 	)
-
-	i_timer.autostart = false
-	i_timer.one_shot = true 
-	add_child.call_deferred(i_timer)
 	
-	i_timer.timeout.connect(func():
-		entity.status_effects.iframe = false
-	)
-	
-	entity.hp_changed.connect(func():
-		entity.status_effects.iframe = true
-		i_timer.start(0.3)
+	entity.entity_hit.connect(func():
+		entity.status_effects.iframe = 0.3
+		entity.parse_stats()
 	)
 	
 
