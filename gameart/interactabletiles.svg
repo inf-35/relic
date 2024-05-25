@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="4000"
+   height="4000"
+   viewBox="0 0 1058.3333 1058.3333"
+   version="1.1"
+   id="svg400"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="interactabletiles.svg"
+   inkscape:export-filename="ui.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview402"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="2.6281642"
+     inkscape:cx="315.4293"
+     inkscape:cy="165.32453"
+     inkscape:window-width="2560"
+     inkscape:window-height="1560"
+     inkscape:window-x="-12"
+     inkscape:window-y="-12"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g15090">
+    <inkscape:grid
+       type="xygrid"
+       id="grid647"
+       spacingx="0.26458333"
+       spacingy="0.26458333"
+       empspacing="200"
+       originx="0"
+       originy="0" />
+  </sodipodi:namedview>
+  <defs
+     id="defs397" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g15090">
+      <rect
+         style="fill:#7c9ca6;fill-opacity:1;stroke-width:0;stroke-opacity:0.393089;paint-order:markers fill stroke"
+         id="rect2016"
+         width="52.916664"
+         height="52.916664"
+         x="0"
+         y="0" />
+      <rect
+         style="fill:#a67c7c;fill-opacity:1;stroke-width:0;stroke-opacity:0.393089;paint-order:markers fill stroke"
+         id="rect2018"
+         width="52.916664"
+         height="52.916664"
+         x="52.916664"
+         y="0" />
+      <rect
+         style="fill:#a6a47c;fill-opacity:1;stroke-width:0;stroke-opacity:0.393089;paint-order:markers fill stroke"
+         id="rect2074"
+         width="52.916664"
+         height="52.916664"
+         x="105.83333"
+         y="0"
+         ry="0" />
+    </g>
+  </g>
+</svg>
