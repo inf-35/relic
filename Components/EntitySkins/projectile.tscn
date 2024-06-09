@@ -12,10 +12,12 @@ size = Vector2(4, 4)
 size = Vector2(4, 4)
 
 [node name="Projectile" type="CharacterBody2D" node_paths=PackedStringArray("movement_component", "main_hitbox")]
+modulate = Color(1, 0, 0, 1)
 z_index = 100
 z_as_relative = false
 y_sort_enabled = true
 position = Vector2(2.08165e-12, 2.08165e-12)
+scale = Vector2(1.5, 1.5)
 collision_layer = 0
 collision_mask = 16
 script = ExtResource("1_1uur3")
@@ -47,5 +49,5 @@ texture = ExtResource("4_ymvyn")
 script = ExtResource("3_pyf2i")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-2.08165e-12, 9)
+position = Vector2(-1.38777e-12, 0.666667)
 shape = SubResource("RectangleShape2D_dindn")

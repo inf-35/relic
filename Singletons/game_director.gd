@@ -103,7 +103,7 @@ func create_map(level : int, world_name : String, level_type : String):
 	match world_name + " " + str(level) + " " + level_type:
 		"grottos 1 gameplay":
 			level_end_pos = write_room({ "position" : Vector2i(0,0), "identifier" : "start"})
-			level_end_pos = create_path(level_end_pos,50,{Vector2(0,2) : 2, Vector2(0,-2) : 3, Vector2(2,0) : 2, Vector2(-2,0) : 2},Vector2i(3,3))
+			level_end_pos = create_path(level_end_pos,50,{Vector2(0,1) : 4, Vector2(0,-1) : 5, Vector2(1,0) : 4, Vector2(-1,0) : 4},Vector2i(1,1))
 			
 			level_end_pos = write_room(
 				{ "position" : level_end_pos, "identifier" : "end", #identifier - type of room
@@ -220,13 +220,16 @@ func write_room(room) -> Vector2i:
 	return room.position + exit - offset
 		
 func write_tiles(): #function for writing tiles to the tilemap
-	
 	for floor_tile in floors_to_create:
 		tilemap.set_cell(1,floor_tile,1,Vector2i(0,0))
 		
 		#create walls from floors
 		var wall_adjacencies : Array[Vector2i] = [
-			Vector2(1,0),Vector2(-1,0),Vector2(0,1),Vector2(0,-1)]
+			Vector2(2,2),Vector2(2,1),Vector2(2,0),Vector2(2,-1),Vector2(2,-2),
+			Vector2(1,2),Vector2(1,1),Vector2(1,0),Vector2(1,-1),Vector2(1,-2),
+			Vector2(0,2),Vector2(0,1),Vector2(0,-1),Vector2(0,-2),
+			Vector2(-2,2),Vector2(-2,1),Vector2(-2,0),Vector2(-2,-1),Vector2(-2,-2),
+			Vector2(-1,2),Vector2(-1,1),Vector2(-1,0),Vector2(-1,-1),Vector2(-1,-2),]
 			
 		for adjacency in wall_adjacencies:
 			if not walls_to_create.has(floor_tile + adjacency) and not floors_to_create.has(floor_tile + adjacency):

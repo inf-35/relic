@@ -1,6 +1,7 @@
 extends Node
 
 var context : String = "gameplay" #gameplay, customisation
+var weapon_locked : bool = false
 
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -13,6 +14,7 @@ func _process(_delta):
 		return
 		
 	GameDirector.player.entity.movement_vector = Input.get_vector("left","right","up","down")
+	
 
 func _input(event : InputEvent):
 	if not GameDirector.run_active:
@@ -24,10 +26,17 @@ func _input(event : InputEvent):
 	match context:
 		"gameplay":
 			if Input.is_action_just_pressed("primary"):
-				if len(GameDirector.player.active_weapons_array) > GameDirector.player.cur_weapon_index:
-					if GameDirector.player.active_weapons_array[GameDirector.player.cur_weapon_index] is Weapon:
-						GameDirector.player.active_weapons_array[GameDirector.player.cur_weapon_index].fire(GameDirector.player.entity.get_local_mouse_position())
-						GameDirector.player.cur_weapon_index = (GameDirector.player.cur_weapon_index + 1) % (len(GameDirector.player.active_weapons_array))
+				if weapon_locked:
+					await get_tree().create_timer(0.01).timeout
+					
+				else:
+					if len(GameDirector.player.active_weapons_array) > GameDirector.player.cur_weapon_index:
+						if GameDirector.player.active_weapons_array[GameDirector.player.cur_weapon_index] is Weapon:
+							GameDirector.player.active_weapons_array[GameDirector.player.cur_weapon_index].fire(GameDirector.player.entity.get_local_mouse_position())
+							weapon_locked = true
+							await GameDirector.player.active_weapons_array[GameDirector.player.cur_weapon_index].cooldown_finished
+							GameDirector.player.cur_weapon_index = (GameDirector.player.cur_weapon_index + 1) % (len(GameDirector.player.active_weapons_array))
+							weapon_locked = false
 			
 			if Input.is_action_just_pressed("interact"):
 				if len(GameDirector.player.actions_list) <= 0:

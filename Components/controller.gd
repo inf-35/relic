@@ -75,7 +75,7 @@ func generate_nodes():
 		raycast.force_raycast_update()
 	)
 	add_child(raycast_timer)
-	raycast_timer.start(0.2)
+	raycast_timer.start(0.25)
 
 func generate_skin(generating_skin):
 	y_sort_enabled = true

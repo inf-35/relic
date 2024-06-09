@@ -6,3 +6,4 @@ res://Components/EntitySkins/beetle.tscn
 res://Components/EntitySkins/player.tscn
 res://Components/EntitySkins/grunt.tscn
 res://Components/EntitySkins/projectile.tscn
+res://Components/hitbox.tscn

@@ -18,7 +18,7 @@ scale = Vector2(0.2, 0.2)
 collision_layer = 16
 collision_mask = 16
 script = ExtResource("1_k6vqa")
-base_max_hp = 40.0
+base_max_hp = 10.0
 skin = "rock"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -36,8 +36,8 @@ position = Vector2(50, 47.5)
 shape = SubResource("RectangleShape2D_oph60")
 
 [node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
-collision_layer = 16
-collision_mask = 15
+collision_layer = 0
+collision_mask = 0
 script = ExtResource("3_x4nt5")
 entity = NodePath("..")
 contact_damage = 0.0

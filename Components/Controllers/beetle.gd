@@ -68,13 +68,16 @@ func _process(delta):
 		return
 	
 	#ai throttling
-	if (entity.position - GameDirector.player.entity.position).length() > 400:
+	if (entity.position - GameDirector.player.entity.position).length_squared() > 100000:
 		nav_agent.radius = 0
 	else:
 		nav_agent.radius = 5
 	
 	match state:
 		"loiter":
+			if (GameDirector.player.entity.position - entity.position).length_squared() > 60000:
+				return
+				
 			if not raycast.get_collider():
 				return
 				

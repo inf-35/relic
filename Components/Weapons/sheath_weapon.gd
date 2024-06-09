@@ -23,4 +23,4 @@ func setup_stats():
 	}
 	
 func fire_payload(target : Vector2): #primary fire function
-	arc_fire(controller.entity.position,"basic",5,20,target)
+	arc_fire(controller.entity.position,"basic",20,360,target)

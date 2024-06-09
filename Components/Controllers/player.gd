@@ -32,17 +32,17 @@ func _ready():
 	generate_passives()
 	generate_nodes()
 	
-	var basic_weapon : UltraWeapon = UltraWeapon.new()
-	basic_weapon.controller = self
-	weapons.add_child(basic_weapon)
-	weapon_dict[0] = basic_weapon
+	#var basic_weapon : UltraWeapon = UltraWeapon.new()
+	#basic_weapon.controller = self
+	#weapons.add_child(basic_weapon)
+	#weapon_dict[0] = basic_weapon
+	#
+	#var modifier : ModifierWeapon = ModifierWeapon.new()
+	#modifier.controller = self
+	#weapons.add_child(modifier)
+	#weapon_dict[1] = modifier
 	
-	var modifier : ModifierWeapon = ModifierWeapon.new()
-	modifier.controller = self
-	weapons.add_child(modifier)
-	weapon_dict[1] = modifier
-	
-	var ultra_weapon : SheathWeapon = SheathWeapon.new()
+	var ultra_weapon : Weapon = BasicWeapon.new()
 	ultra_weapon.controller = self
 	weapons.add_child(ultra_weapon)
 	weapon_dict[2] = ultra_weapon

@@ -115,20 +115,21 @@ func animation_callback_func(identifier : String): #animation player calls this 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	parse_status_effects(delta)
-	
+
 func _physics_process(delta):
+	
 	if not "velocity" in self:
 		return
 		
 	if controller is Projectile:
 		var collide_result : KinematicCollision2D = move_and_collide(movement_vector * stats.movement_speed.final * speed_perc * delta * 5,false)
 		if collide_result:
+			await get_tree().process_frame
 			controller.bounces -= 1
 			movement_vector = movement_vector.bounce(collide_result.get_normal())
-			
 	else:
-		self.velocity += movement_vector * stats.movement_speed.final * speed_perc * delta * 50
-		self.velocity *= (1 - 5 * delta)
+		self.velocity += movement_vector * stats.movement_speed.final * speed_perc * delta * 200
+		self.velocity *= (1 - 15 * delta)
 		movement(self)
 	
 func movement(node : Node):
@@ -157,7 +158,7 @@ func parse_modifiers():
 			stats[stat].signal.emit()
 			stats[stat].cache = stats[stat].modified
 			
-	parse_status_effects() #an update in modifiers neccessitates an update in status effects
+	parse_status_effects() #an update in modifiers necessitates an update in status effects
 		
 func parse_status_effects(delta : float = 0.016):
 	for stat in stats:

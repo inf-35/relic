@@ -70,7 +70,7 @@ func on_area_entered(area):
 	if is_instance_valid(parent_projectile) and "area_entered" in parent_projectile: #callback
 		parent_projectile.area_entered(area)
 
-	if not area is Hitbox:
+	if not "affiliation" in area:
 		return
 	
 	if area.affiliation == affiliation: #same affiliation - discard
@@ -89,7 +89,7 @@ func on_area_entered(area):
 		
 	if area.collision_tag > collision_tag: #only one hitbox will process the collision
 		return
-	
+	#collision processing
 	if "contact_damage" in area:
 		var attacking_is_projectile : bool = is_instance_valid(area.parent_projectile)
 		var self_is_projectile : bool = is_instance_valid(parent_projectile)
@@ -99,7 +99,7 @@ func on_area_entered(area):
 			
 		if is_instance_valid(parent_projectile): #is projectile
 			parent_projectile.pierce -= 1
-		if is_instance_valid(area.parent_projectile):
+		if is_instance_valid(area.parent_projectile): #area is projectile
 			area.parent_projectile.pierce -= 1
 			
 func on_body_entered(body):

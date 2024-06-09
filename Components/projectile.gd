@@ -9,13 +9,13 @@ var acceleration : float = 0.0
 var contact_damage : float = 20
 var initial_speed : float = 40
 
-var bounces : int = 1:
+var bounces : int = 1: #number of bounces (off terrain and such)
 	set(new_bounces):
 		bounces = new_bounces
 		if bounces <= 0:
 			queue_free()
 			
-var pierce : int = 1:
+var pierce : int = 1: #number of pierces (through entities)
 	set(new_pierce):
 		pierce = new_pierce
 		if pierce <= 0:
@@ -65,8 +65,7 @@ func _process(delta):
 		return
 	
 	age += delta
-
-	#entity.get_node("Physical").rotation = (entity.movement_vector).angle()
+	
 	if acceleration != 0:
 		entity.base_movement_speed += acceleration * delta
 	

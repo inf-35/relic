@@ -5,10 +5,12 @@ class_name Weapon
 signal shot #used when weapon is shot
 signal child_projectile_landed #used when child projectile is destroyed, includes projectile node
 signal descendant_projectile_landed #used when descendant (2nd order child) projectile is destroyed, includes projectile node
+signal cooldown_finished
 
 var controller
 var cooldown_timer = Timer.new()
 var cooldown_time : float = 0.5
+var camera_shake : float = 10.0
 var projectile_types : Dictionary = {
 	"basic" : {
 		"contact_damage" : 40,
@@ -18,7 +20,6 @@ var projectile_types : Dictionary = {
 }
 
 var modified_projectile_types : Dictionary = projectile_types.duplicate(true)
-
 var item_texture : Texture  #texture used for ui icon
 var proper_name : String = "undefined" #TODO : implement localisation
 var data_name : String = "undefined"
@@ -47,6 +48,9 @@ func _init():
 	setup_stats()
 	add_child(cooldown_timer)
 	cooldown_timer.one_shot = true
+	cooldown_timer.timeout.connect(func():
+		cooldown_finished.emit()
+	)
 	
 	child_projectile_landed.connect(on_child_projectile_landed)
 	descendant_projectile_landed.connect(on_descendant_projectile_landed)
@@ -54,14 +58,16 @@ func _init():
 func fire(target : Vector2) -> void: 
 	if cooldown_timer.time_left != 0:
 		return
-		
-	GameDirector.camera.shake_vector = -GameDirector.player.entity.get_local_mouse_position().normalized() * 2
+	
+	
+	var shake_vector : Vector2 = (controller.entity.global_position + target * 0.01 - GameDirector.camera.global_position)
+	GameDirector.camera.shake_vector += shake_vector.normalized() * camera_shake / (1 + min(shake_vector.length() * 0.05, 10))
 	fire_payload(target)
 	shot.emit()
 	cooldown_timer.start(cooldown_time)
 	
 func fire_payload(target : Vector2) -> void: #overriden by child class function
-	pass
+	push_warning(self, " does not have defined fire_payload function!")
 	
 func modify(primary : Node ) -> void: #takes in a primary[weapon] and modifies it in some fashion
 	pass
@@ -90,7 +96,7 @@ func arc_fire(position : Vector2, projectile_type : String, projectiles : int, a
 		var projectile : Projectile = create_projectile(projectile_type)
 		projectile.property_cache.base_movement_speed = projectile.initial_speed
 		projectile.property_cache.position = position
-		if angle == 360:
+		if int(angle) % 360 == 0: #prevents overlap between projectiles at 0/360 degrees
 			projectile.property_cache.movement_vector = target.normalized().rotated(deg_to_rad(-angle * 0.5 + i * angle/(projectiles)))
 		else:
 			projectile.property_cache.movement_vector = target.normalized().rotated(deg_to_rad(-angle * 0.5 + i * angle/(projectiles-1)))

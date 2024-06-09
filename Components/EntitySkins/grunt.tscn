@@ -245,6 +245,7 @@ collision_layer = 2
 collision_mask = 13
 script = ExtResource("3_02ixm")
 entity = NodePath("..")
+contact_damage = 0.0
 affiliation = "enemy"
 
 [node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
