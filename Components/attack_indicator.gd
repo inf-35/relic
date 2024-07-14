@@ -41,7 +41,7 @@ func close():
 func _draw():
 	match shape:
 		"arc":
-			draw_arc(Vector2.ZERO,20,-deg_to_rad(arc_angle*0.5),deg_to_rad(arc_angle*0.5),ceil(arc_angle*0.05),color,1.0)
+			draw_arc(Vector2.ZERO,radius,-deg_to_rad(arc_angle*0.5),deg_to_rad(arc_angle*0.5),ceil(arc_angle*0.2),color,1.0)
 		"rect":
 			var half_vert = size.y * 0.5
 			var half_hor = size.x * 0.5

@@ -3,6 +3,7 @@ extends Area2D
 class_name Prompt
 
 var just_activated : bool
+@export var instant_activation : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,8 +23,11 @@ func _process(delta):
 	
 func on_area_entered(area : Area2D):
 	if "entity" in area:
-		area.entity.controller.actions_list.append(self)
-
+		if not instant_activation:
+			area.entity.controller.actions_list.append(self)
+		else:
+			action(area.entity.controller)
+			
 func on_area_exited(area : Area2D):
 	if "entity" in area:
 		area.entity.controller.actions_list.erase(self)

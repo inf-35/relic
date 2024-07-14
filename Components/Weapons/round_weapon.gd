@@ -11,10 +11,10 @@ func setup_stats():
 	cooldown_time = 1
 	projectile_types = {
 		"basic" : { #basic projectile used for most weapons
-			"contact_damage" : [40,"hitbox"], #[value, scope]
+			"contact_damage" : [4,"hitbox"], #[value, scope]
 			"initial_speed" : [10,"controller"],
 			"status_effects" : [{},"hitbox"],
-			"bounces" : [1,"controller"],
+			"bouncy" : [false,"controller"],
 			"pierce" : [1, "controller"],
 			"acceleration" : [0,"controller"],
 			"affiliation" : ["controller","hitbox"],
@@ -23,5 +23,5 @@ func setup_stats():
 	}
 
 func fire_payload(target : Vector2):
-	arc_fire(controller.entity.position,"basic",12,360,target)
+	arc_fire(controller.entity.position + target.normalized() * spawn_offset, "basic",10,360,target)
 

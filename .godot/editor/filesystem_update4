@@ -1,9 +1,5 @@
-res://world.tscn
+res://Interfaces/main_gui.tscn
 res://Shaders/shadow.gdshader
 res://Shaders/test.gdshader
-res://Components/TileSkins/rock.tscn
-res://Components/EntitySkins/beetle.tscn
-res://Components/EntitySkins/player.tscn
-res://Components/EntitySkins/grunt.tscn
-res://Components/EntitySkins/projectile.tscn
-res://Components/hitbox.tscn
+res://Components/Controllers (Non-Entity)/rock.gd
+res://world.tscn

@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://bfe3qhh3hm016"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_uxc0k"]
+[ext_resource type="Script" path="res://Components/Prompts/lumen_pickup_prompt.gd" id="2_ium3n"]
+[ext_resource type="Texture2D" uid="uid://c4nt7vm1gxdj4" path="res://rock (2).png" id="3_r2w5c"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yagey"]
+size = Vector2(8, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_olqgq"]
+size = Vector2(4, 4)
+
+[node name="LumenPickup" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 16
+script = ExtResource("1_uxc0k")
+skin = "dropped_weapon"
+
+[node name="LumenPickupPrompt" type="Area2D" parent="."]
+script = ExtResource("2_ium3n")
+instant_activation = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LumenPickupPrompt"]
+shape = SubResource("RectangleShape2D_yagey")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+self_modulate = Color(0.0784314, 0.494118, 1, 1)
+scale = Vector2(0.07, 0.07)
+texture = ExtResource("3_r2w5c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_olqgq")

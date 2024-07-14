@@ -9,12 +9,13 @@ func setup_stats():
 	description = "A [hint={hello}]basic[/hint] weapon"
 	
 	cooldown_time = 0.5
+	lumen_cost = 0
 	projectile_types = {
 		"basic" : { #basic projectile used for most weapons
-			"contact_damage" : [40,"hitbox"], #[value, scope]
-			"initial_speed" : [30,"controller"],
+			"contact_damage" : [4,"hitbox"], #[value, scope]
+			"initial_speed" : [20,"controller"],
 			"status_effects" : [{},"hitbox"],
-			"bounces" : [1,"controller"],
+			"bouncy" : [false,"controller"],
 			"pierce" : [1, "controller"],
 			"acceleration" : [0,"controller"],
 			"affiliation" : ["controller","hitbox"],
@@ -23,4 +24,4 @@ func setup_stats():
 	}
 	
 func fire_payload(target : Vector2): #primary fire function
-	single_fire(controller.entity.position,"basic",target)
+	single_fire(controller.entity.position + target.normalized() * spawn_offset,"basic",target)

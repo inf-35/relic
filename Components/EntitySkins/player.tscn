@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c02jwur0emrhf"]
+[gd_scene load_steps=13 format=3 uid="uid://c02jwur0emrhf"]
 
 [ext_resource type="Script" path="res://Components/entity.gd" id="1_wkrhe"]
 [ext_resource type="Texture2D" uid="uid://biclc64kndju5" path="res://entitysheet.png" id="2_k88m0"]
@@ -35,13 +35,31 @@ _data = {
 "dash": SubResource("Animation_iahkp")
 }
 
+[sub_resource type="Gradient" id="Gradient_sbpga"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.1, 0.7)
+colors = PackedColorArray(1, 1, 1, 1, 0.714286, 0.714286, 0.714286, 1, 0, 0, 0, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_w2tjc"]
+gradient = SubResource("Gradient_sbpga")
+width = 100
+height = 100
+use_hdr = true
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qdum6"]
+radius = 50.0
+
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("movement_component", "animation_player", "main_hitbox")]
 z_index = 100
 z_as_relative = false
 y_sort_enabled = true
+collision_layer = 0
 collision_mask = 16
 script = ExtResource("1_wkrhe")
-base_max_hp = 1000.0
+base_max_hp = 24.0
 base_movement_speed = 10.0
 skin = "player"
 movement_component = NodePath("MovementComponent")
@@ -51,7 +69,7 @@ main_hitbox = NodePath("Hitbox")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 y_sort_enabled = true
 material = ExtResource("2_w2jtj")
-position = Vector2(1, -6)
+position = Vector2(1, -11)
 scale = Vector2(0.06, 0.06)
 texture = ExtResource("2_k88m0")
 hframes = 20
@@ -60,19 +78,18 @@ frame = 1
 region_rect = Rect2(400, 0, 400, 400)
 
 [node name="LevelCollision" type="CollisionShape2D" parent="."]
-position = Vector2(0, 5)
 shape = SubResource("RectangleShape2D_w3kc6")
 
 [node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
-position = Vector2(0, 6)
+position = Vector2(0, 1)
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("3_bnxut")
 entity = NodePath("..")
-contact_damage = 0.0
 affiliation = "player"
 
 [node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]
+visible = false
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_nciuc")
 
@@ -83,3 +100,17 @@ script = ExtResource("4_e4758")
 libraries = {
 "": SubResource("AnimationLibrary_vqw2h")
 }
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+color = Color(1, 0.65, 0.3, 1)
+energy = 0.6
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_w2tjc")
+
+[node name="Attraction" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Attraction"]
+position = Vector2(0, -2)
+shape = SubResource("CircleShape2D_qdum6")

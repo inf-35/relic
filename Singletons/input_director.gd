@@ -26,17 +26,7 @@ func _input(event : InputEvent):
 	match context:
 		"gameplay":
 			if Input.is_action_just_pressed("primary"):
-				if weapon_locked:
-					await get_tree().create_timer(0.01).timeout
-					
-				else:
-					if len(GameDirector.player.active_weapons_array) > GameDirector.player.cur_weapon_index:
-						if GameDirector.player.active_weapons_array[GameDirector.player.cur_weapon_index] is Weapon:
-							GameDirector.player.active_weapons_array[GameDirector.player.cur_weapon_index].fire(GameDirector.player.entity.get_local_mouse_position())
-							weapon_locked = true
-							await GameDirector.player.active_weapons_array[GameDirector.player.cur_weapon_index].cooldown_finished
-							GameDirector.player.cur_weapon_index = (GameDirector.player.cur_weapon_index + 1) % (len(GameDirector.player.active_weapons_array))
-							weapon_locked = false
+				GameDirector.player.player_fire()
 			
 			if Input.is_action_just_pressed("interact"):
 				if len(GameDirector.player.actions_list) <= 0:

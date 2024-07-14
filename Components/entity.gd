@@ -15,8 +15,6 @@ signal animation_callback
 var controller #typing this would cause a cyclic reference
 var status_effects_hash : int
 
-@export var immobile : bool = false
-
 @export var base_max_hp : float:
 	set(new_max_hp):
 		base_max_hp = new_max_hp
@@ -35,7 +33,10 @@ var status_effects_hash : int
 	set(new_hp):
 		if new_hp <= 0 and hp > 0:
 			died.emit()
-		hp = new_hp
+		if new_hp > stats.max_hp.final:
+			hp = stats.max_hp.final
+		else:
+			hp = new_hp
 		hp_changed.emit()
 		
 var modifiers : Dictionary = { #permanent modifiers (from like passives and stuff)
@@ -88,48 +89,108 @@ var speed_perc : float = 1 #should only be above 1 for sprinting / special charg
 
 var hit_cache : int = 0 #counts number of hits yet unprocessed
 
+var friction : float = 15.0
+
+var projectile_intersection_area : Area2D
+
 func reset_stats():
 	hp = stats.max_hp.final
 	speed_perc = 1
 	parse_modifiers()
 	
 func hit(attacking_hitbox : Hitbox, attacked_hitbox : Hitbox):
-	if status_effects.iframe > 0: #entities with iframe ignore hits
-		return
-		
 	var attacking_status_effects : Dictionary = attacking_hitbox.status_effects
 	var attacking_contact_damage : float = attacking_hitbox.contact_damage
 	var attacked_damage_mult : float = attacked_hitbox.damage_multiplier
+	var attacking_velocity : Vector2 = Vector2.ZERO
+	var attacking_position : Vector2 = attacking_hitbox.global_position
+	if "velocity" in attacking_hitbox.entity:
+		attacking_velocity = attacking_hitbox.entity.velocity
+	
 	hit_cache += 1
 	await get_tree().create_timer(0.02 * hit_cache).timeout #waits in the hit queue, 0.02s per unprocessed bullet
+	hit_cache -= 1
+	
+	if status_effects.iframe > 0: #entity has an iframe (probably player)
+		return
+		
 	entity_hit.emit()
 	for status_effect in attacking_status_effects:
 		status_effects[status_effect] += attacking_status_effects[status_effect]
 	hp -= attacking_contact_damage * attacked_damage_mult * (1-stats.resistance.final)
-	hit_cache -= 1
 	parse_stats()
-	
-func animation_callback_func(identifier : String): #animation player calls this function
-	animation_callback.emit(identifier)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	parse_status_effects(delta)
-
-func _physics_process(delta):
 	
 	if not "velocity" in self:
 		return
 		
+	if attacking_contact_damage == 0:
+		return
+		
+	self.velocity += (attacking_velocity+(attacked_hitbox.global_position-attacking_position)*0.01).normalized() * 200
+	
+func animation_callback_func(identifier : String): #animation player calls this function
+	animation_callback.emit(identifier)
+	
+func _ready():
+	if controller is Projectile: #creates a duplicate area2d that allows us to cheaply detect projectile collisions with terrain
+		projectile_intersection_area = Area2D.new()
+		projectile_intersection_area.set_collision_mask_value(5,true) #with terrain
+		projectile_intersection_area.set_collision_mask_value(1,false)
+		projectile_intersection_area.set_collision_layer_value(1,false)
+		for child in get_children(): #projectile_intersection_area has exactly the same shape as projectile hitbox
+			if child is CollisionShape2D:
+				var duplicate : CollisionShape2D = child.duplicate()
+				projectile_intersection_area.add_child(duplicate)
+		add_child(projectile_intersection_area)
+		
+		await get_tree().process_frame
+		await get_tree().process_frame
+		print(projectile_intersection_area.get_overlapping_bodies())
+		
+		if (len(projectile_intersection_area.get_overlapping_bodies()) > 0):
+			queue_free()
+		
+		
+		
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	parse_status_effects(delta)
+	
+var bounce_lock : bool = false
+
+func _physics_process(delta):
+	if not "velocity" in self:
+		return
+		
 	if controller is Projectile:
-		var collide_result : KinematicCollision2D = move_and_collide(movement_vector * stats.movement_speed.final * speed_perc * delta * 5,false)
-		if collide_result:
-			await get_tree().process_frame
-			controller.bounces -= 1
-			movement_vector = movement_vector.bounce(collide_result.get_normal())
+		var motion : Vector2
+		if not controller.assigned_pattern_number:
+			motion = movement_vector * stats.movement_speed.final * speed_perc * delta * 5
+			self.velocity = motion
+			position += motion
+		
+		if controller.bouncy:
+			var collide_result = move_and_collide(motion,true)
+			
+			if collide_result and not bounce_lock:
+				bounce_lock = true
+				await get_tree().create_timer(delta*2).timeout
+				movement_vector = movement_vector.bounce(collide_result.get_normal())
+				await get_tree().create_timer(0.2).timeout
+				bounce_lock = false
+		else:
+			var collide_result : bool = (len(projectile_intersection_area.get_overlapping_bodies()) > 0)
+		
+			if collide_result:
+				bounce_lock = true
+				await get_tree().create_timer(delta * 2).timeout
+				if not controller.proxy_only and not controller.invincible:
+					queue_free()
+				await get_tree().create_timer(0.2).timeout
+				bounce_lock = false
 	else:
 		self.velocity += movement_vector * stats.movement_speed.final * speed_perc * delta * 200
-		self.velocity *= (1 - 15 * delta)
+		self.velocity *= (1 - friction * delta)
 		movement(self)
 	
 func movement(node : Node):
@@ -189,5 +250,5 @@ func parse_stats():
 				stats.max_hp.final = stats.max_hp.modified + value
 			"resistance_boost" when value > 0:
 				stats.resistance.final = stats.resistance.modified + value
-			"iframe" when value > 0: #causes entities to ignore hits
+			"iframe": #causes entities to ignore hits
 				pass

@@ -7,10 +7,13 @@ signal action
 @export var entity : Entity #entity hitbox
 var parent_projectile : Projectile #projectile hitbox
 
+var intersecting_areas : Array[Area2D]
+
 @export var damage_multiplier : float = 1
-@export var contact_damage : float = 20
+@export var contact_damage : float = 0
 
 var enabled : bool = true
+var continuous_hit : bool = false
 
 @export_enum("neutral","player","enemy") var affiliation : String:
 	set(new_affiliation):
@@ -61,6 +64,28 @@ func _ready():
 	
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	area_entered.connect(on_area_entered)
+	
+	while is_instance_valid(self):
+		await get_tree().create_timer(0.05).timeout
+		if not continuous_hit:
+			continue
+		for area in intersecting_areas:
+			if not is_instance_valid(area):
+				continue
+			
+			if overlaps_area(area):
+				if "contact_damage" in area:
+					var attacking_is_projectile : bool = is_instance_valid(area.parent_projectile)
+					var self_is_projectile : bool = is_instance_valid(parent_projectile)
+					
+					if is_instance_valid(parent_projectile): #is projectile
+						pass
+					else:
+						entity.hit(area,self)
+					if is_instance_valid(area.parent_projectile): #area is projectile
+						pass
+					else:
+						area.entity.hit(self,area)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -73,34 +98,47 @@ func on_area_entered(area):
 	if not "affiliation" in area:
 		return
 	
-	if area.affiliation == affiliation: #same affiliation - discard
+	if area.affiliation == affiliation and affiliation != "neutral": #same affiliation - discard
 		return
 		
 	if not (area.enabled and enabled): #at least one area is disabled - discard
 		return
 		
-	if is_instance_valid(parent_projectile):
-		if parent_projectile.age < 0.05:
+	if is_instance_valid(parent_projectile) and is_instance_valid(parent_projectile.parent_weapon):
+		if parent_projectile.parent_weapon.controller == area.entity.controller and (parent_projectile.age < 0.2):
 			return
-			
-	if is_instance_valid(area.parent_projectile):
-		if area.parent_projectile.age < 0.05:
-			return
+		if is_instance_valid(area.parent_projectile) and is_instance_valid(area.parent_projectile.parent_weapon):
+			if parent_projectile.parent_weapon.controller == area.parent_projectile.parent_weapon.controller and (parent_projectile.age < 0.2 or area.parent_projectile.age < 0.2):
+				return
+		
+	#if is_instance_valid(parent_projectile):
+		#if parent_projectile.age < 0.02:
+			#return
+			#
+	#if is_instance_valid(area.parent_projectile):
+		#if area.parent_projectile.age < 0.02:
+			#return
 		
 	if area.collision_tag > collision_tag: #only one hitbox will process the collision
 		return
+	
 	#collision processing
 	if "contact_damage" in area:
+		intersecting_areas.append(area)
 		var attacking_is_projectile : bool = is_instance_valid(area.parent_projectile)
 		var self_is_projectile : bool = is_instance_valid(parent_projectile)
 		
-		entity.hit(area,self)
-		area.entity.hit(self,area)
-			
 		if is_instance_valid(parent_projectile): #is projectile
 			parent_projectile.pierce -= 1
+		else:
+			entity.hit(area,self)
 		if is_instance_valid(area.parent_projectile): #area is projectile
 			area.parent_projectile.pierce -= 1
+		else:
+			area.entity.hit(self,area)
+
+func on_area_exited(area):
+	intersecting_areas.erase(area)
 			
 func on_body_entered(body):
 	if is_instance_valid(parent_projectile) and "body_entered" in parent_projectile:

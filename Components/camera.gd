@@ -7,7 +7,7 @@ var base_camera_vel : Vector2 = Vector2.ZERO
 var shake_vector : Vector2 = Vector2.ZERO:
 	set(new_vector):
 		shake_vector = new_vector
-		if shake_vector.length_squared() < 0.5:
+		if shake_vector.length_squared() < 0.05:
 			shake_significant = false
 		else:
 			shake_significant = true

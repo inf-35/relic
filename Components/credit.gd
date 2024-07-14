@@ -6,6 +6,9 @@ func _on_area_entered(area : Area2D):
 	if not area is Hitbox:
 		return
 		
+	if not area.entity:
+		return
+		
 	if not area.entity.controller is Player:
 		return
 

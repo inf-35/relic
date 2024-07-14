@@ -34,28 +34,69 @@ var passive_dict : Dictionary = {
 }
 
 @export var stasis_exception : bool = false #whether this controller is immune to stasis
+var immobile : bool = false #whether this controller is mobile/immobile
 
-var nav_agent : NavigationAgent2D = NavigationAgent2D.new()
-var raycast : RayCast2D = RayCast2D.new()
-var raycast_timer : Timer = Timer.new()
-var weapon_timer : Timer = Timer.new()
-var timer : Timer = Timer.new()
+var nav_agent : NavigationAgent2D
+var raycast : RayCast2D
+var raycast_timer : Timer
+var weapon_timer : Timer
+var timer : Timer
 
 signal weapon_update
 signal passive_update
 signal action_signal
 
-func generate_nodes():
-	nav_agent.path_desired_distance = 0.5
-	nav_agent.avoidance_enabled = true
-	nav_agent.radius = 5
-	nav_agent.time_horizon = 0.8
-	
-	nav_agent.velocity_computed.connect(func(vel):
-		entity.movement_vector = vel.normalized()
-	)
-	
-	entity.add_child(nav_agent)
+func generate_nodes(generate_nav : bool = true, generate_raycast : bool = true):
+	if generate_nav:
+		nav_agent = NavigationAgent2D.new()
+		nav_agent.path_desired_distance = 10
+		nav_agent.avoidance_enabled = true
+		nav_agent.radius = 5
+		nav_agent.time_horizon = 0.8
+		
+		nav_agent.velocity_computed.connect(func(vel):
+			entity.movement_vector = vel.normalized() #accounts for avoidance
+		)
+		
+		entity.add_child(nav_agent)
+		
+	if generate_raycast:
+		raycast = RayCast2D.new()
+		raycast_timer = Timer.new()
+		
+		add_child(raycast)
+		
+		raycast.set_collision_mask_value(5,true) #levels
+		raycast.collide_with_areas = true
+		raycast.collide_with_bodies = true
+		match affiliation:
+			"enemy":
+				raycast.set_collision_mask_value(1,true)
+				raycast.set_collision_mask_value(2,false)
+				raycast.set_collision_mask_value(4,true)
+			"player":
+				raycast.set_collision_mask_value(1,false)
+				raycast.set_collision_mask_value(2,true)
+				raycast.set_collision_mask_value(4,true)
+			"neutral":
+				raycast.set_collision_mask_value(1,true)
+				raycast.set_collision_mask_value(2,true)
+				raycast.set_collision_mask_value(4,true)
+		raycast.add_exception(entity)
+		
+		raycast_timer.one_shot = false
+		raycast_timer.timeout.connect(func a():
+			if not is_instance_valid(GameDirector.player):
+				return 
+			raycast.position = entity.position
+			raycast.target_position = entity.to_local(GameDirector.player.entity.position)
+			raycast.force_raycast_update()
+		)
+		add_child(raycast_timer)
+		raycast_timer.start(0.25)
+
+	weapon_timer = Timer.new()
+	timer = Timer.new()
 	
 	timer.autostart = false
 	timer.one_shot = true
@@ -64,18 +105,6 @@ func generate_nodes():
 	weapon_timer.autostart = false
 	weapon_timer.one_shot = true
 	add_child(weapon_timer)
-	
-	add_child(raycast)
-	raycast_timer.one_shot = false
-	raycast_timer.timeout.connect(func a():
-		if not is_instance_valid(GameDirector.player):
-			return 
-		raycast.position = entity.position
-		raycast.target_position = entity.to_local(GameDirector.player.entity.position)
-		raycast.force_raycast_update()
-	)
-	add_child(raycast_timer)
-	raycast_timer.start(0.25)
 
 func generate_skin(generating_skin):
 	y_sort_enabled = true
@@ -91,6 +120,12 @@ func generate_skin(generating_skin):
 		for property in property_cache:
 			if property in entity:
 				entity[property] = property_cache[property]
+				
+				
+	entity.entity_hit.connect(func(): #100ms i-frame for all entities
+		entity.status_effects.iframe = 0.1
+		entity.parse_stats()
+	)
 	#
 	#GameDirector.stasis_set.connect(func(new_stasis):
 		#if stasis_exception or not is_instance_valid(entity):

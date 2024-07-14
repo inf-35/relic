@@ -4,13 +4,17 @@ class_name LabelAutosized
 
 var last_font_size : int = 10
 
-@export_enum("autoexpand","bounded") var string_size : String = "determined"
+@export_enum("autoexpand","bounded") var string_size : String = "autoexpand"
 @export var upper_bound : int
 
 func _ready():
+	setup()
+
+func setup():
 	scroll_active = false
 	update_font_size()
 	get_viewport().size_changed.connect(update_font_size)
+	finished.connect(update_font_size)
 	item_rect_changed.connect(update_font_size)
 	
 func update_font_size():

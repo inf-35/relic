@@ -10,6 +10,8 @@ signal cooldown_finished
 var controller
 var cooldown_timer = Timer.new()
 var cooldown_time : float = 0.5
+var lumen_cost : int = 0
+var spawn_offset : float = 10 #distance bullets spawn (in direction of travel)
 var camera_shake : float = 10.0
 var projectile_types : Dictionary = {
 	"basic" : {
@@ -55,16 +57,21 @@ func _init():
 	child_projectile_landed.connect(on_child_projectile_landed)
 	descendant_projectile_landed.connect(on_descendant_projectile_landed)
 	
-func fire(target : Vector2) -> void: 
+func fire(target : Vector2) -> bool: 
 	if cooldown_timer.time_left != 0:
-		return
+		return false
 	
+	if "lumen" in controller and controller.lumen < lumen_cost:
+		return false
+	elif "lumen" in controller:
+		controller.lumen -= lumen_cost
 	
 	var shake_vector : Vector2 = (controller.entity.global_position + target * 0.01 - GameDirector.camera.global_position)
 	GameDirector.camera.shake_vector += shake_vector.normalized() * camera_shake / (1 + min(shake_vector.length() * 0.05, 10))
 	fire_payload(target)
 	shot.emit()
 	cooldown_timer.start(cooldown_time)
+	return true
 	
 func fire_payload(target : Vector2) -> void: #overriden by child class function
 	push_warning(self, " does not have defined fire_payload function!")
@@ -104,12 +111,13 @@ func arc_fire(position : Vector2, projectile_type : String, projectiles : int, a
 			
 func create_projectile(projectile_type : String) -> Projectile:
 	var projectile : Projectile = Projectile.new()
-	if "velocity" in controller.entity:
+	if "velocity" in controller.entity: #inherits parent entity velocity
 		projectile.property_cache.velocity = controller.entity.velocity
 	
 	for property in modified_projectile_types[projectile_type]:
 		var value = modified_projectile_types[projectile_type][property][0]
 		var scope : String = modified_projectile_types[projectile_type][property][1]
+		projectile.parent_weapon = self
 		match property: #exceptions
 			"affiliation" when value == "controller":
 				projectile.affiliation = controller.affiliation #to the controller

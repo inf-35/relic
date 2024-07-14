@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://djrpn51uo4xp"]
 
 [ext_resource type="Script" path="res://Components/entity.gd" id="1_k6vqa"]
-[ext_resource type="Texture2D" uid="uid://q66r2p2a17tj" path="res://tilemap.png" id="2_gqskr"]
+[ext_resource type="Texture2D" uid="uid://b7nafsk7nmvj" path="res://grottoes_tilemap.png" id="2_drtbf"]
 [ext_resource type="Script" path="res://Components/hitbox.gd" id="3_x4nt5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_oph60"]
@@ -10,7 +10,7 @@ size = Vector2(100, 95)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gu6j3"]
 size = Vector2(100, 95)
 
-[node name="Rock" type="StaticBody2D"]
+[node name="Rock" type="StaticBody2D" node_paths=PackedStringArray("main_hitbox")]
 z_index = -1
 z_as_relative = false
 y_sort_enabled = true
@@ -20,15 +20,16 @@ collision_mask = 16
 script = ExtResource("1_k6vqa")
 base_max_hp = 10.0
 skin = "rock"
+main_hitbox = NodePath("Hitbox")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
 position = Vector2(50, 50)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_gqskr")
-hframes = 20
-vframes = 20
-frame = 81
+texture = ExtResource("2_drtbf")
+hframes = 10
+vframes = 10
+frame = 20
 region_rect = Rect2(0, 600, 200, 200)
 
 [node name="LevelCollision" type="CollisionShape2D" parent="."]
@@ -40,7 +41,6 @@ collision_layer = 0
 collision_mask = 0
 script = ExtResource("3_x4nt5")
 entity = NodePath("..")
-contact_damage = 0.0
 affiliation = "neutral"
 
 [node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]

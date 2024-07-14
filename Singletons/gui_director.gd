@@ -3,7 +3,6 @@ extends Node
 var main_gui : Control
 var overlay : Control
 var customisation : Control
-var visibility_manager : VisibilityManager
 
 var module_dict_index : int = 0:
 	set(weapon_new):

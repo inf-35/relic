@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://dbxmo2wqy5crm"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_1hd5e"]
+[ext_resource type="Script" path="res://Components/Prompts/health_pickup_prompt.gd" id="2_gnpnx"]
+[ext_resource type="Texture2D" uid="uid://c4nt7vm1gxdj4" path="res://rock (2).png" id="3_55j5l"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yagey"]
+size = Vector2(12, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3ha31"]
+size = Vector2(10, 10)
+
+[node name="HealthPickup" type="CharacterBody2D"]
+collision_layer = 0
+collision_mask = 16
+script = ExtResource("1_1hd5e")
+skin = "dropped_weapon"
+
+[node name="HealthPickupPrompt" type="Area2D" parent="."]
+script = ExtResource("2_gnpnx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HealthPickupPrompt"]
+shape = SubResource("RectangleShape2D_yagey")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+self_modulate = Color(1, 0.0784314, 1, 1)
+scale = Vector2(0.11, 0.11)
+texture = ExtResource("3_55j5l")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_3ha31")

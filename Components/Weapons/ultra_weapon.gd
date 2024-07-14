@@ -9,25 +9,27 @@ func setup_stats():
 	description = "A less basic pistol."
 	
 	cooldown_time = 1
+	lumen_cost = 2
 	projectile_types = {
 		"basic" : {
-			"contact_damage" : [40,"hitbox"],
+			"contact_damage" : [4,"hitbox"],
 			"initial_speed" : [10,"controller"],
 			"lifetime" : [1.5, "controller"],
 			"status_effects" : [{"heavy_freeze" = 0.2},"hitbox"],
-			"bounces" : [5,"controller"],
+			"bouncy" : [true,"controller"],
 			"pierce" : [1, "controller"],
 			"acceleration" : [0,"controller"],
 			"affiliation" : ["neutral","hitbox"],
 			"parent_weapon" : [self,"controller"],
 			"is_descendant" : [false,"controller"],
+			"scale" : [Vector2(2,2),"entity"]
 		},
 		"split" : {
-			"contact_damage" : [40,"hitbox"],
-			"initial_speed" : [40,"controller"],
-			"lifetime" : [0.2,"controller"],
+			"contact_damage" : [4,"hitbox"],
+			"initial_speed" : [10,"controller"],
+			"lifetime" : [2,"controller"],
 			"status_effects" : [{"heavy_freeze" = 0.2},"hitbox"],
-			"bounces" : [1,"controller"],
+			"bouncy" : [false,"controller"],
 			"pierce" : [1, "controller"],
 			"acceleration" : [0,"controller"],
 			"affiliation" : ["neutral","hitbox"],
@@ -38,7 +40,7 @@ func setup_stats():
 
 func fire_payload(target : Vector2): #primary fire function
 	for i in 1:
-		single_fire(controller.entity.position,"basic",target)
+		single_fire(controller.entity.position+target.normalized() * 6,"basic",target)
 		await get_tree().create_timer(0.1).timeout
 		
 func on_child_projectile_landed(pos : Vector2):

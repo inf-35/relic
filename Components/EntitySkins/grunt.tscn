@@ -229,23 +229,23 @@ position = Vector2(20, 0)
 collision_layer = 2
 collision_mask = 16
 script = ExtResource("1_b7a8c")
-base_max_hp = 40.0
-base_movement_speed = 8.0
+base_max_hp = 5.0
+base_movement_speed = 6.0
 skin = "grunt"
 movement_component = NodePath("MovementComponent")
 animation_player = NodePath("AnimationPlayer")
 main_hitbox = NodePath("Hitbox")
 
 [node name="LevelCollision" type="CollisionShape2D" parent="."]
-position = Vector2(0, 2.66531)
+position = Vector2(-0.44545, 0.34898)
 shape = SubResource("RectangleShape2D_2vd6w")
 
 [node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("entity")]
+position = Vector2(-0.44545, -2.31633)
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("3_02ixm")
 entity = NodePath("..")
-contact_damage = 0.0
 affiliation = "enemy"
 
 [node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]

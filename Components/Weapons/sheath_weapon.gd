@@ -14,7 +14,7 @@ func setup_stats():
 			"contact_damage" : [0,"hitbox"], #[value, scope]
 			"initial_speed" : [40,"controller"],
 			"status_effects" : [{},"hitbox"],
-			"bounces" : [1,"controller"],
+			"bouncy" : [false,"controller"],
 			"pierce" : [2, "controller"],
 			"acceleration" : [0,"controller"],
 			"affiliation" : ["controller","hitbox"],

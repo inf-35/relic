@@ -31,7 +31,6 @@ func _ready():
 	basic_weapon.controller = self
 	weapons.add_child(basic_weapon)
 	weapon_dict[0] = basic_weapon
-
 	
 	entity.animation_callback.connect(func(identifier : String):
 		if not is_instance_valid(GameDirector.player):
@@ -55,18 +54,29 @@ func _ready():
 				state = "surround"
 				weapon_dict[0].fire((GameDirector.player.entity.position + GameDirector.player.entity.main_hitbox.position - entity.position).normalized())
 	)
-
-	
-	raycast.set_collision_mask_value(5,true) #levels
-	raycast.collide_with_areas = true
-	raycast.collide_with_bodies = true
-	raycast.set_collision_mask_value(2,false)
-	raycast.add_exception(entity)
 	
 	entity.died.connect(func():
-		var credit : Credit = preload("res://Components/credit.tscn").instantiate()
-		credit.position = entity.position
-		GameDirector.projectiles.add_child.call_deferred(credit)
+		var health_pickup : HealthPickup = HealthPickup.new()
+		health_pickup.property_cache.position = entity.position
+		health_pickup.property_cache.velocity = Vector2(30,30)
+		health_pickup.property_cache.friction = 5
+		health_pickup.health = 6
+		GameDirector.projectiles.add_child.call_deferred(health_pickup)
+		queue_free.call_deferred()
+		
+		#var credit : Credit = preload("res://Components/credit.tscn").instantiate()
+		#credit.position = entity.position
+		#GameDirector.projectiles.add_child.call_deferred(credit)
+		#queue_free.call_deferred()
+	)
+	
+	entity.hp_changed.connect(func():
+		var lumen_pickup : LumenPickup = LumenPickup.new()
+		lumen_pickup.property_cache.position = entity.position
+		lumen_pickup.property_cache.velocity = Vector2(-100,-100)
+		lumen_pickup.property_cache.friction = 5
+		lumen_pickup.lumen = 10
+		GameDirector.projectiles.add_child.call_deferred(lumen_pickup)
 		queue_free.call_deferred()
 	)
 
@@ -74,10 +84,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if GameDirector.stasis:
-		entity.immobile = true
 		return
-	else:
-		entity.immobile = false
 	
 	if not is_instance_valid(GameDirector.player):
 		return
@@ -90,13 +97,10 @@ func _process(delta):
 		
 	match state:
 		"loiter":
-			if (GameDirector.player.entity.position - entity.position).length_squared() > 60000:
-				return
-
-			if not raycast.get_collider():
+			if (GameDirector.player.entity.position - entity.position).length_squared() > 120000:
 				return
 				
-			if raycast.get_collider() == GameDirector.player.entity or raycast.get_collider().get_parent() == GameDirector.player.entity:
+			if (GameDirector.player.entity.position - entity.position).length_squared() < 100000 and raycast.get_collider() and (raycast.get_collider() == GameDirector.player.entity or raycast.get_collider().get_parent() == GameDirector.player.entity):
 				state = "chase"
 				return
 				
@@ -111,11 +115,12 @@ func _process(delta):
 						nav_agent.target_position = entity.position
 						break
 				timer.start(2)
+				
 		"chase": #120+ (margin : 10)
 			if (entity.position - GameDirector.player.entity.position).length() < 110:
 				state = "surround"
 				return
-			elif (entity.position - GameDirector.player.entity.position).length() > 280:
+			elif (entity.position - GameDirector.player.entity.position).length() > 220:
 				state = "loiter"
 				return
 				
@@ -164,8 +169,17 @@ func _process(delta):
 			if timer.time_left == 0:
 				nav_agent.target_position = entity.position + (entity.position - GameDirector.player.entity.position).normalized() * 40
 				timer.start(0.5)
-		
+				
+			if weapon_timer.time_left == 0:
+				raycast.position = entity.position
+				raycast.target_position = GameDirector.player.entity.position - entity.position
+				raycast.force_raycast_update()
+
+				if "entity" in raycast.get_collider() and raycast.get_collider().entity == GameDirector.player.entity:
+					entity.animation_player.play("shoot")
+					weapon_timer.start(2)
 		"aiming":
 			nav_agent.target_position = entity.position
+	
 	nav_agent.set_velocity(entity.to_local(nav_agent.get_next_path_position()).normalized() * entity.speed_perc * entity.stats.movement_speed.final)
 

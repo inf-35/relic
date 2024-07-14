@@ -13,6 +13,7 @@ var tilemap : InteractiveTileMap
 var roommap : TileMap
 var background : Sprite2D
 
+#generation
 var cell_size : int = 20
 var floors_to_create : Dictionary = {} #contains coords of floor tiles to be created
 var walls_to_create : Dictionary = {}
@@ -21,16 +22,18 @@ var floors_blocked : Dictionary = {} #floors on which obstacles are blocked from
 var floors_occupied : Dictionary = {} #floors unavailable for spawning
 var features_to_create : Dictionary = {}
 var enemy_spawns : Array[Dictionary] = [{"captures" : null, "position" : Vector2i.ZERO}]
-
+#world stats
 var level : int = 1
 var cur_world : String = "grottos"
 var cur_level_type : String = "gameplay"
+var boss_active : bool = false
 
 signal stasis_set
 signal run_start
 signal run_end
 
 signal shop_exited
+signal boss_entered
 signal boss_killed
 
 var stasis : bool = false:
@@ -68,6 +71,14 @@ func _ready():
 	level = 1
 	create_map(level,"grottos","gameplay")
 	
+	#boss triggers
+	boss_entered.connect(func():
+		boss_active = true
+	)
+	
+	boss_killed.connect(func():
+		boss_active = false
+	)
 func reset_scene(reset_controllers : bool): #reset scenes, clears all tilemaps and entities
 	for layer in tilemap.get_layers_count():
 		tilemap.clear_layer(layer)
@@ -102,8 +113,11 @@ func create_map(level : int, world_name : String, level_type : String):
 		
 	match world_name + " " + str(level) + " " + level_type:
 		"grottos 1 gameplay":
-			level_end_pos = write_room({ "position" : Vector2i(0,0), "identifier" : "start"})
-			level_end_pos = create_path(level_end_pos,50,{Vector2(0,1) : 4, Vector2(0,-1) : 5, Vector2(1,0) : 4, Vector2(-1,0) : 4},Vector2i(1,1))
+			level_end_pos = write_room({"position" : Vector2i(0,0), "identifier" : "start"})
+			level_end_pos = create_path(level_end_pos,4,{Vector2(0,1) : 1, Vector2(0,-1) : 1, Vector2(1,0) : 5, Vector2(-1,0) : 0},Vector2i(1,1),0,true)
+			level_end_pos = create_path(level_end_pos,4,{Vector2(0,1) : 2, Vector2(0,-1) : 2, Vector2(1,0) : 5, Vector2(-1,0) : 1},Vector2i(1,1),0,true)
+			level_end_pos = create_path(level_end_pos,50,{Vector2(0,1) : 5, Vector2(0,-1) : 5, Vector2(1,0) : 6, Vector2(-1,0) : 5},Vector2i(1,1))
+			level_end_pos = write_room({"position" : level_end_pos,"identifier" : "boss"})
 			
 			level_end_pos = write_room(
 				{ "position" : level_end_pos, "identifier" : "end", #identifier - type of room
@@ -114,10 +128,19 @@ func create_map(level : int, world_name : String, level_type : String):
 					}
 				}
 			)
-
-			place_features(floors_to_create,0.9,Vector2i(1,1),Grunt.new())
-			place_features(floors_to_create,0.95,Vector2i(2,2),Beetle.new())
-			place_features(floors_to_create,0.2,Vector2i(2,2),Rock.new())
+			noise_decor(floors_to_create,3.0,0.2,2,1,Vector2i(2,3))
+			noise_decor(floors_to_create,3.0,0.2,2,1,Vector2i(3,3))
+			noise_decor(floors_to_create,3.0,0.4,2,1,Vector2i(4,3))
+			noise_decor(floors_to_create,2.0,0.6,3,1,Vector2i(0,3))
+			noise_decor(floors_to_create,2.0,0.5,3,1,Vector2i(0,4))
+			
+			place_features(floors_to_create,0.95,Vector2i(1,1),Grunt.new())
+			place_features(floors_to_create,0.98,Vector2i(1,1),Gunner.new())
+			place_features(floors_to_create,0.98,Vector2i(1,1),Walker.new())
+			place_features(floors_to_create,0.98,Vector2i(1,1),Bomb.new())
+			place_features(floors_to_create,0.98,Vector2i(2,2),Beetle.new())
+			place_features(floors_to_create,0.5,Vector2i(2,2),Rock.new())
+			
 		"grottos 2 shop":
 			write_room(
 				{ "position" : level_end_pos, "identifier" : "shop", #identifier - type of room
@@ -130,7 +153,7 @@ func create_map(level : int, world_name : String, level_type : String):
 			)
 		"grottos 2 gameplay":
 			level_end_pos = write_room({"position" : Vector2i(0,0),"identifier" : "start"})
-			level_end_pos = create_path(level_end_pos,30,{Vector2.LEFT : 5, Vector2.RIGHT : 6, Vector2.UP : 5, Vector2.DOWN : 5})
+			level_end_pos = create_path(level_end_pos,30,{Vector2.LEFT : 4, Vector2.RIGHT : 200, Vector2.UP : 4, Vector2.DOWN : 4})
 			level_end_pos = write_room({"position" : level_end_pos,"identifier" : "boss"})
 			
 			level_end_pos = write_room(
@@ -162,7 +185,7 @@ func create_map(level : int, world_name : String, level_type : String):
 	
 	tilemap.nav_region.bake_navigation_polygon(true)
 	
-func create_path(origin : Vector2i, limit : float, direction_weights : Dictionary, initial_draw : Vector2i = Vector2i.ONE, base_captures : float = 0) -> Vector2i:
+func create_path(origin : Vector2i, limit : float, direction_weights : Dictionary, initial_draw : Vector2i = Vector2i.ONE, base_captures : float = 0, blocked : bool = false) -> Vector2i:
 	var position : Vector2i = origin
 	var weighted_directions : Array[Vector2i] = []
 	for direction in direction_weights:
@@ -170,7 +193,10 @@ func create_path(origin : Vector2i, limit : float, direction_weights : Dictionar
 			weighted_directions.append(Vector2i(direction))
 			
 	while (position - origin).length() < limit:
-		draw(position,initial_draw)
+		if blocked:
+			draw(position,initial_draw,true)
+		else:
+			draw(position,initial_draw,false)
 		position += weighted_directions.pick_random()
 				
 	return position
@@ -221,33 +247,41 @@ func write_room(room) -> Vector2i:
 		
 func write_tiles(): #function for writing tiles to the tilemap
 	for floor_tile in floors_to_create:
-		tilemap.set_cell(1,floor_tile,1,Vector2i(0,0))
+		tilemap.set_cell(1,floor_tile,1,Vector2i(0,5))
 		
 		#create walls from floors
-		var wall_adjacencies : Array[Vector2i] = [
-			Vector2(2,2),Vector2(2,1),Vector2(2,0),Vector2(2,-1),Vector2(2,-2),
-			Vector2(1,2),Vector2(1,1),Vector2(1,0),Vector2(1,-1),Vector2(1,-2),
-			Vector2(0,2),Vector2(0,1),Vector2(0,-1),Vector2(0,-2),
-			Vector2(-2,2),Vector2(-2,1),Vector2(-2,0),Vector2(-2,-1),Vector2(-2,-2),
-			Vector2(-1,2),Vector2(-1,1),Vector2(-1,0),Vector2(-1,-1),Vector2(-1,-2),]
+		var wall_adjacencies : Array[Vector2i] = []
+		var wall_depth : int = 2
+		
+		for x in wall_depth * 2 + 1:
+			for y in wall_depth * 2 + 1:
+				if x == wall_depth and y == wall_depth:
+					continue
+				wall_adjacencies.append(Vector2i(x-wall_depth,y-wall_depth))
 			
 		for adjacency in wall_adjacencies:
 			if not walls_to_create.has(floor_tile + adjacency) and not floors_to_create.has(floor_tile + adjacency):
 				walls_to_create[floor_tile + adjacency] = true
 		#create ceiling from floors
-		var ceiling_adjacencies : Array[Vector2i] = [
-			Vector2(2,2),Vector2(2,1),Vector2(2,0),Vector2(2,-1),Vector2(2,-2),
-			Vector2(1,2),Vector2(1,1),Vector2(1,0),Vector2(1,-1),Vector2(1,-2),
-			Vector2(0,2),Vector2(0,1),Vector2(0,-1),Vector2(0,-2),
-			Vector2(-2,2),Vector2(-2,1),Vector2(-2,0),Vector2(-2,-1),Vector2(-2,-2),
-			Vector2(-1,2),Vector2(-1,1),Vector2(-1,0),Vector2(-1,-1),Vector2(-1,-2),]
+		var ceiling_adjacencies : Array[Vector2i] = []
+		var ceiling_depth : int = 3
+		
+		for x in ceiling_depth * 2 + 1:
+			for y in ceiling_depth * 2 + 1:
+				if x == ceiling_depth and y == ceiling_depth:
+					continue
+				ceiling_adjacencies.append(Vector2i(x-ceiling_depth,y-ceiling_depth))
 						
 		for adjacency in ceiling_adjacencies:
 			if not ceilings_to_create.has(floor_tile + adjacency) and not floors_to_create.has(floor_tile + adjacency):
-				ceilings_to_create[floor_tile + adjacency] = true
+				ceilings_to_create[floor_tile + adjacency] = "normal"
+	
+	for ceiling in ceilings_to_create:
+		if not ceilings_to_create.has(ceiling + Vector2i(0,1)):
+			ceilings_to_create[ceiling] = "overhang"
 		
-		write_walls()
-		write_ceilings()
+	write_walls()
+	write_ceilings()
 				
 func noise_decor(tiles_to_check, frequency : float,threshold : float,tilemap_layer : int,source_id : int,atlas_coords : Vector2i,ignore_blockers : bool = false,ignore_occupiers : bool = false,seed : int = randi()):
 	for pos in tiles_to_check:
@@ -283,11 +317,12 @@ func noise_features(tiles_to_check,frequency : float,threshold : float,feature :
 		noise.fractal_type = FastNoiseLite.FRACTAL_NONE
 		
 		if noise.get_noise_2d(pos.x,pos.y) > threshold:
-			features_to_create[pos] = feature.duplicate(7)
+			features_to_create[pos] = feature
 			floors_occupied[pos] = true
-	feature.free()
 		
 func place_features(tiles_to_check, threshold : float, size : Vector2i, feature : Node,ignore_blockers = false,ignore_occupiers = false,seed=randi()):
+	var rejection : float = 0.0 #pseudorandom
+	var rejection_step : float = (1 - threshold)
 	for pos in tiles_to_check:
 		var valid : bool = true
 		for x in size.x:
@@ -305,34 +340,41 @@ func place_features(tiles_to_check, threshold : float, size : Vector2i, feature 
 			if not valid:
 				break
 		if valid:
-			if randf() > threshold:
+			if randf() > threshold - (1 - threshold) * rejection:
+				rejection = 0.0
 				features_to_create[pos] = feature.duplicate(7)
 				for x in size.x:
 					for y in size.y:
 						floors_occupied[Vector2i(pos.x + x,pos.y + y)] = true
+			else:
+				rejection += rejection_step
 	feature.free()
 
 func write_ceilings():
-	for ceiling_tile in ceilings_to_create:
-		ceilingmap.set_cell(0,ceiling_tile,1,Vector2i(2,0))
+	for ceiling in ceilings_to_create:
+		if ceilings_to_create[ceiling] == "overhang":
+			ceilingmap.set_cell(0,ceiling,1,Vector2i(1,0))
+		else:
+			ceilingmap.set_cell(0,ceiling,1,Vector2i(2,0))
 		
 func write_walls():
 	for wall_tile in walls_to_create:
-		tilemap.set_cell(0,wall_tile,1,Vector2i(1,0))
+		tilemap.set_cell(0,wall_tile,1,Vector2i(0,1))
 		
-func draw(start : Vector2i, size : Vector2i) -> bool:
+func draw(start : Vector2i, size : Vector2i, blocked : bool) -> bool:
 	var overlap : int = 0
 	for x in size.x:
 		for y in size.y:
 			var local_pos : Vector2i = Vector2i(start.x + x,start.y + y)
 			floors_to_create[local_pos] = true
+			if blocked:
+				floors_blocked[local_pos] = true
 				
 	return overlap >= size.x * size.y #if complete overlap return true else false
 	
 func spawn_post_processing(): #processes all spawns, for fairness
 	#for floor in floors_to_create:
 		##enemy_spawns.append({"position" : floor,"captures" : 0})
-		
 	var raycast : RayCast2D = RayCast2D.new()
 	raycast.set_collision_mask_value(5,true)
 	nav_region.add_child(raycast)

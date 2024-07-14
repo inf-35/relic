@@ -24,7 +24,6 @@ bbcode_enabled = true
 text = "[center]RDY"
 scroll_active = false
 script = ExtResource("1_e3wvp")
-string_size = "autoexpand"
 
 [node name="AspectRatio" type="AspectRatioContainer" parent="."]
 layout_mode = 2

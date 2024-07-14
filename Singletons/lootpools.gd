@@ -17,3 +17,6 @@ var shop_pool : Dictionary = {
 		"weight" : 20,
 	}
 }
+
+func _ready():
+	pass

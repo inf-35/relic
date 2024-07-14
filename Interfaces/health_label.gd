@@ -14,9 +14,11 @@ func _ready():
 	
 	GameDirector.player.entity.hp_changed.connect(func():
 		update_hp()
-	)	
+	)
+	
+	setup()	
 	
 func update_hp():
-	text = "[right]%s / %s" % [str(GameDirector.player.entity.hp),str(GameDirector.player.entity.stats.max_hp.final)]
+	text = "%s / %s" % [str(GameDirector.player.entity.hp),str(GameDirector.player.entity.stats.max_hp.final)]
 	
 	

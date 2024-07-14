@@ -6,8 +6,12 @@ var destination_level : int
 var destination_world : String
 var destination_level_type : String
 
+func _init():
+	immobile = true
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if not GameDirector.run_active: await GameDirector.run_start
+	
 	skin = "teleporter"
 	
 	entity.get_node("TeleportPrompt").destination_level = destination_level

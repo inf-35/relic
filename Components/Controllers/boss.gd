@@ -23,10 +23,12 @@ func _ready():
 	skin = "boss"
 	affiliation = "enemy"
 	
+	GameDirector.boss_entered.emit()
+	
 	generate_weapons()
 	generate_nodes()
 	
-	var basic_weapon : RoundWeapon = RoundWeapon.new()
+	var basic_weapon : Weapon = RoundWeapon.new()
 	basic_weapon.controller = self
 	weapons.add_child(basic_weapon)
 	weapon_dict[0] = basic_weapon
@@ -57,10 +59,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if GameDirector.stasis:
-		entity.immobile = true
 		return
-	else:
-		entity.immobile = false
 		
 	
 	if not is_instance_valid(GameDirector.player):
