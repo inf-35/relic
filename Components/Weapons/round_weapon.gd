@@ -18,7 +18,6 @@ func setup_stats():
 			"pierce" : [1, "controller"],
 			"acceleration" : [0,"controller"],
 			"affiliation" : ["controller","hitbox"],
-			"parent_weapon" : [self,"controller"],
 		}
 	}
 

@@ -19,7 +19,6 @@ scale = Vector2(0.2, 0.2)
 collision_layer = 16
 collision_mask = 31
 script = ExtResource("1_d6vdp")
-immobile = true
 base_max_hp = 100000.0
 skin = "boss_wall"
 

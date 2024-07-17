@@ -4,7 +4,6 @@ class_name Weapon
 
 signal shot #used when weapon is shot
 signal child_projectile_landed #used when child projectile is destroyed, includes projectile node
-signal descendant_projectile_landed #used when descendant (2nd order child) projectile is destroyed, includes projectile node
 signal cooldown_finished
 
 var controller
@@ -33,15 +32,14 @@ var targeted_primary : Node: #targeted primary weapon (null if this weapon is no
 	set(new_primary):
 		if targeted_primary:
 			targeted_primary.disconnect("child_projectile_landed",on_child_projectile_landed)
-			targeted_primary.disconnect("descendant_projectile_landed",on_descendant_projectile_landed)
-		
+			
 		targeted_primary = new_primary
 		if not targeted_primary:
 			return
 		
 		targeted_primary.child_projectile_landed.connect(on_child_projectile_landed)
-		targeted_primary.descendant_projectile_landed.connect(on_descendant_projectile_landed)
-		
+
+var enabled : bool = true #can this weapon function
 
 func setup_stats():
 	pass 
@@ -53,12 +51,14 @@ func _init():
 	cooldown_timer.timeout.connect(func():
 		cooldown_finished.emit()
 	)
-	
+
 	child_projectile_landed.connect(on_child_projectile_landed)
-	descendant_projectile_landed.connect(on_descendant_projectile_landed)
 	
 func fire(target : Vector2) -> bool: 
 	if cooldown_timer.time_left != 0:
+		return false
+		
+	if not enabled:
 		return false
 	
 	if "lumen" in controller and controller.lumen < lumen_cost:
@@ -79,10 +79,7 @@ func fire_payload(target : Vector2) -> void: #overriden by child class function
 func modify(primary : Node ) -> void: #takes in a primary[weapon] and modifies it in some fashion
 	pass
 
-func on_child_projectile_landed(position : Vector2):
-	pass
-
-func on_descendant_projectile_landed(position : Vector2):
+func on_child_projectile_landed(recursion : int, position : Vector2, last_entity_hit):
 	pass
 
 func trigger_secondaries() -> void: #should be triggered with changes in secondary functionality
@@ -90,17 +87,17 @@ func trigger_secondaries() -> void: #should be triggered with changes in seconda
 	for secondary in secondaries:
 		secondary.modify(self)
 
-func single_fire(position : Vector2, projectile_type : String, target : Vector2) -> void:
-	var projectile : Projectile = create_projectile(projectile_type)
+func single_fire(position : Vector2, projectile_type : String, target : Vector2, origin = null) -> void:
+	var projectile : Projectile = create_projectile(projectile_type,origin)
 	projectile.property_cache.base_movement_speed = projectile.initial_speed
 	projectile.property_cache.movement_vector = target.normalized()
 	projectile.property_cache.position = position
 	GameDirector.projectiles.add_child.call_deferred(projectile)
 	
-func arc_fire(position : Vector2, projectile_type : String, projectiles : int, angle : float = 360, target : Vector2 = Vector2.ONE) -> void:
+func arc_fire(position : Vector2, projectile_type : String, projectiles : int, angle : float = 360, target : Vector2 = Vector2.ONE, origin = null) -> void:
 #function for firing multiple projectiles in an arc ; angle is the total angle of the arc
 	for i in projectiles:
-		var projectile : Projectile = create_projectile(projectile_type)
+		var projectile : Projectile = create_projectile(projectile_type,origin)
 		projectile.property_cache.base_movement_speed = projectile.initial_speed
 		projectile.property_cache.position = position
 		if int(angle) % 360 == 0: #prevents overlap between projectiles at 0/360 degrees
@@ -109,7 +106,7 @@ func arc_fire(position : Vector2, projectile_type : String, projectiles : int, a
 			projectile.property_cache.movement_vector = target.normalized().rotated(deg_to_rad(-angle * 0.5 + i * angle/(projectiles-1)))
 		GameDirector.projectiles.add_child.call_deferred(projectile)
 			
-func create_projectile(projectile_type : String) -> Projectile:
+func create_projectile(projectile_type : String, origin = null) -> Projectile:
 	var projectile : Projectile = Projectile.new()
 	if "velocity" in controller.entity: #inherits parent entity velocity
 		projectile.property_cache.velocity = controller.entity.velocity
@@ -117,12 +114,16 @@ func create_projectile(projectile_type : String) -> Projectile:
 	for property in modified_projectile_types[projectile_type]:
 		var value = modified_projectile_types[projectile_type][property][0]
 		var scope : String = modified_projectile_types[projectile_type][property][1]
+		
 		projectile.parent_weapon = self
+		if origin:
+			projectile.hitbox_cache.origin = origin
+		
 		match property: #exceptions
 			"affiliation" when value == "controller":
 				projectile.affiliation = controller.affiliation #to the controller
-				projectile.property_cache.affilixation = controller.affiliation #to the entit
-				projectile.hitbox_cache.affiliation = controller.affiliation
+				projectile.property_cache.affiliation = controller.affiliation #to the entity
+				projectile.hitbox_cache.affiliation = controller.affiliation #to the hitbox
 				continue
 				
 		match scope:
@@ -134,6 +135,7 @@ func create_projectile(projectile_type : String) -> Projectile:
 				projectile.property_cache[property] = value
 			"hitbox":
 				projectile.hitbox_cache[property] = value
+				
 	return projectile
 	
 	

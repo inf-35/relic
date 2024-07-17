@@ -29,6 +29,8 @@ var status_effects_hash : int
 		parse_modifiers()
 @export var skin : String
 
+@export var lumen_drops : bool = true
+
 @onready var hp : float = base_max_hp:
 	set(new_hp):
 		if new_hp <= 0 and hp > 0:
@@ -36,6 +38,14 @@ var status_effects_hash : int
 		if new_hp > stats.max_hp.final:
 			hp = stats.max_hp.final
 		else:
+			if new_hp < hp and lumen_drops:
+				var lumen_pickup : LumenPickup = LumenPickup.new()
+				lumen_pickup.property_cache.position = position
+				lumen_pickup.property_cache.velocity = Vector2(-100,-100)
+				lumen_pickup.property_cache.friction = 5
+				lumen_pickup.lumen = (hp - new_hp)
+				GameDirector.projectiles.add_child.call_deferred(lumen_pickup)
+				
 			hp = new_hp
 		hp_changed.emit()
 		
@@ -88,7 +98,7 @@ var stats : Dictionary = {
 var speed_perc : float = 1 #should only be above 1 for sprinting / special charging attacks
 
 var hit_cache : int = 0 #counts number of hits yet unprocessed
-
+var mass : float = 2.0
 var friction : float = 15.0
 
 var projectile_intersection_area : Area2D
@@ -123,11 +133,8 @@ func hit(attacking_hitbox : Hitbox, attacked_hitbox : Hitbox):
 	if not "velocity" in self:
 		return
 		
-	if attacking_contact_damage == 0:
-		return
-		
-	self.velocity += (attacking_velocity+(attacked_hitbox.global_position-attacking_position)*0.01).normalized() * 200
-	
+	if movement_component: self.velocity += (attacking_velocity+(attacked_hitbox.global_position-attacking_position)*0.01).normalized() * attacked_hitbox.force / mass
+	#knockback
 func animation_callback_func(identifier : String): #animation player calls this function
 	animation_callback.emit(identifier)
 	
@@ -142,13 +149,13 @@ func _ready():
 				var duplicate : CollisionShape2D = child.duplicate()
 				projectile_intersection_area.add_child(duplicate)
 		add_child(projectile_intersection_area)
-		
-		await get_tree().process_frame
-		await get_tree().process_frame
-		print(projectile_intersection_area.get_overlapping_bodies())
-		
-		if (len(projectile_intersection_area.get_overlapping_bodies()) > 0):
-			queue_free()
+		##
+		#await get_tree().process_frame
+		#await get_tree().process_frame	
+		#print(projectile_intersection_area.get_overlapping_bodies())
+		#
+		#if (len(projectile_intersection_area.get_overlapping_bodies()) > 0):
+			#queue_free()
 		
 		
 		

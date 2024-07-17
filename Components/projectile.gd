@@ -24,7 +24,7 @@ var bullet_height : float = 10.0
 var final_scale : Vector2
 var expansion_time : float
 
-var is_descendant : bool = false
+var recursion : int = 0 #how many layers is this projectile removed from the original bullet
 
 var locked : bool = false
 
@@ -49,6 +49,8 @@ var level_raycast : RayCast2D = RayCast2D.new()
 
 var hitbox : Hitbox
 var hitbox_cache : Dictionary
+
+var last_entity_hit : Node #records the last entity hit
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -120,7 +122,4 @@ func _process(delta):
 	
 func _exit_tree():
 	if is_instance_valid(parent_weapon) and is_instance_valid(entity):
-		if not is_descendant:
-			parent_weapon.child_projectile_landed.emit(entity.position)
-		else:
-			parent_weapon.descendant_projectile_landed.emit(entity.position)
+		parent_weapon.child_projectile_landed.emit(recursion,entity.position,last_entity_hit)

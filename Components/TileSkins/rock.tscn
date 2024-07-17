@@ -20,6 +20,7 @@ collision_mask = 16
 script = ExtResource("1_k6vqa")
 base_max_hp = 10.0
 skin = "rock"
+lumen_drops = false
 main_hitbox = NodePath("Hitbox")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -41,6 +42,7 @@ collision_layer = 0
 collision_mask = 0
 script = ExtResource("3_x4nt5")
 entity = NodePath("..")
+force = 0.0
 affiliation = "neutral"
 
 [node name="HitboxCollision" type="CollisionShape2D" parent="Hitbox"]

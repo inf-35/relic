@@ -20,8 +20,7 @@ func setup_stats():
 			"pierce" : [1, "controller"],
 			"acceleration" : [0,"controller"],
 			"affiliation" : ["neutral","hitbox"],
-			"parent_weapon" : [self,"controller"],
-			"is_descendant" : [false,"controller"],
+			"recursion" : [0,"controller"],
 			"scale" : [Vector2(2,2),"entity"]
 		},
 		"split" : {
@@ -32,9 +31,7 @@ func setup_stats():
 			"bouncy" : [false,"controller"],
 			"pierce" : [1, "controller"],
 			"acceleration" : [0,"controller"],
-			"affiliation" : ["neutral","hitbox"],
-			"parent_weapon" : [self,"controller"],
-			"is_descendant" : [true,"controller"],
+			"recursion" : [1,"controller"],
 		},
 	}
 
@@ -43,7 +40,12 @@ func fire_payload(target : Vector2): #primary fire function
 		single_fire(controller.entity.position+target.normalized() * 6,"basic",target)
 		await get_tree().create_timer(0.1).timeout
 		
-func on_child_projectile_landed(pos : Vector2):
-	for i in 20:
-		single_fire(pos,"split",Vector2.from_angle(randf_range(0,2*PI)))
+func on_child_projectile_landed(recursion : int,pos : Vector2,last_entity_hit):
+	#var explosion : Explosion = Explosion.new()
+	#explosion.property_cache.position = pos
+	#GameDirector.projectiles.add_child.call_deferred(explosion)
+	match recursion:
+		0:
+			for i in 20:
+				single_fire(pos,"split",Vector2.from_angle(randf_range(0,2*PI)),last_entity_hit)
 

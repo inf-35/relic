@@ -1,25 +1,25 @@
 extends Node
 
-const entity_skin_scenes : Dictionary = {
+var entity_skin_scenes : Dictionary = {
 	#regular entities
-	"player" : preload("res://Components/EntitySkins/player.tscn"),
-	"grunt" : preload("res://Components/EntitySkins/grunt.tscn"),
-	"gunner" : preload("res://Components/EntitySkins/gunner.tscn"),
-	"beetle" : preload("res://Components/EntitySkins/beetle.tscn"),
-	"walker" : preload("res://Components/EntitySkins/walker.tscn"),
-	"bomb" : preload("res://Components/EntitySkins/bomb.tscn"),
-	"boss" : preload("res://Components/EntitySkins/boss.tscn"),
+	"player" : load("res://Components/EntitySkins/player.tscn"),
+	"grunt" : load("res://Components/EntitySkins/grunt.tscn"),
+	"gunner" : load("res://Components/EntitySkins/gunner.tscn"),
+	"beetle" : load("res://Components/EntitySkins/beetle.tscn"),
+	"walker" : load("res://Components/EntitySkins/walker.tscn"),
+	"bomb" : load("res://Components/EntitySkins/bomb.tscn"),
+	"boss" : load("res://Components/EntitySkins/boss.tscn"),
 	#projectiles
-	"projectile" : preload("res://Components/EntitySkins/projectile.tscn"),
+	"projectile" : load("res://Components/EntitySkins/projectile.tscn"),
 	#effects
-	"explosion" : preload("res://Components/EntitySkins/explosion.tscn"),
+	"explosion" : load("res://Components/EntitySkins/explosion.tscn"),
 	#tiles
-	"rock" : preload("res://Components/TileSkins/rock.tscn"),
+	"rock" : load("res://Components/TileSkins/rock.tscn"),
 	#interactables
-	"dropped_weapon" : preload("res://Components/InteractableSkins/dropped_weapon.tscn"),
-	"health_pickup" : preload("res://Components/InteractableSkins/health_pickup.tscn"),
-	"lumen_pickup" : preload("res://Components/InteractableSkins/lumen_pickup.tscn"),
-	"teleporter" : preload("res://Components/InteractableSkins/teleporter.tscn"),
-	"vending_machine" : preload("res://Components/EntitySkins/vending_machine.tscn"),
-	"boss_wall" : preload("res://Components/TileSkins/boss_wall.tscn"),
+	"dropped_weapon" : load("res://Components/InteractableSkins/dropped_weapon.tscn"),
+	"health_pickup" : load("res://Components/InteractableSkins/health_pickup.tscn"),
+	"lumen_pickup" : load("res://Components/InteractableSkins/lumen_pickup.tscn"),
+	"teleporter" : load("res://Components/InteractableSkins/teleporter.tscn"),
+	"vending_machine" : load("res://Components/EntitySkins/vending_machine.tscn"),
+	"boss_wall" : load("res://Components/TileSkins/boss_wall.tscn"),
 }

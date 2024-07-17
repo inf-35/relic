@@ -71,12 +71,6 @@ func _ready():
 	)
 	
 	entity.hp_changed.connect(func():
-		var lumen_pickup : LumenPickup = LumenPickup.new()
-		lumen_pickup.property_cache.position = entity.position
-		lumen_pickup.property_cache.velocity = Vector2(-100,-100)
-		lumen_pickup.property_cache.friction = 5
-		lumen_pickup.lumen = 10
-		GameDirector.projectiles.add_child.call_deferred(lumen_pickup)
 		queue_free.call_deferred()
 	)
 

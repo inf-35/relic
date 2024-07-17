@@ -23,11 +23,6 @@ func _ready():
 	generate_weapons()
 	generate_nodes()
 	
-	var basic_weapon : Weapon = BombWeapon.new()
-	basic_weapon.controller = self
-	weapons.add_child(basic_weapon)
-	weapon_dict[0] = basic_weapon
-	
 	entity.animation_callback.connect(func(identifier : String):
 		if not is_instance_valid(GameDirector.player):
 			return
@@ -47,13 +42,13 @@ func _ready():
 			
 			"shoot":
 				state = "surround"
-				var explosion : Explosion = Explosion.new()
-				explosion.property_cache.position = entity.position
-				queue_free.call_deferred()
+				entity.died.emit()
 	)
 	
 	entity.died.connect(func():
-		weapon_dict[0].fire((GameDirector.player.entity.position + GameDirector.player.entity.main_hitbox.position - entity.position).normalized())
+		var explosion : Explosion = Explosion.new()
+		explosion.property_cache.position = entity.position
+		GameDirector.projectiles.add_child(explosion)
 		queue_free.call_deferred()
 	)
 
