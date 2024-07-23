@@ -12,10 +12,17 @@ func setup_stats():
 	lumen_cost = 2
 	projectile_types = {
 		"basic" : {
-			"contact_damage" : [4,"hitbox"],
+			"contact_damage" : [{
+				"normal" : 4.0,
+				"light" : 0.0,
+				"fire" : 0.0,
+				"kinetic" : 0.0,
+				"blast" : 0.0,
+				"poison" : 0.0
+			},"hitbox"],
 			"initial_speed" : [10,"controller"],
 			"lifetime" : [1.5, "controller"],
-			"status_effects" : [{"heavy_freeze" = 0.2},"hitbox"],
+			"status_effects" : [{"freeze" : {"level" : 1, "time" : 2.0}},"hitbox"],
 			"bouncy" : [true,"controller"],
 			"pierce" : [1, "controller"],
 			"acceleration" : [0,"controller"],
@@ -24,13 +31,21 @@ func setup_stats():
 			"scale" : [Vector2(2,2),"entity"]
 		},
 		"split" : {
-			"contact_damage" : [4,"hitbox"],
+			"contact_damage" : [{
+				"normal" : 4.0,
+				"light" : 0.0,
+				"fire" : 0.0,
+				"kinetic" : 0.0,
+				"blast" : 0.0,
+				"poison" : 0.0
+			},"hitbox"],
 			"initial_speed" : [10,"controller"],
 			"lifetime" : [2,"controller"],
-			"status_effects" : [{"heavy_freeze" = 0.2},"hitbox"],
+			"status_effects" : [{"freeze" : {"level" : 1, "time" : 2.0}},"hitbox"],
 			"bouncy" : [false,"controller"],
 			"pierce" : [1, "controller"],
 			"acceleration" : [0,"controller"],
+			"affiliation" : ["neutral","hitbox"],
 			"recursion" : [1,"controller"],
 		},
 	}

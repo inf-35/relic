@@ -3,8 +3,11 @@ extends TileMap
 class_name InteractiveTileMap
 
 @onready var nav_region : NavigationRegion2D = get_parent()
-var cells_to_scenes : Dictionary = {
-	
+
+var tile_healths : Dictionary = {
+	#format:
+	#Vector2i(0,2) : 92
+	#Vector2i(0,3) : 1 etc. etc.
 }
 
 var cache : int = 0
@@ -35,8 +38,7 @@ func update_nav():
 		await nav_region.bake_finished
 		await get_tree().create_timer(0.2).timeout
 		baking = false
-		
-		
+	
 func create_features(features : Dictionary):
 	for feature_pos in features:
 		var feature_scene = features[feature_pos]

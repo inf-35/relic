@@ -14,7 +14,14 @@ var spawn_offset : float = 10 #distance bullets spawn (in direction of travel)
 var camera_shake : float = 10.0
 var projectile_types : Dictionary = {
 	"basic" : {
-		"contact_damage" : 40,
+		"contact_damage" : [{
+				"normal" :0.0,
+				"light" : 0.0,
+				"fire" : 0.0,
+				"kinetic" : 0.0,
+				"blast" : 0.0,
+				"poison" : 0.0
+			},"hitbox"],
 		"initial_speed" : 100,
 		"affiliation" : "controller",
 	}

@@ -27,6 +27,13 @@ var level : int = 1
 var cur_world : String = "grottos"
 var cur_level_type : String = "gameplay"
 var boss_active : bool = false
+#level stats
+var wall_tiles : Dictionary = {}
+var floor_tiles : Dictionary = {}
+var ceiling_tiles : Dictionary = {}
+
+var tiles_loaded : Dictionary = {} #tiles loaded
+var tile_healths : Dictionary = {}
 
 signal stasis_set
 signal run_start
@@ -79,6 +86,7 @@ func _ready():
 	boss_killed.connect(func():
 		boss_active = false
 	)
+	
 func reset_scene(reset_controllers : bool): #reset scenes, clears all tilemaps and entities
 	for layer in tilemap.get_layers_count():
 		tilemap.clear_layer(layer)
@@ -136,8 +144,8 @@ func create_map(level : int, world_name : String, level_type : String):
 			
 			place_features(floors_to_create,0.95,Vector2i(1,1),Grunt.new())
 			place_features(floors_to_create,0.98,Vector2i(1,1),Gunner.new())
-			place_features(floors_to_create,0.98,Vector2i(1,1),Walker.new())
-			place_features(floors_to_create,0.98,Vector2i(1,1),Bomb.new())
+			#place_features(floors_to_create,0.98,Vector2i(1,1),Walker.new())
+			#place_features(floors_to_create,0.98,Vector2i(1,1),Bomb.new())
 			place_features(floors_to_create,0.98,Vector2i(2,2),Beetle.new())
 			place_features(floors_to_create,0.5,Vector2i(2,2),Rock.new())
 			
@@ -248,10 +256,17 @@ func write_room(room) -> Vector2i:
 func write_tiles(): #function for writing tiles to the tilemap
 	for floor_tile in floors_to_create:
 		tilemap.set_cell(1,floor_tile,1,Vector2i(0,5))
+		tilemap.set_cell(0,floor_tile)
+		ceilingmap.set_cell(0,floor_tile) #erases ceilings that may be here
+		ceiling_tiles.erase(floor_tile)
+		wall_tiles.erase(floor_tile)
+		
+		tiles_loaded[floor_tile] = true
+		floor_tiles[floor_tile] = true #track of which tiles are floors
 		
 		#create walls from floors
 		var wall_adjacencies : Array[Vector2i] = []
-		var wall_depth : int = 2
+		var wall_depth : int = 3
 		
 		for x in wall_depth * 2 + 1:
 			for y in wall_depth * 2 + 1:
@@ -260,11 +275,12 @@ func write_tiles(): #function for writing tiles to the tilemap
 				wall_adjacencies.append(Vector2i(x-wall_depth,y-wall_depth))
 			
 		for adjacency in wall_adjacencies:
-			if not walls_to_create.has(floor_tile + adjacency) and not floors_to_create.has(floor_tile + adjacency):
+			if not walls_to_create.has(floor_tile + adjacency) and not floors_to_create.has(floor_tile + adjacency) and not floor_tiles.has(floor_tile + adjacency):
 				walls_to_create[floor_tile + adjacency] = true
+				
 		#create ceiling from floors
 		var ceiling_adjacencies : Array[Vector2i] = []
-		var ceiling_depth : int = 3
+		var ceiling_depth : int = 4
 		
 		for x in ceiling_depth * 2 + 1:
 			for y in ceiling_depth * 2 + 1:
@@ -273,16 +289,20 @@ func write_tiles(): #function for writing tiles to the tilemap
 				ceiling_adjacencies.append(Vector2i(x-ceiling_depth,y-ceiling_depth))
 						
 		for adjacency in ceiling_adjacencies:
-			if not ceilings_to_create.has(floor_tile + adjacency) and not floors_to_create.has(floor_tile + adjacency):
+			if not ceilings_to_create.has(floor_tile + adjacency) and not floors_to_create.has(floor_tile + adjacency) and not floor_tiles.has(floor_tile + adjacency):
 				ceilings_to_create[floor_tile + adjacency] = "normal"
 	
 	for ceiling in ceilings_to_create:
-		if not ceilings_to_create.has(ceiling + Vector2i(0,1)):
+		if not ceilings_to_create.has(ceiling + Vector2i(0,1)) and not ceiling_tiles.has(ceiling + Vector2i(0,1)):
 			ceilings_to_create[ceiling] = "overhang"
 		
 	write_walls()
 	write_ceilings()
-				
+	
+	walls_to_create = {} #reset dictionaries
+	ceilings_to_create = {}
+
+	
 func noise_decor(tiles_to_check, frequency : float,threshold : float,tilemap_layer : int,source_id : int,atlas_coords : Vector2i,ignore_blockers : bool = false,ignore_occupiers : bool = false,seed : int = randi()):
 	for pos in tiles_to_check:
 		if not ignore_blockers:
@@ -352,6 +372,7 @@ func place_features(tiles_to_check, threshold : float, size : Vector2i, feature 
 
 func write_ceilings():
 	for ceiling in ceilings_to_create:
+		ceiling_tiles[ceiling] = true
 		if ceilings_to_create[ceiling] == "overhang":
 			ceilingmap.set_cell(0,ceiling,1,Vector2i(1,0))
 		else:
@@ -360,6 +381,8 @@ func write_ceilings():
 func write_walls():
 	for wall_tile in walls_to_create:
 		tilemap.set_cell(0,wall_tile,1,Vector2i(0,1))
+		wall_tiles[wall_tile] = true
+		tile_healths[wall_tile] = 10 #TODO : set variable wall healths
 		
 func draw(start : Vector2i, size : Vector2i, blocked : bool) -> bool:
 	var overlap : int = 0
@@ -412,3 +435,14 @@ func spawn_post_processing(): #processes all spawns, for fairness
 							enemy_spawns[enemy_spawn_index].captures += check_spawn.captures + 1
 							enemy_spawns[check_spawn_index].captures = null
 	raycast.queue_free()
+#INGAME FUNCTIONS
+func damage_tile(tile : Vector2i, damage : int):
+	if not tile_healths.has(tile):
+		return
+	
+	tile_healths[tile] -= damage
+	if tile_healths[tile] <= 0:
+		floors_to_create = {tile : true}
+		write_tiles()
+		
+	

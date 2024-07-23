@@ -10,7 +10,14 @@ var parent_projectile : Projectile #projectile hitbox
 var intersecting_areas : Array[Area2D]
 
 @export var damage_multiplier : float = 1
-@export var contact_damage : float = 0
+@export var contact_damage : Dictionary = {
+	"normal" : 0.0,
+	"light" : 0.0,
+	"fire" : 0.0,
+	"kinetic" : 0.0,
+	"blast" : 0.0,
+	"poison" : 0.0,
+}
 @export var force : float = 400.0 #determines knockback magnitude
 
 var enabled : bool = true

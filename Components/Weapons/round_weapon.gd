@@ -11,7 +11,14 @@ func setup_stats():
 	cooldown_time = 1
 	projectile_types = {
 		"basic" : { #basic projectile used for most weapons
-			"contact_damage" : [4,"hitbox"], #[value, scope]
+			"contact_damage" : [{
+				"normal" : 4.0,
+				"light" : 0.0,
+				"fire" : 0.0,
+				"kinetic" : 0.0,
+				"blast" : 0.0,
+				"poison" : 0.0
+			},"hitbox"], #[value, scope]
 			"initial_speed" : [10,"controller"],
 			"status_effects" : [{},"hitbox"],
 			"bouncy" : [false,"controller"],

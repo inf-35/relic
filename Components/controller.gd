@@ -123,8 +123,7 @@ func generate_skin(generating_skin):
 				
 				
 	entity.entity_hit.connect(func(): #100ms i-frame for all entities
-		entity.status_effects.iframe = 0.1
-		entity.parse_stats()
+		entity.status_effects.iframe.time = 0.1
 	)
 	#
 	#GameDirector.stasis_set.connect(func(new_stasis):

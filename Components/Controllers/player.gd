@@ -93,7 +93,8 @@ func _ready():
 	)
 	
 	entity.entity_hit.connect(func():
-		entity.status_effects.iframe = 0.4
+		entity.status_effects.iframe.level = 1
+		entity.status_effects.iframe.time = 0.4
 		entity.parse_stats()
 	)
 	
