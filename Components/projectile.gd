@@ -56,7 +56,7 @@ var last_entity_hit : Node #records the last entity hit
 func _ready():
 	if not GameDirector.run_active: await GameDirector.run_start
 	
-	skin = "projectile"
+	skin = "basic_projectile"
 	
 	hitbox = entity.main_hitbox
 	hitbox.parent_projectile = self
@@ -64,6 +64,10 @@ func _ready():
 	if proxy_only:
 		entity.visible = false
 		hitbox.enabled = false
+		
+	for property in hitbox_cache:
+		if property in hitbox:
+			hitbox[property] = hitbox_cache[property]
 	
 	for property in hitbox_cache:
 		if property in hitbox:

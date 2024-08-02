@@ -34,7 +34,10 @@ var data_name : String = "undefined"
 var description : String = "undefined"
 
 var primary : bool = true
-var secondaries : Array[Node] = []
+var secondaries : Array[Node] = [] #all effects that apply to this weapon
+var binding : String = "primary" #primary or alt attack [Z or X]
+
+
 var targeted_primary : Node: #targeted primary weapon (null if this weapon is not a modifier)
 	set(new_primary):
 		if targeted_primary:
@@ -50,7 +53,24 @@ var enabled : bool = true #can this weapon function
 
 func setup_stats():
 	pass 
+	
+func check_depth(value : Array) -> int: #only works up to two layers, only needs to anyways
+	var level : int = 0
+	
+	for component in value:
+		if component is Array:
+			if level < 1:
+				level = 1
+			for subcomponent in component:
+				if subcomponent is Array:
+					if level < 2:
+						level = 2
+	
+	return level
 
+func deep_equal(value1 : Array, value2: Array) -> bool:
+	return false
+	
 func _init():
 	setup_stats()
 	add_child(cooldown_timer)
@@ -72,9 +92,10 @@ func fire(target : Vector2) -> bool:
 		return false
 	elif "lumen" in controller:
 		controller.lumen -= lumen_cost
-	
+	#camera shake
 	var shake_vector : Vector2 = (controller.entity.global_position + target * 0.01 - GameDirector.camera.global_position)
 	GameDirector.camera.shake_vector += shake_vector.normalized() * camera_shake / (1 + min(shake_vector.length() * 0.05, 10))
+		
 	fire_payload(target)
 	shot.emit()
 	cooldown_timer.start(cooldown_time)
@@ -106,15 +127,15 @@ func arc_fire(position : Vector2, projectile_type : String, projectiles : int, a
 	for i in projectiles:
 		var projectile : Projectile = create_projectile(projectile_type,origin)
 		projectile.property_cache.base_movement_speed = projectile.initial_speed
-		projectile.property_cache.position = position
 		if int(angle) % 360 == 0: #prevents overlap between projectiles at 0/360 degrees
 			projectile.property_cache.movement_vector = target.normalized().rotated(deg_to_rad(-angle * 0.5 + i * angle/(projectiles)))
 		else:
 			projectile.property_cache.movement_vector = target.normalized().rotated(deg_to_rad(-angle * 0.5 + i * angle/(projectiles-1)))
 		GameDirector.projectiles.add_child.call_deferred(projectile)
 			
-func create_projectile(projectile_type : String, origin = null) -> Projectile:
+func create_projectile(projectile_type : String, origin = null, skin = "basic_projectile") -> Projectile:
 	var projectile : Projectile = Projectile.new()
+	
 	if "velocity" in controller.entity: #inherits parent entity velocity
 		projectile.property_cache.velocity = controller.entity.velocity
 	

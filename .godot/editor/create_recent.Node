@@ -1,5 +1,7 @@
 CollisionShape2D
 Area2D
+Node2D
+Sprite2D
 PointLight2D
 DirectionalLight2D
 WorldEnvironment
@@ -10,5 +12,3 @@ LumenLabel
 Control
 MarginContainer
 HBoxContainer
-VBoxContainer
-PanelContainer

@@ -26,7 +26,10 @@ func _input(event : InputEvent):
 	match context:
 		"gameplay":
 			if Input.is_action_just_pressed("primary"):
-				GameDirector.player.player_fire()
+				GameDirector.player.player_fire("primary")
+			
+			if Input.is_action_just_pressed("secondary"):
+				GameDirector.player.player_fire("secondary")
 			
 			if Input.is_action_just_pressed("interact"):
 				if len(GameDirector.player.actions_list) <= 0:
@@ -52,12 +55,6 @@ func _input(event : InputEvent):
 				if selected_prompt:
 					selected_prompt.action(GameDirector.player)
 					selected_prompt.just_activated = true
-					
-			if Input.is_action_just_pressed("ability"):
-				GameDirector.stasis = true
-				get_tree().create_timer(1).timeout.connect(func():
-					GameDirector.stasis = false
-				)
 
 			if Input.is_action_just_pressed("menu"):
 				GuiDirector.customisation_menu_type = "weapon_swap"

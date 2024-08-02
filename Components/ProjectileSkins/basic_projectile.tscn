@@ -43,10 +43,11 @@ scale = Vector2(1.5, 1.5)
 collision_layer = 0
 collision_mask = 16
 script = ExtResource("1_1uur3")
-base_max_hp = 100000.0
+base_max_hp = 1e+06
 base_movement_speed = 8.0
 skin = "projectile"
 lumen_drops = false
+base_resistance = 1.0
 movement_component = NodePath("MovementComponent")
 main_hitbox = NodePath("Physical/Hitbox")
 

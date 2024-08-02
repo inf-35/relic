@@ -35,14 +35,14 @@ _data = {
 "dash": SubResource("Animation_iahkp")
 }
 
-[sub_resource type="Gradient" id="Gradient_sbpga"]
+[sub_resource type="Gradient" id="Gradient_w73ds"]
 interpolation_mode = 2
 offsets = PackedFloat32Array(0, 0.1, 0.7)
 colors = PackedColorArray(1, 1, 1, 1, 0.714286, 0.714286, 0.714286, 1, 0, 0, 0, 1)
 metadata/_snap_enabled = true
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_w2tjc"]
-gradient = SubResource("Gradient_sbpga")
+gradient = SubResource("Gradient_w73ds")
 width = 100
 height = 100
 use_hdr = true

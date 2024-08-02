@@ -17,29 +17,30 @@ func _process(_delta):
 	weapon_timer_update()
 
 func weapon_timer_update():
-	if not is_instance_valid(GameDirector.player):
-		return
-		
-	if len(GameDirector.player.active_weapons_array) <= weapon_slot:
-		cooldown_label.text = ""
-		return
-		
-	if not is_instance_valid(GameDirector.player.active_weapons_array[weapon_slot]):
-		return
-		
-	if GameDirector.player.active_weapons_array[weapon_slot].cooldown_timer.time_left == 0:
-		cooldown_label.text = "[center]RDY"
-	else:
-		cooldown_label.text = "[center]" + str(round(GameDirector.player.active_weapons_array[weapon_slot].cooldown_timer.time_left * 100) * 0.01)
-		
+	pass
+	#if not is_instance_valid(GameDirector.player):
+		#return
+		#
+	#if len(GameDirector.player.active_weapons_array) <= weapon_slot:
+		#cooldown_label.text = ""
+		#return
+		#
+	#if not is_instance_valid(GameDirector.player.active_weapons_array[weapon_slot]):
+		#return
+		#
+	#if GameDirector.player.active_weapons_array[weapon_slot].cooldown_timer.time_left == 0:
+		#cooldown_label.text = "[center]RDY"
+	#else:
+		#cooldown_label.text = "[center]" + str(round(GameDirector.player.active_weapons_array[weapon_slot].cooldown_timer.time_left * 100) * 0.01)
+		#
 func update():
-	if len(GameDirector.player.active_weapons_array) <= weapon_slot:
-		modulate = Color(1,1,1,0)
-		return
-	
-	if GameDirector.player.active_weapons_array[weapon_slot] == null:
-		modulate = Color(1,1,1,0)
-		return
+	#if len(GameDirector.player.active_weapons_array) <= weapon_slot:
+		#modulate = Color(1,1,1,0)
+		#return
+	#
+	#if GameDirector.player.active_weapons_array[weapon_slot] == null:
+		#modulate = Color(1,1,1,0)
+		#return
 		
 	if GameDirector.player.cur_weapon_index == weapon_slot:
 		pivot_offset = size * 0.5
@@ -54,5 +55,5 @@ func update():
 		tween.set_parallel().tween_property(self,"scale",Vector2(1,1),0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 		tween.play()
 	
-	get_node("AspectRatio/PanelContainer/TextureRect").texture = GameDirector.player.active_weapons_array[weapon_slot].item_texture
-	
+	#get_node("AspectRatio/PanelContainer/TextureRect").texture = GameDirector.player.active_weapons_array[weapon_slot].item_texture
+	#

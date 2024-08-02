@@ -59,16 +59,6 @@ func _ready():
 	weapons.add_child(f)
 	weapon_dict[3] = f
 	
-	var c : Weapon = BasicWeapon.new()
-	c.controller = self
-	weapons.add_child(c)
-	weapon_dict[4] = c
-	
-	var d : Weapon = UltraWeapon.new()
-	d.controller = self
-	weapons.add_child(d)
-	weapon_dict[5] = d
-	
 	var speedy : Speedy = preload("res://Components/passives/speedy.tscn").instantiate()
 	speedy.player = self
 	passives.add_child.call_deferred(speedy)
@@ -106,26 +96,41 @@ func _process(delta):
 			var vector : Vector2 = (entity.position - body.position)
 			body.velocity += vector.normalized() * delta * 10000 / vector.length()
 	
-func player_fire(): #specific function for the player to move through to the operation queue
-	if weapon_locked:
-		await get_tree().create_timer(0.01).timeout
-	else:
-		if len(active_weapons_array) > cur_weapon_index:
-			if active_weapons_array[cur_weapon_index] is Weapon:
-				if active_weapons_array[cur_weapon_index].fire(entity.get_local_mouse_position()):
-					weapon_locked = true
-					await active_weapons_array[cur_weapon_index].cooldown_finished
-				
-				var benchmark = cur_weapon_index
-				cur_weapon_index = (cur_weapon_index + 1) % (len(active_weapons_array))
-				while true:
-					if active_weapons_array[cur_weapon_index].lumen_cost <= lumen:
-						break
-					else:
-						if cur_weapon_index == benchmark: #loop exhausted
-							cur_weapon_index = (cur_weapon_index + 1) % (len(active_weapons_array))
-							break
-						cur_weapon_index = (cur_weapon_index + 1) % (len(active_weapons_array))
-				weapon_locked = false
+func player_fire(input : String): #specific function for the player to move through the operation queue
+	match input:
+		"primary":
+			if active_weapon_array[0] is Weapon:
+				active_weapon_array[0].fire(entity.get_local_mouse_position())
+		"secondary":
+			if active_weapon_array[1] is Weapon:
+				active_weapon_array[1].fire(entity.get_local_mouse_position())
+		
+		
+		
+	#cur_weapon_index = (cur_weapon_index + 1) % (len(active_weapon_array))
+	#if active_weapon_array[cur_weapon_index] is Weapon:
+		#active_weapon_array[cur_weapon_index].fire(entity.get_local_mouse_position())
+		#print(active_weapon_array[cur_weapon_index])
 	
+	#if weapon_locked:
+		#await get_tree().create_timer(0.01).timeout
+	#else:
+		#if len(active_weapons_array) > cur_weapon_index:
+			#if active_weapons_array[cur_weapon_index] is Weapon:
+				#if active_weapons_array[cur_weapon_index].fire(entity.get_local_mouse_position()):
+					#weapon_locked = true
+					#await active_weapons_array[cur_weapon_index].cooldown_finished
+				#
+				#var benchmark = cur_weapon_index
+				#cur_weapon_index = (cur_weapon_index + 1) % (len(active_weapons_array))
+				#while true:
+					#if active_weapons_array[cur_weapon_index].lumen_cost <= lumen:
+						#break
+					#else:
+						#if cur_weapon_index == benchmark: #loop exhausted
+							#cur_weapon_index = (cur_weapon_index + 1) % (len(active_weapons_array))
+							#break
+						#cur_weapon_index = (cur_weapon_index + 1) % (len(active_weapons_array))
+				#weapon_locked = false
+	#
 

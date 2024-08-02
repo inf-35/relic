@@ -144,8 +144,8 @@ func create_map(level : int, world_name : String, level_type : String):
 			
 			place_features(floors_to_create,0.95,Vector2i(1,1),Grunt.new())
 			place_features(floors_to_create,0.98,Vector2i(1,1),Gunner.new())
-			#place_features(floors_to_create,0.98,Vector2i(1,1),Walker.new())
-			#place_features(floors_to_create,0.98,Vector2i(1,1),Bomb.new())
+			place_features(floors_to_create,0.98,Vector2i(1,1),Walker.new())
+			place_features(floors_to_create,0.98,Vector2i(1,1),Bomb.new())
 			place_features(floors_to_create,0.98,Vector2i(2,2),Beetle.new())
 			place_features(floors_to_create,0.5,Vector2i(2,2),Rock.new())
 			

@@ -290,8 +290,6 @@ func _physics_process(delta):
 				await get_tree().create_timer(0.2).timeout
 				bounce_lock = false
 	else:
-		if controller is Player:
-			print(stats.movement_speed, " a")
 		self.velocity += movement_vector * stats.movement_speed.final * speed_perc * delta * 200
 		self.velocity *= (1 - friction * delta)
 		movement(self)

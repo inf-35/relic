@@ -9,8 +9,9 @@ func spawn_request(skin : String) -> Node:
 	var result : Node
 	
 	if not EntityDirector.entity_skin_scenes.has(skin):
+		push_warning(skin)
 		return
-		
+	
 	#if skin_pools.has(skin):
 		#var skin_pool : Array = skin_pools[skin]
 		#if len(skin_pool) > 0:

@@ -12,9 +12,11 @@ var weapons : Node
 var passives : Node
 
 var property_cache : Dictionary #stores properties for later
+var except_skin_creation : bool = false
 var skin : String = "": #determines texture, anims, collision boxes
 	set(new_skin):
-		generate_skin(new_skin)
+		if not except_skin_creation:
+			generate_skin(new_skin)
 		skin = new_skin
 
 var weapon_dict : Dictionary = {
@@ -22,9 +24,7 @@ var weapon_dict : Dictionary = {
 	1000 : null #key 1000 is for player weapon selection in GUI	
 }
 
-var active_weapons_array : Array = []
-
-var sorted_weapon_key_array : Array = []
+var active_weapon_array : Array = []
 
 var actions_list : Array = []
 
@@ -110,17 +110,20 @@ func generate_skin(generating_skin):
 	y_sort_enabled = true
 	z_as_relative = false
 	
+	for child in get_children():
+		child.queue_free()
+	
 	var skin_entity = EntityAbstraction.spawn_request(generating_skin)
 	if skin_entity:
 		add_child.call_deferred(skin_entity)
 		entity = skin_entity
-		entity.name = "Entity: " + generating_skin
+		entity.name = generating_skin
 		entity.reset_stats()
 		entity.controller = self
+	
 		for property in property_cache:
 			if property in entity:
 				entity[property] = property_cache[property]
-				
 				
 	entity.entity_hit.connect(func(): #100ms i-frame for all entities
 		entity.status_effects.iframe.time = 0.1
@@ -192,31 +195,38 @@ func generate_passives():
 			old_passive_hash = passive_dict.hash()
 
 func compile_weapons(): #assign active weapons and secondaries
-	sorted_weapon_key_array = []
-	active_weapons_array = []
+	active_weapon_array = []
 	for weapon in weapon_dict:
-		sorted_weapon_key_array.append(weapon)
-	sorted_weapon_key_array.sort() #sorted array of all keys in weapon dict
-	
-	var cur_target_weapon = null
-	for weapon_key in sorted_weapon_key_array:
-		if not weapon_dict[weapon_key]:
+		if not weapon_dict[weapon]:
 			continue
-			
-		if weapon_key == 1000:
-			break
-			
-		if weapon_dict[weapon_key].primary: #creates primary-secondary relationships
-			cur_target_weapon = weapon_dict[weapon_key]
-			cur_target_weapon.secondaries.clear()
-			cur_target_weapon.targeted_primary = null
-			
-			active_weapons_array.append(cur_target_weapon)
-		elif cur_target_weapon:
-			cur_target_weapon.secondaries.append(weapon_dict[weapon_key])
-			weapon_dict[weapon_key].targeted_primary = cur_target_weapon
-		for active_weapon in active_weapons_array:
-			active_weapon.trigger_secondaries()
+		active_weapon_array.append(weapon_dict[weapon])
+		weapon_dict[weapon].trigger_secondaries()
+		
+	#sorted_weapon_key_array = []
+	#active_weapons_array = []
+	#for weapon in weapon_dict:
+		#sorted_weapon_key_array.append(weapon)
+	#sorted_weapon_key_array.sort() #sorted array of all keys in weapon dict
+	#
+	#var cur_target_weapon = null
+	#for weapon_key in sorted_weapon_key_array:
+		#if not weapon_dict[weapon_key]:
+			#continue
+			#
+		#if weapon_key == 1000:
+			#break
+			#
+		#if weapon_dict[weapon_key].primary: #creates primary-secondary relationships
+			#cur_target_weapon = weapon_dict[weapon_key]
+			#cur_target_weapon.secondaries.clear()
+			#cur_target_weapon.targeted_primary = null
+			#
+			#active_weapons_array.append(cur_target_weapon)
+		#elif cur_target_weapon:
+			#cur_target_weapon.secondaries.append(weapon_dict[weapon_key])
+			#weapon_dict[weapon_key].targeted_primary = cur_target_weapon
+		#for active_weapon in active_weapons_array:
+			#active_weapon.trigger_secondaries()
 			
 #func _exit_tree():
 	#remove_child(entity)
