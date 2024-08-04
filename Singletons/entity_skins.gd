@@ -11,6 +11,7 @@ var entity_skin_scenes : Dictionary = {
 	"boss" : load("res://Components/EntitySkins/boss.tscn"),
 	#projectiles
 	"basic_projectile" : load("res://Components/ProjectileSkins/basic_projectile.tscn"),
+	"homing_projectile" : load("res://Components/ProjectileSkins/homing_projectile.tscn"),
 	#effects
 	"explosion" : load("res://Components/EntitySkins/explosion.tscn"),
 	#tiles

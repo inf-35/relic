@@ -23,6 +23,8 @@ var intersecting_areas : Array[Area2D]
 var enabled : bool = true
 var continuous_hit : bool = false
 
+@export var lockable : bool = false #can this hitbox be locked on by homing projs
+
 @export_enum("neutral","player","enemy") var affiliation : String:
 	set(new_affiliation):
 		affiliation = new_affiliation

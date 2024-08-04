@@ -1,0 +1,92 @@
+[gd_scene load_steps=12 format=3 uid="uid://b4gka02c44e81"]
+
+[ext_resource type="Script" path="res://Components/entity.gd" id="1_m12bl"]
+[ext_resource type="Script" path="res://Components/hitbox.gd" id="2_qba7y"]
+[ext_resource type="Script" path="res://Components/movement_component.gd" id="3_1026k"]
+[ext_resource type="PackedScene" uid="uid://wxo2fduk6vi5" path="res://Components/ProjectileModules/homing_module.tscn" id="4_dglie"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x81d6"]
+size = Vector2(2.5, 2.5)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_22oeb"]
+
+[sub_resource type="Gradient" id="Gradient_e1e1h"]
+offsets = PackedFloat32Array(0, 0.987261)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_1gtni"]
+gradient = SubResource("Gradient_e1e1h")
+width = 1
+height = 1
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_go8hv"]
+size = Vector2(3, 3)
+
+[sub_resource type="Gradient" id="Gradient_dy06s"]
+offsets = PackedFloat32Array(0, 0.1, 0.7)
+colors = PackedColorArray(1, 1, 1, 1, 0.714286, 0.714286, 0.714286, 1, 0, 0, 0, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_qplx2"]
+gradient = SubResource("Gradient_dy06s")
+width = 100
+height = 100
+use_hdr = true
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[node name="HomingProjectile" type="CharacterBody2D" node_paths=PackedStringArray("movement_component", "main_hitbox")]
+z_index = 100
+z_as_relative = false
+y_sort_enabled = true
+position = Vector2(2.08165e-12, 2.08165e-12)
+scale = Vector2(1.5, 1.5)
+collision_layer = 0
+collision_mask = 16
+script = ExtResource("1_m12bl")
+base_max_hp = 1e+06
+base_movement_speed = 8.0
+skin = "projectile"
+lumen_drops = false
+base_resistance = 1.0
+movement_component = NodePath("MovementComponent")
+main_hitbox = NodePath("Physical/Hitbox")
+
+[node name="Physical" type="Node2D" parent="."]
+
+[node name="Hitbox" type="Area2D" parent="Physical" node_paths=PackedStringArray("entity")]
+collision_layer = 2
+collision_mask = 13
+script = ExtResource("2_qba7y")
+entity = NodePath("../..")
+
+[node name="HitboxCollision" type="CollisionShape2D" parent="Physical/Hitbox"]
+position = Vector2(0, -2.08165e-12)
+shape = SubResource("RectangleShape2D_x81d6")
+
+[node name="Sprite2D" type="Sprite2D" parent="Physical"]
+self_modulate = Color(1, 0, 0, 1)
+position = Vector2(-1.90735e-06, 0)
+scale = Vector2(3, 3)
+texture = SubResource("PlaceholderTexture2D_22oeb")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Physical/Sprite2D"]
+modulate = Color(72.3, 73.239, 80.282, 1)
+scale = Vector2(0.5, 0.5)
+texture = SubResource("GradientTexture2D_1gtni")
+
+[node name="MovementComponent" type="Node" parent="."]
+script = ExtResource("3_1026k")
+
+[node name="HitboxCollision" type="CollisionShape2D" parent="."]
+position = Vector2(-7.94742e-08, -7.94742e-08)
+shape = SubResource("RectangleShape2D_go8hv")
+
+[node name="PointLight2D2" type="PointLight2D" parent="."]
+color = Color(1, 0.301961, 0.301961, 1)
+energy = 0.05
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_qplx2")
+texture_scale = 0.2
+
+[node name="HomingModule" parent="." instance=ExtResource("4_dglie")]

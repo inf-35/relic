@@ -12,6 +12,7 @@ func setup_stats():
 	lumen_cost = 0
 	projectile_types = {
 		"basic" : { #basic projectile used for most weapons
+			"skin" : "homing",
 			"contact_damage" : [{
 				"normal" : 4.0,
 				"light" : 0.0,

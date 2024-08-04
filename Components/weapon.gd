@@ -134,7 +134,16 @@ func arc_fire(position : Vector2, projectile_type : String, projectiles : int, a
 		GameDirector.projectiles.add_child.call_deferred(projectile)
 			
 func create_projectile(projectile_type : String, origin = null, skin = "basic_projectile") -> Projectile:
-	var projectile : Projectile = Projectile.new()
+	var projectile : Projectile
+	
+	if "skin" in modified_projectile_types[projectile_type]:
+		match modified_projectile_types[projectile_type].skin:
+			"basic":
+				projectile = Projectile.new()
+			"homing":
+				projectile = HomingProjectile.new()
+	else:
+		projectile = Projectile.new()
 	
 	if "velocity" in controller.entity: #inherits parent entity velocity
 		projectile.property_cache.velocity = controller.entity.velocity
