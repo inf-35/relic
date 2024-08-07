@@ -58,7 +58,7 @@ collision_layer = 2
 collision_mask = 13
 script = ExtResource("2_mye7d")
 entity = NodePath("../..")
-lockable = true
+lockable = false
 affiliation = "enemy"
 
 [node name="HitboxCollision" type="CollisionShape2D" parent="Physical/Hitbox"]

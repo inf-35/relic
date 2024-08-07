@@ -2,7 +2,7 @@ extends Node2D
 class_name HomingModule
 
 @export var detection_range : float
-@export var detection_impact : float
+@export var detection_impact : float = 1
 @export var detection_area : Area2D
 
 @onready var parent_proj_entity : Entity
@@ -48,7 +48,7 @@ func _process(delta):
 		if detection_area.overlaps_area(area):
 			var vector = (parent_proj_entity.global_position - area.global_position)
 			vectors.append(vector.normalized())
-			distances.append(vector.length_squared())
+			distances.append(1/vector.length_squared())
 		else:
 			areas_to_delete.append(area)
 			
@@ -56,10 +56,10 @@ func _process(delta):
 		intersecting_areas.erase(area)
 			
 	for distance in distances:
-		total_distance += 1/distance
+		total_distance += distance
 	
 	for vector_key in len(vectors):
 		var target : Vector2 = (parent_proj_entity.movement_vector - vectors[vector_key]).normalized()
-		parent_proj_entity.movement_vector = (parent_proj_entity.movement_vector + target * (detection_impact * delta * distances[vector_key] / total_distance)).normalized()
+		parent_proj_entity.movement_vector = (parent_proj_entity.movement_vector.normalized() + target * (detection_impact * delta * distances[vector_key] / total_distance)).normalized()
 	
 	

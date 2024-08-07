@@ -59,6 +59,7 @@ collision_layer = 2
 collision_mask = 13
 script = ExtResource("2_qba7y")
 entity = NodePath("../..")
+lockable = false
 
 [node name="HitboxCollision" type="CollisionShape2D" parent="Physical/Hitbox"]
 position = Vector2(0, -2.08165e-12)

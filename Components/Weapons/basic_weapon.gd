@@ -8,7 +8,7 @@ func setup_stats():
 	proper_name = "Pistol"
 	description = "A [hint={hello}]basic[/hint] weapon"
 	
-	cooldown_time = 0.5
+	cooldown_time = 0.1
 	lumen_cost = 0
 	projectile_types = {
 		"basic" : { #basic projectile used for most weapons
@@ -33,4 +33,4 @@ func setup_stats():
 	}
 	
 func fire_payload(target : Vector2): #primary fire function
-	single_fire(controller.entity.position + target.normalized() * spawn_offset,"basic",target)
+	arc_fire(controller.entity.position + target.normalized() * spawn_offset,"basic",100,20,target)

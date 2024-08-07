@@ -127,6 +127,7 @@ func arc_fire(position : Vector2, projectile_type : String, projectiles : int, a
 	for i in projectiles:
 		var projectile : Projectile = create_projectile(projectile_type,origin)
 		projectile.property_cache.base_movement_speed = projectile.initial_speed
+		projectile.property_cache.position = position
 		if int(angle) % 360 == 0: #prevents overlap between projectiles at 0/360 degrees
 			projectile.property_cache.movement_vector = target.normalized().rotated(deg_to_rad(-angle * 0.5 + i * angle/(projectiles)))
 		else:
